@@ -5,22 +5,27 @@ from hesaplar.models import Kullanici
 # Create your models here.
 class Maddeler(models.Model):
     paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
-    url = models.URLField(max_length=200)
+    url = models.URLField(max_length=200, blank=True, null=True)
     fiyat = models.DecimalField(max_digits=5, decimal_places=2)
     kargo = models.BooleanField()
-    kupon = models.CharField(max_length=100)
+    kupon = models.CharField(max_length=100, blank=True)
     baslik = models.CharField(max_length=300)
     ayrintilar = models.TextField()
     katagori = models.CharField(max_length=100)
-    bas_tarih = models.DateField()
-    son_tarih = models.DateField()
+    bas_tarih = models.DateField(blank=True, null=True)
+    son_tarih = models.DateField(blank=True, null=True)
     online = models.BooleanField()
-    mekan = models.CharField(max_length=100)
+    diyar = models.CharField(max_length=100, blank=True)
     derece = models.IntegerField(default=0)
-    duyurmaTarihi = models.DateTimeField(auto_now=False, auto_now_add=True)
-    kaynamavakti = models.DateTimeField(null=True, auto_now=False, auto_now_add=False)
+    duyurmaTarihi = models.DateTimeField(null=True, auto_now=False, auto_now_add=True, blank=True)
+    kaynamavakti = models.DateTimeField(null=True, blank=True, auto_now=False, auto_now_add=False)
     aktif = models.BooleanField(default=True)
     oylar = models.IntegerField(default=0)
+
+
+    def __str__(self):
+        return f"{self.id}, {self.baslik}"
+
 
 class Votes(models.Model):
     kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
