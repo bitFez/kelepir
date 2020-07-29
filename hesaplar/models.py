@@ -9,4 +9,4 @@ class Kullanici(models.Model):
     yorumlar = models.IntegerField()
     ensicak = models.IntegerField()
     takipciler = models.IntegerField()
-    
+    sehir = models.CharField(max_length=200)
