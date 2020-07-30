@@ -1,1 +1,65 @@
-<h1>hello world</h1>
+{% extends 'temel.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h1>Günün Kelepirleri</h1>
+<br>
+
+{% for kelepir in kelepirler.all %}
+<div class="card mb-12" style="max-width: 1000px;">
+  <div class="row no-gutters">
+    <div class="col-md-3">
+      <img src="{{kelepir.goruntu.url}}" style="width: 100%; height: 15vw; object-fit: cover;" class="card-img">
+    </div>
+    <div class="col-md-9">
+      <div class="card-body">
+        <div class="container-fluid">
+        	<div class="row">
+        		<div class="col-md-12">
+        			<div class="row">
+        				<div class="col-md-2">
+                  <ul class="list-group list-group-horizontal-xl">
+                    <li class="list-group-item"><i class="fas fa-minus" style="color:DodgerBlue;"></i></li>
+                    <li class="list-group-item">{{kelepir.derece}}°</li>
+                    <li class="list-group-item"><i class="fas fa-plus" style="color:Tomato;"></i></li>
+                  </ul>
+        				</div>
+        				<div class="col-md-5">
+        				</div>
+        				<div class="col-md-3">
+        				</div>
+        				<div class="col-md-2">
+                  <small class="text-muted">3m ago</small>
+        				</div>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+        <h5 class="card-title">{{kelepir.baslik}}</h5>
+        <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
+        <p class="card-text">{{kelepir.ayrintilar|truncatewords:30}}... <strong>devamını oku</strong></p>
+
+        <div class="d-flex bd-highlight">
+
+        		<div class="flex-grow-1 bd-highlight">
+              <p class="card-text"><strong>{{kelepir.paylasan}}</strong></p>
+        		</div>
+        		<div class="p-2 bd-highlight">
+              <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
+        		</div>
+        		<div class="p-2 bd-highlight">
+              <button type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> 0</button>
+        		</div>
+        		<div class="p-2 bd-highlight">
+              <a href="{{kelepir.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+        		</div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
+<!-- Photo by <a href="https://www.pexels.com/photo/person-holding-paper-bag-and-face-mask-3987245/">Anna</a> Shvets from Pexels -->
