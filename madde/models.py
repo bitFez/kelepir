@@ -1,6 +1,6 @@
 from django.db import models
 from hesaplar.models import Kullanici
-
+from django.urls import reverse
 
 # Create your models here.
 class Maddeler(models.Model):
@@ -28,6 +28,9 @@ class Maddeler(models.Model):
     def __str__(self):
         return f"{self.id}, {self.baslik}"
 
+    def get_absolute_url(self):
+        """Returns the url to access a particular product detail (madde_detay)."""
+        return reverse('madde_detay', args=[str(self.id)])
 
 class Votes(models.Model):
     kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
