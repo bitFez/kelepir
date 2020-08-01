@@ -23,6 +23,7 @@ class Maddeler(models.Model):
     kaynamavakti = models.DateTimeField(null=True, blank=True, auto_now=False, auto_now_add=False)
     aktif = models.BooleanField(default=True)
     oylar = models.IntegerField(default=0)
+    w3w = models.CharField(max_length=100, blank=True)
 
 
     def __str__(self):
