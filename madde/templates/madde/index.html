@@ -9,7 +9,7 @@
 <div class="card mb-12" style="max-width: 1000px;">
   <div class="row no-gutters">
     <div class="col-md-3">
-      <img src="{{kelepir.goruntu.url}}" style="width: 100%; height: 15vw; object-fit: cover;" class="card-img">
+      <img src="{{kelepir.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
     </div>
     <div class="col-md-9">
       <div class="card-body">
@@ -19,9 +19,19 @@
         			<div class="row">
         				<div class="col-md-2">
                   <ul class="list-group list-group-horizontal-xl">
-                    <li class="list-group-item"><i class="fas fa-minus" style="color:DodgerBlue;" onclick="downvote"></i></li>
-                    <li class="list-group-item">{{kelepir.derece}}°</li>
-                    <li class="list-group-item"><i class="fas fa-plus" style="color:Tomato;" onclick="upvote"></i></li>
+                    <li class="list-group-item">
+                      <a href="{% url 'downvote' kelepir.id %}">
+                        <span style="color:DodgerBlue;">
+                          <i class="fas fa-minus" ></i>
+                        </span>
+                      </a>
+                    </li>
+                    <li class="list-group-item">{{ kelepir.derece }}°</li>
+                    <li class="list-group-item">
+                      <a href="{% url 'upvote' kelepir.id %}">
+                        <span style="color:Tomato;"><i class="fas fa-plus"></i></span>
+                      </a>
+                    </li>
                   </ul>
         				</div>
         				<div class="col-md-5">
@@ -61,6 +71,15 @@
     </div>
   </div>
 </div>
+
+<form id="upvote{{ kelepir.id }}" action="{% url 'upvote' kelepir.id %}" method="POST">
+  {% csrf_token %}
+  <input type="hidden">
+</form>
+<form id="downvote{{ kelepir.id }}" action="{% url 'downvote' kelepir.id %}" method="POST">
+  {% csrf_token %}
+  <input type="hidden">
+</form>
 {% endfor %}
 {% endblock %}
 <!-- Photo by <a href="https://www.pexels.com/photo/person-holding-paper-bag-and-face-mask-3987245/">Anna</a> Shvets from Pexels -->

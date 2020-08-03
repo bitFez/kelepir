@@ -1,9 +1,9 @@
 {% load static %}
 <div class="header">
   <div class="menu-bar">
-    <div class="container">
 
-      <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <nav class="navbar navbar-expand-md navbar-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fas fa-bars"></i>
         </button>
@@ -24,11 +24,30 @@
               <a class="nav-link" href="#">Kuponlar</a>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Ara" aria-label="Ara">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ara</button>
-          </form>
+
+
         </div>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Ara" aria-label="Ara">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ara</button>
+        </form>
+        <ul class="navbar-nav navbar-right">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="{% url 'paylas' %}">Kelepir Paylaş</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="{% url 'logout' %}">Oturumu kapat</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="{% url 'login' %}">Oturmu aç</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-light" href="{% url 'register' %}">Kayıt ol</a>
+          </li>
+          {% endif %}
+        </ul>
       </nav>
     </div>
   </div>

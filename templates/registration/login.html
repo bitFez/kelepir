@@ -1,0 +1,21 @@
+{% extends 'temel.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1>Login Form</h1>
+<br>
+{% for message in messages %}
+  <p id="messages">{{message}}</p>
+{% endfor %}
+<br>
+<form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+  {{ form | crispy }}
+
+  {{form.errors}}
+  <button type="submit" name="button">Oturum aç</button>
+</form>
+<br>
+<hr>
+
+{% endblock %}

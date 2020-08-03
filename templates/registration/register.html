@@ -1,0 +1,15 @@
+{% extends 'temel.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1>registration Form</h1>
+<br>
+<form method="POST">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <input type="submit" class="btn btn-primary btn-lg" value="Kayıt Ol"/>
+</form>
+<br>
+<hr>
+
+{% endblock %}
