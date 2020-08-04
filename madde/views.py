@@ -1,17 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Maddeler, Votes
+from .models import Maddeler, Votes, Kuponlar
 from hesaplar.models import Kullanici
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
-from . forms import CreateUserForm, DealForm
+from . forms import CreateUserForm, DealForm, KuponForm
 # Create your views here.
 def index(request):
     kelepirler = Maddeler.objects
 
     context = {'kelepirler':kelepirler}
     return render(request, 'madde/index.html', context)
+
+def kuponlarindeksi(request):
+    kuponlar = Kuponlar.objects
+
+    context = {'kuponlar':kuponlar}
+    return render(request, 'madde/kuponlarindeksi.html', context)
 
 
 @login_required()
@@ -92,3 +98,21 @@ def submitdeal(request):
             form = DealForm()
 
     return render(request, 'madde/paylasforma.html', {'form':form})
+
+@login_required(login_url="login/")
+def submitkupon(request):
+    form = KuponForm()
+    if request.method == 'POST':
+        form = KuponForm(request.POST, request.FILES)
+        #form = ReviewForm(request.POST, request.DATA or None, instance=request.user)
+        if form.is_valid():
+            kullanici = Kullanici.objects.get(id=request.user.id)
+            madde = form.save(commit=False) # dont save juts yet!
+            madde.paylasan = kullanici # attach author to the instance of the review
+
+            madde.save() # now save it with the author attached!
+            return redirect('index')
+        else:
+            form = KuponForm()
+
+    return render(request, 'madde/kuponforma.html', {'form':form})

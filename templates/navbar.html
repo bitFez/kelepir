@@ -7,7 +7,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fas fa-bars"></i>
         </button>
-        <a class="navbar-brand" href="/"><i class="fas fa-fire-alt fa-2x"></i><span class="navText">Kelepir Bul</span></a>
+        <a class="navbar-brand" href="/"><i class="fas fa-fire-alt fa-2x"></i><span class="navText">Kelepir Borsa</span></a>
 
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
@@ -21,7 +21,7 @@
               <a class="nav-link" href="#">Yeni fırsatlar</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Kuponlar</a>
+              <a class="nav-link" href="{% url 'kuponlarindeksi' %}">Kuponlar</a>
             </li>
           </ul>
 
@@ -33,9 +33,15 @@
         </form>
         <ul class="navbar-nav navbar-right">
           {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="btn btn-outline-light" href="{% url 'paylas' %}">Kelepir Paylaş</a>
-          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-plus-square"></i> Paylaş
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'paylas' %}"><i class="fas fa-tag"></i>  Kelepir Paylaş</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'kpaylas' %}"><i class="fas fa-hashtag"></i> Kupon Paylaş</a>
+            </div>
           <li class="nav-item">
             <a class="btn btn-outline-light" href="{% url 'logout' %}">Oturumu kapat</a>
           </li>

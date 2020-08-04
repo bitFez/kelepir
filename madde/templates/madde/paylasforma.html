@@ -1,15 +1,10 @@
 {% extends 'temel.html' %}
 {% load crispy_forms_tags %}
+
 {% block content %}
 
 <h1>Rastladığın Kelepiri Paylaşma Forması</h1>
 <br>
-<form method="POST" action="{% url 'paylas' %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form | crispy }}
-  <input type="submit" class="btn btn-primary btn-lg" value="Kelepiri Paylaş" />
-</form>
-<br>
-<hr>
-
+  {% crispy form %}
 {% endblock %}
+<script src="https://assets.what3words.com/sdk/v3/what3words.js?key=OVTORHOM"></script>

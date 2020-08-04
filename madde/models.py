@@ -39,6 +39,18 @@ class Maddeler(models.Model):
         """Returns the url to access a particular product detail (madde_detay)."""
         return reverse('madde_detay', args=[str(self.id)])
 
+class Kuponlar:
+    paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
+    url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>',)
+    satici = models.CharField(max_length=200, blank=True)
+    kupon = models.CharField(max_length=100, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
+    baslik = models.CharField(max_length=300, help_text='Kısa bir tanımlayıcı başlık', verbose_name='Başlık')
+    ayrintilar = models.TextField(help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
+    bas_tarih = models.DateField(blank=True, null=True,verbose_name='İndirimin Başlangıç Tarihi')
+    son_tarih = models.DateField(blank=True, null=True, verbose_name='İndirimin bitme tarihi')
+    duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
+    aktif = models.BooleanField(default=True)
+
 class Votes(models.Model):
     kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
     madde = models.ForeignKey(Maddeler, on_delete=models.CASCADE)
