@@ -16,6 +16,8 @@ KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
     )
 
+KUPON_CESIT = (('YE','% İndirim'),('Tİ','✂️ İndirimi'),('BK','Bedava Kargo'))
+
 SEHIRLER = (("Adana","Adana"), ("Adıyaman","Adıyaman"), ("Afyonkarahisar","Afyonkarahisar"), ("Ağrı","Ağrı"), ("Aksaray","Aksaray"), ("Amasya","Amasya"), ("Ankara","Ankara"), ("Antalya","Antalya"), ("Ardahan","Ardahan"),
 ("Artvin","Artvin"), ("Aydın","Aydın"), ("Balıkesir","Balıkesir"), ("Bartın","Bartın"), ("Batman","Batman"), ("Bayburt","Bayburt"), ("Bilecik","Bilecik"), ("Bingöl","Bingöl"), ("Bitlis","Bitlis"), ("Bolu","Bolu"),
 ("Burdur","Burdur"), ("Bursa","Bursa"), ("Çanakkale","Çanakkale"), ("Çankırı","Çankırı"), ("Çorum","Çorum"), ("Denizli","Denizli"), ("Diyarbakır","Diyarbakır"), ("Düzce","Düzce"), ("Edirne","Edirne"), ("Elazığ","Elazığ"),
@@ -29,11 +31,12 @@ SEHIRLER = (("Adana","Adana"), ("Adıyaman","Adıyaman"), ("Afyonkarahisar","Afy
 
 
 class KuponForm(forms.Form):
+    baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
+    ayrintilar = forms.CharField(widget=forms.TextInput())
     url = forms.URLField(widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
     satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
-    kupon = forms.CharField(max_length=200)
-    baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
-    ayrintilar = forms.TextInput()
+    kuponCesiti = forms.ChoiceField(choices=KUPON_CESIT)
+    kupon = forms.CharField(widget=forms.TextInput())
     bas_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     son_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
 
@@ -45,7 +48,8 @@ class KuponForm(forms.Form):
             'ayrintilar',
             PrependedText('url', '<span class="fas fa-globe"></span>'),
             PrependedText('satici', '<span class="fas fa-store"></span>'),
-            'kupon',
+            'kuponCesiti',
+            PrependedText('kupon', '<span class="fas fa-hand-scissors></span>'),
             Row(
                 Column('bas_tarih', css_class='form-group col-md-6 mb-0'),
                 Column('son_tarih', css_class='form-group col-md-6 mb-0'),
@@ -62,7 +66,7 @@ class DealForm(forms.Form):
     fiyat = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}),min_value=0)
     orjinalFiyat = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'placeholder': '200.00'}))
     kargo = forms.BooleanField(required=False)
-    kupon = forms.CharField(max_length=200)
+    kupon = forms.CharField()
     baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
     ayrintilar = forms.TextInput()
     goruntu = forms.ImageField()

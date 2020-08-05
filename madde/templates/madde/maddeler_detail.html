@@ -4,6 +4,7 @@
 <br>
 <h1>{{maddeler.baslik}}</h1>
 <br>
+{% if maddeler.aktif == True %}
 <div class="card mb-12" style="max-width: 1000px;">
   <div class="row no-gutters">
     <div class="col-md-3">
@@ -17,9 +18,17 @@
         			<div class="row">
         				<div class="col-md-2">
                   <ul class="list-group list-group-horizontal-xl">
-                    <li class="list-group-item"><i class="fas fa-minus" style="color:DodgerBlue;"></i></li>
+                    <li class="list-group-item">
+                      <a href="{% url 'downvote' maddeler.id %}">
+                          <i class="fas fa-minus" style="color:DodgerBlue;"></i>
+                      </a>
+                    </li>
                     <li class="list-group-item">{{maddeler.derece}}°</li>
-                    <li class="list-group-item"><i class="fas fa-plus" style="color:Tomato;"></i></li>
+                    <li class="list-group-item">
+                      <a href="{% url 'upvote' maddeler.id %}">
+                        <i class="fas fa-plus" style="color:Tomato;"></i>
+                      </a>
+                    </li>
                   </ul>
         				</div>
         				<div class="col-md-10">
@@ -66,5 +75,69 @@
         </div>
       </div>
     </div>
+    {% else %}
+    <div class="card mb-12" style="max-width: 1000px;">
+      <div class="row no-gutters">
+        <div class="col-md-3">
+          <img src="{{maddeler.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
+        </div>
+        <div class="col-md-9">
+          <div class="card-body text-secondary">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <ul class="list-group list-group-horizontal-xl">
+                        <li class="list-group-item"><i class="fas fa-minus" style="color:Grey;"></i></li>
+                        <li class="list-group-item text-muted">{{maddeler.derece}}°</li>
+                        <li class="list-group-item"><i class="fas fa-plus" style="color:Grey;"></i></li>
+                      </ul>
+                    </div>
+                    <div class="col-md-10">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <p><span style="color:Grey;"><b>{{maddeler.fiyat}}₺</b></span>
+              <span style="text-decoration: line-through;"> {{maddeler.orjinalFiyat}}</span></p>
+            <div class="card">
+              <div class="card-body">
+                <p class="text-muted">kelepir tükendi</p>
+                {% if maddeler.son_tarih %} <i class="far fa-calendar-times"></i> {{ maddeler.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
+                {% if maddeler.bas_tarih %} <i class="far fa-calendar-alt"></i> {{maddeler.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşım Tarihi {{maddeler.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
+              </div>
+            </div>
 
+            <div class="d-flex bd-highlight">
+
+                <div class="flex-grow-1 bd-highlight">
+                  <br> <p class="card-text"><strong>{{maddeler.paylasan}}</strong></p>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> 0</button>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <a href="{{maddeler.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+                </div>
+
+                </div>
+                <p class="card-text">{{maddeler.ayrintilar}}</p>
+                <hr>
+                <p>Share to buttons here</p>
+                <hr>
+                <p>Buttons here for saving commenting etc</p>
+                <hr>
+
+                <p>Comments section here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -39,11 +39,14 @@ class Maddeler(models.Model):
         """Returns the url to access a particular product detail (madde_detay)."""
         return reverse('madde_detay', args=[str(self.id)])
 
+KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
+
 class Kuponlar:
     paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>',)
     satici = models.CharField(max_length=200, blank=True)
     kupon = models.CharField(max_length=100, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
+    kuponCesiti = models.CharField(null=True, max_length=50, choices=KUPON_CESIT, verbose_name='Küpon çeşiti')
     baslik = models.CharField(max_length=300, help_text='Kısa bir tanımlayıcı başlık', verbose_name='Başlık')
     ayrintilar = models.TextField(help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
     bas_tarih = models.DateField(blank=True, null=True,verbose_name='İndirimin Başlangıç Tarihi')

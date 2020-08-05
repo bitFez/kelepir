@@ -6,7 +6,7 @@
 <br>
 
 {% for kelepir in kelepirler.all %}
-  {% if kelepir.aktif == "False" %}
+  {% if kelepir.aktif == True %}
     <div class="card mb-12" style="max-width: 1000px;">
       <div class="row no-gutters">
         <div class="col-md-3">
@@ -22,15 +22,15 @@
                       <ul class="list-group list-group-horizontal-xl">
                         <li class="list-group-item">
                           <a href="{% url 'downvote' kelepir.id %}">
-                            <span style="color:DodgerBlue;">
-                              <i class="fas fa-minus" ></i>
-                            </span>
+                              <i class="fas fa-minus" style="color:DodgerBlue;"></i>
                           </a>
                         </li>
                         <li class="list-group-item">{{ kelepir.derece }}°</li>
                         <li class="list-group-item">
                           <a href="{% url 'upvote' kelepir.id %}">
-                            <span style="color:Tomato;"><i class="fas fa-plus"></i></span>
+                            <span style="color:Tomato;">
+                              <i class="fas fa-plus"></i>
+                            </span>
                           </a>
                         </li>
                       </ul>
@@ -49,7 +49,8 @@
             </div>
             <h5 class="card-title"> <a href="{{ kelepir.get_absolute_url }}">{{kelepir.baslik}}</h5></a>
             <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
-            <p class="card-text">{{kelepir.ayrintilar|truncatewords:30}}... <strong>devamını oku</strong></p>
+            <p class="card-text">{{kelepir.ayrintilar|truncatewords:30}}...
+              <a href="{{ kelepir.get_absolute_url }}"><strong>devamını oku</strong></p></a>
 
             <div class="d-flex bd-highlight">
 
@@ -82,7 +83,7 @@
       <input type="hidden">
     </form>
   {% else %}
-  <div class="card border-danger mb-12" style="max-width: 1000px;">
+  <div class="card bg-light border-secondary mb-12" style="max-width: 1000px;">
       <div class="row no-gutters">
         <div class="col-md-3">
           <img src="{{kelepir.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
@@ -96,25 +97,21 @@
                     <div class="col-md-2">
                       <ul class="list-group list-group-horizontal-xl">
                         <li class="list-group-item">
-                          <a href="#">
-                            <span style="color:DodgerBlue;">
+                            <span style="color:Grey;">
                               <i class="fas fa-minus" ></i>
                             </span>
-                          </a>
                         </li>
-                        <li class="list-group-item">{{ kelepir.derece }}°</li>
+                        <li class="list-group-item text-muted">{{ kelepir.derece }}°</li>
                         <li class="list-group-item">
-                          <a href="">
-                            <span style="color:Tomato;"><i class="fas fa-plus"></i></span>
-                          </a>
+                            <span style="color:Grey;"><i class="fas fa-plus"></i></span>
                         </li>
                       </ul>
                     </div>
                     <div class="col-md-5">
-                      <p class=text-muted>kelepir tükendi</p>
                     </div>
                     <div class="col-md-3">
-                      {% if kelepir.son_tarih %}{{ kelepir.son_tarih }}'de kelepir tükenir{% endif %}
+                      <p class=text-muted>kelepir tükendi</p>
+                      <p>{% if kelepir.son_tarih %}{{ kelepir.son_tarih }}'de kelepir tükenir{% endif %}</p>
                     </div>
                     <div class="col-md-2">
                       <small class="text-muted">3m ago</small>
@@ -123,13 +120,14 @@
                 </div>
               </div>
             </div>
-            <h5 class="card-title"> <a href="{{ kelepir.get_absolute_url }}">{{kelepir.baslik}}</h5></a>
-            <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
-            <p class="card-text">{{kelepir.ayrintilar|truncatewords:30}}... <strong>devamını oku</strong></p>
+            <h5 class="card-title text-muted"> <a class="card-title" href="{{ kelepir.get_absolute_url }}">{{kelepir.baslik}}</h5></a>
+            <p><span style="color:Grey;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
+            <p class="card-text text-muted">{{kelepir.ayrintilar|truncatewords:30}}...
+              <a href="{{ kelepir.get_absolute_url }}"><strong>devamını oku</strong></p></a>
 
-            <div class="d-flex bd-highlight">
+            <div class="d-flex bd-highlight text-muted">
 
-                <div class="flex-grow-1 bd-highlight">
+                <div class="flex-grow-1 bd-highlight text-muted">
                   <p class="card-text"><strong>{{kelepir.paylasan}}</strong></p>
                 </div>
                 <div class="p-2 bd-highlight">
@@ -139,7 +137,7 @@
                   <button type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> 0</button>
                 </div>
                 <div class="p-2 bd-highlight">
-                  <a href="{{kelepir.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+                  <a href="{{kelepir.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
                 </div>
 
             </div>
@@ -148,15 +146,6 @@
         </div>
       </div>
     </div>
-
-    <form id="upvote{{ kelepir.id }}" action="{% url 'upvote' kelepir.id %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden">
-    </form>
-    <form id="downvote{{ kelepir.id }}" action="{% url 'downvote' kelepir.id %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden">
-    </form>
 
   {% endif %}
 {% endfor %}
