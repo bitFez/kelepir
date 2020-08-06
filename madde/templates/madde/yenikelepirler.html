@@ -2,14 +2,7 @@
 {% load static %}
 {% block content %}
 <br>
-
-<div class="row">
-  {% for kat in katagoriler.all %}
-    <a type="button" class="btn-outline-dark btn-lg" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
-  {% endfor %}
-</div>
-<br>
-<h1>{{h1}}</h1>
+<h1>En Yeni Kelepirler</h1>
 <br>
 
 {% for kelepir in kelepirler.all %}

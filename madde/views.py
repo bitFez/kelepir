@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Maddeler, Votes, Kuponlar
+from .models import Maddeler, Votes, Kuponlar, Katagoriler
 from hesaplar.models import Kullanici
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
@@ -9,9 +9,33 @@ from . forms import CreateUserForm, DealForm, KuponForm
 # Create your views here.
 def index(request):
     kelepirler = Maddeler.objects
-
-    context = {'kelepirler':kelepirler}
+    katagoriler = Katagoriler.objects
+    h1 = 'Günün Kelepirleri'
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
+
+def dealcategory(request, kat_id):
+    kelepirler = Maddeler.objects.filter(katagori=kat_id)
+    katagoriler = Katagoriler.objects
+    h1 = 'Günün Kelepirleri'
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    return render(request, 'madde/index.html', context)
+
+def newdeals(request):
+    kelepirler = Maddeler.objects.order_by('-duyurmaTarihi')
+    katagoriler = Katagoriler.objects
+    h1 = 'En Yeni Kelepirleri'
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    return render(request, 'madde/index.html', context)
+
+def hottestdeals(request):
+    kelepirler = Maddeler.objects.order_by('derece')
+    katagoriler = Katagoriler.objects
+    h1 = 'Kaynayan Kelepirler'
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    return render(request, 'madde/index.html', context)
+
+
 
 def kuponlarindeksi(request):
     kuponlar = Kuponlar.objects

@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Maddeler
+from .models import Maddeler, Katagoriler
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from crispy_forms.bootstrap import PrependedText
@@ -70,7 +70,10 @@ class DealForm(forms.Form):
     baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
     ayrintilar = forms.TextInput()
     goruntu = forms.ImageField()
-    katagori = forms.ChoiceField(choices=KATEGORI_SECIMLERI)
+    katagori = forms.ModelMultipleChoiceField(
+        queryset=Katagoriler.objects,
+        widget=forms.CheckboxSelectMultiple,
+        required=True)
     bas_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     son_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     online = forms.BooleanField(required=False)
