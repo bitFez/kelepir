@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'hesaplar.apps.HesaplarConfig',
 
     'crispy_forms',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -124,9 +125,13 @@ USE_TZ = True
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+# CKEDITOR WYSIWYG editor
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+X_FRAME_OPTIONS = 'SAMEORIGIN'

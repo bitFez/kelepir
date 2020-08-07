@@ -1,14 +1,15 @@
 {% extends 'temel.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
 <br>
-<h1>{{maddeler.baslik}}</h1>
+<h1>{{madde.baslik}}</h1>
 <br>
-{% if maddeler.aktif == True %}
+{% if madde.aktif == True %}
 <div class="card mb-12" style="max-width: 1000px;">
   <div class="row no-gutters">
     <div class="col-md-3">
-      <img src="{{maddeler.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
+      <img src="{{madde.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
     </div>
     <div class="col-md-9">
       <div class="card-body">
@@ -19,13 +20,13 @@
         				<div class="col-md-2">
                   <ul class="list-group list-group-horizontal-xl">
                     <li class="list-group-item">
-                      <a href="{% url 'downvote' maddeler.id %}">
+                      <a href="{% url 'downvote' madde.id %}">
                           <i class="fas fa-minus" style="color:DodgerBlue;"></i>
                       </a>
                     </li>
-                    <li class="list-group-item">{{maddeler.derece}}°</li>
+                    <li class="list-group-item">{{madde.derece}}°</li>
                     <li class="list-group-item">
-                      <a href="{% url 'upvote' maddeler.id %}">
+                      <a href="{% url 'upvote' madde.id %}">
                         <i class="fas fa-plus" style="color:Tomato;"></i>
                       </a>
                     </li>
@@ -38,39 +39,50 @@
         	</div>
         </div>
         <br>
-        <p><span style="color:Tomato;"><b>{{maddeler.fiyat}}₺</b></span>
-          <span style="text-decoration: line-through;"> {{maddeler.orjinalFiyat}}</span></p>
+        <p><span style="color:Tomato;"><b>{{madde.fiyat}}₺</b></span>
+          <span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span></p>
         <div class="card">
           <div class="card-body">
-            {% if maddeler.son_tarih %} <i class="far fa-calendar-times"></i> {{ maddeler.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
-            {% if maddeler.bas_tarih %} <i class="far fa-calendar-alt"></i> {{maddeler.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşma Tarihi {{maddeler.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
+            {% if madde.son_tarih %} <i class="far fa-calendar-times"></i> {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
+            {% if madde.bas_tarih %} <i class="far fa-calendar-alt"></i> {{madde.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşma Tarihi {{madde.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
           </div>
         </div>
 
         <div class="d-flex bd-highlight">
 
         		<div class="flex-grow-1 bd-highlight">
-              <br> <p class="card-text"><strong>{{maddeler.paylasan}}</strong></p>
+              <br> <p class="card-text"><strong>{{madde.paylasan}}</strong></p>
         		</div>
         		<div class="p-2 bd-highlight">
               <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
         		</div>
         		<div class="p-2 bd-highlight">
-              <button type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> 0</button>
+              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{yorumlar.count}}</a>
         		</div>
         		<div class="p-2 bd-highlight">
-              <a href="{{maddeler.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+              <a href="{{madde.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
         		</div>
 
             </div>
             <p class="card-text">{{maddeler.ayrintilar}}</p>
             <hr>
-            <p>Share to buttons here</p>
-            <hr>
-            <p>Buttons here for saving commenting etc</p>
+
+              {% include 'shareto.html' %}
+
             <hr>
 
-            <p>Comments section here</p>
+            <div class="row">
+              <div class="text-left col-md-3">
+                <a href="#commentsarea"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
+              </div>
+              <div class="text-left col-md-3">
+                <a href="#"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
+              </div>
+              <div class="text-left col-md-3">
+                <a href="#"><i class="fas fa-flag"></i> İhbar et</a>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -79,7 +91,7 @@
     <div class="card mb-12" style="max-width: 1000px;">
       <div class="row no-gutters">
         <div class="col-md-3">
-          <img src="{{maddeler.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
+          <img src="{{madde.goruntu.url}}" style="width: 100%; height: 15vw; opacity: 0.5" class="card-img image-fluid">
         </div>
         <div class="col-md-9">
           <div class="card-body text-secondary">
@@ -87,57 +99,105 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="row">
-                    <div class="col-md-2">
-                      <ul class="list-group list-group-horizontal-xl">
-                        <li class="list-group-item"><i class="fas fa-minus" style="color:Grey;"></i></li>
-                        <li class="list-group-item text-muted">{{maddeler.derece}}°</li>
-                        <li class="list-group-item"><i class="fas fa-plus" style="color:Grey;"></i></li>
-                      </ul>
+                    <div class="col-md-5">
+                      <button type="button" class="btn btn-outline-secondary btn-lg" disabled>{{ madde.derece }}° <i class="fas fa-hourglass-end"></i> kelepir tükendi</button>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-7">
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <br>
-            <p><span style="color:Grey;"><b>{{maddeler.fiyat}}₺</b></span>
-              <span style="text-decoration: line-through;"> {{maddeler.orjinalFiyat}}</span></p>
+            <p><span style="color:Grey;"><b>{{madde.fiyat}}₺</b></span>
+              <span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span></p>
             <div class="card">
               <div class="card-body">
                 <p class="text-muted">kelepir tükendi</p>
-                {% if maddeler.son_tarih %} <i class="far fa-calendar-times"></i> {{ maddeler.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
-                {% if maddeler.bas_tarih %} <i class="far fa-calendar-alt"></i> {{maddeler.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşım Tarihi {{maddeler.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
+                {% if madde.son_tarih %} <i class="far fa-calendar-times"></i> {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
+                {% if madde.bas_tarih %} <i class="far fa-calendar-alt"></i> {{madde.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşım Tarihi {{maddeler.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
               </div>
             </div>
 
             <div class="d-flex bd-highlight">
 
                 <div class="flex-grow-1 bd-highlight">
-                  <br> <p class="card-text"><strong>{{maddeler.paylasan}}</strong></p>
+                  <br> <p class="card-text"><strong>{{madde.paylasan}}</strong></p>
                 </div>
                 <div class="p-2 bd-highlight">
                   <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
                 </div>
                 <div class="p-2 bd-highlight">
-                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> 0</button>
+                  <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{yorumlar.count}}</a>
                 </div>
                 <div class="p-2 bd-highlight">
-                  <a href="{{maddeler.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+                  <a href="{{madde.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
                 </div>
 
                 </div>
-                <p class="card-text">{{maddeler.ayrintilar}}</p>
+                <p class="card-text">{{madde.ayrintilar}}</p>
                 <hr>
-                <p>Share to buttons here</p>
+                {% include 'shareto.html' %}
                 <hr>
-                <p>Buttons here for saving commenting etc</p>
-                <hr>
-
-                <p>Comments section here</p>
+                <div class="row">
+                  <div class="#commentsarea">
+                    <a href="#"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
+                  </div>
+                  <div class="">
+                    <a href="#"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
+                  </div>
+                  <div class="">
+                    <a href="#"><i class="fas fa-flag"></i> İhbar et</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
     {% endif %}
+    <div class="card mb-12" style="max-width: 1000px;">
+      <div class="row no-gutters">
+      <div class="card-body">
+        <!-- comments -->
+        <a id="commentsarea"></a>
+        {% for yorum in yorumlar %}
+          <div class="card comments" style="width: 100%;">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">{{ yorum.kullanici}} {{ yorum.created_on }}</h6>
+              <p class="card-text">{{ yorum.body |safe }}</p>
+              <a href="#">Beyen </a>
+              Beyen Sayısı 0
+            </div>
+            </div>
+            <div class="comments" style="padding: 10px;">
+              <p class="font-weight-bold">
+
+                <span class=" text-muted font-weight-normal">
+
+                </span>
+              </p>
+
+            </div>
+        {% endfor %}
+      </div>
+  </div>
+  <div class="card mb-12" style="max-width: 1000px;">
+    <div class="card-body">
+      {% if new_comment %}
+      <div class="alert alert-success" role="alert">
+        Your comment is awaiting moderation
+      </div>
+      {% else %}
+        <h3>Leave a comment</h3>
+        <form method="post" style="margin-top: 1.3em;">
+          {{ comment_form|crispy }}
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+</div>
 {% endblock %}

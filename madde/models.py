@@ -2,6 +2,7 @@ from django.db import models
 from hesaplar.models import Kullanici
 from django.urls import reverse
 from django.utils import timezone
+from ckeditor.fields import RichTextField
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -26,7 +27,7 @@ class Maddeler(models.Model):
     kargo = models.BooleanField(help_text='Kargo ücretsizse burayı tıklayın')
     kupon = models.CharField(max_length=100, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
     baslik = models.CharField(max_length=300, help_text='Kısa bir tanımlayıcı başlık', verbose_name='Başlık')
-    ayrintilar = models.TextField(help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
+    ayrintilar = RichTextField(max_length=1000, help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
     goruntu = models.ImageField(upload_to='madde_goruntuleri', null=True, blank=True, default="madde_goruntuleri/shopping.jpg", help_text='bir resim yüklemek, başkalarının anlaşmayı daha iyi anlamasına yardımcı olur', verbose_name='Görüntü')
     katagori = models.ManyToManyField('Katagoriler')
     bas_tarih = models.DateField(blank=True, null=True,verbose_name='İndirimin Başlangıç Tarihi')
@@ -47,9 +48,9 @@ class Maddeler(models.Model):
         return "\n".join([k.katagori for k in self.katagori.all()])
 
 
-    def get_absolute_url(self):
+    '''def get_absolute_url(self):
         """Returns the url to access a particular product detail (madde_detay)."""
-        return reverse('madde_detay', args=[str(self.id)])
+        return reverse('madde_detay', args=[str(self.id)])'''
 
 KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
 
@@ -60,7 +61,7 @@ class Kuponlar:
     kupon = models.CharField(max_length=100, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
     kuponCesiti = models.CharField(null=True, max_length=50, choices=KUPON_CESIT, verbose_name='Küpon çeşiti')
     baslik = models.CharField(max_length=300, help_text='Kısa bir tanımlayıcı başlık', verbose_name='Başlık')
-    ayrintilar = models.TextField(help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
+    ayrintilar = RichTextField(help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
     bas_tarih = models.DateField(blank=True, null=True,verbose_name='İndirimin Başlangıç Tarihi')
     son_tarih = models.DateField(blank=True, null=True, verbose_name='İndirimin bitme tarihi')
     duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
@@ -72,3 +73,16 @@ class Votes(models.Model):
 
     def __str__(self):
         return f"{self.id} , {self.madde}"
+
+class Comment(models.Model):
+    madde = models.ForeignKey(Maddeler, on_delete=models.CASCADE,related_name='comments')
+    kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
+    body = RichTextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['created_on']
+
+    def __str__(self):
+        return 'Comment {} by {}'.format(self.body, self.kullanici)

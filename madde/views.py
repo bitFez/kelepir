@@ -1,38 +1,45 @@
+from urllib.parse import quote_plus
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Maddeler, Votes, Kuponlar, Katagoriler
+from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment
 from hesaplar.models import Kullanici
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
-from . forms import CreateUserForm, DealForm, KuponForm
+from . forms import CreateUserForm, DealForm, KuponForm, CommentForm
 # Create your views here.
 def index(request):
     kelepirler = Maddeler.objects
     katagoriler = Katagoriler.objects
+    yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
-    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    #comment_c = request.build_absolute_uri
+
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def dealcategory(request, kat_id):
     kelepirler = Maddeler.objects.filter(katagori=kat_id)
     katagoriler = Katagoriler.objects
+    yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
-    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def newdeals(request):
     kelepirler = Maddeler.objects.order_by('-duyurmaTarihi')
     katagoriler = Katagoriler.objects
+    yorumlar = Comment.objects.filter(active=True)
     h1 = 'En Yeni Kelepirleri'
-    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def hottestdeals(request):
     kelepirler = Maddeler.objects.order_by('derece')
     katagoriler = Katagoriler.objects
+    yorumlar = Comment.objects.filter(active=True)
     h1 = 'Kaynayan Kelepirler'
-    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 
@@ -80,11 +87,37 @@ def downvote(request,madde_id):
             vote.save()
             kelepir.save()
 
+def madde_detay(request, pk):
+    template_name = 'madde/maddeler_detail.html'
+    madde = get_object_or_404(Maddeler, pk=pk)
+    yorumlar = madde.comments.filter(active=True)
+    #share_string = quote_plus(madde.content)
+    new_comment = None
 
+    # Comment posted
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            # Create Comment object but don't save to database yet
+            new_comment = comment_form.save(commit=False)
+            # Assign the current post to the comment
+            new_comment.madde = madde
+            # Assign the current post to an poster
+            kullanici = Kullanici.objects.get(id=request.user.id)
+            new_comment.kullanici = kullanici
+            # Save the comment to the database
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
 
-class MaddeDetailView(DetailView):
+    context = {'madde':madde, 'yorumlar': yorumlar, 'new_comment': new_comment,
+    'comment_form': comment_form}
+    return render(request, 'madde/maddeler_detail.html', context)
+
+'''class MaddeDetailView(DetailView):
     model = Maddeler
     template_name = 'madde/maddeler_detail.html'
+'''
 
 
 def registration(request):

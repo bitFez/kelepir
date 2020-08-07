@@ -2,10 +2,12 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Maddeler, Katagoriler
+from .models import Maddeler, Katagoriler, Comment
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from crispy_forms.bootstrap import PrependedText
+from ckeditor.widgets import CKEditorWidget
+
 
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -32,7 +34,7 @@ SEHIRLER = (("Adana","Adana"), ("Adıyaman","Adıyaman"), ("Afyonkarahisar","Afy
 
 class KuponForm(forms.Form):
     baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
-    ayrintilar = forms.CharField(widget=forms.TextInput())
+    ayrintilar = forms.CharField(widget=CKEditorWidget())
     url = forms.URLField(widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
     satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
     kuponCesiti = forms.ChoiceField(choices=KUPON_CESIT)
@@ -68,7 +70,7 @@ class DealForm(forms.Form):
     kargo = forms.BooleanField(required=False)
     kupon = forms.CharField()
     baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
-    ayrintilar = forms.TextInput()
+    ayrintilar = forms.CharField(widget=CKEditorWidget())
     goruntu = forms.ImageField()
     katagori = forms.ModelMultipleChoiceField(
         queryset=Katagoriler.objects,
@@ -111,3 +113,10 @@ class DealForm(forms.Form):
             'w3w',
             Submit('submit','Kelepiri Paylaş')
         )
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        body = forms.CharField(widget=CKEditorWidget())
+        fields = ['body']
+        
