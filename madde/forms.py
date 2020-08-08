@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from hesaplar.models import Kullanici
 from django import forms
 from .models import Maddeler, Katagoriler, Comment
 from crispy_forms.helper import FormHelper
@@ -13,6 +14,16 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'username', 'first_name', 'last_name', 'password1', 'password2']
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'first_name', 'last_name']
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Kullanici
+        exclude = ('kullanici',)
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -119,4 +130,3 @@ class CommentForm(forms.ModelForm):
         model = Comment
         body = forms.CharField(widget=CKEditorWidget())
         fields = ['body']
-        

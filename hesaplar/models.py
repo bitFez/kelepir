@@ -9,6 +9,8 @@ class Kullanici(models.Model):
     yorumlar = models.IntegerField()
     ensicak = models.IntegerField()
     takipciler = models.IntegerField()
+    dogum = models.DateField(null=True, blank=True)
+    resim = models.ImageField(upload_to='profiler', null=True, blank=True, default="profiler/profile.png")
     sehir = models.CharField(max_length=200)
 
     def __str__(self):

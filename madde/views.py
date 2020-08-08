@@ -2,12 +2,17 @@ from urllib.parse import quote_plus
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment
 from hesaplar.models import Kullanici
-from django.views.generic import DetailView
+# list view adds a queryset for us and looks up all records in the DB.
+# Detailview only looks up 1 id!
+from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse
+from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditForm, ProfileEditForm
 
-from . forms import CreateUserForm, DealForm, KuponForm, CommentForm
-# Create your views here.
+from django.http import HttpResponseRedirect
+from django.views.decorators.http import require_POST
+
 def index(request):
     kelepirler = Maddeler.objects
     katagoriler = Katagoriler.objects
@@ -114,11 +119,6 @@ def madde_detay(request, pk):
     'comment_form': comment_form}
     return render(request, 'madde/maddeler_detail.html', context)
 
-'''class MaddeDetailView(DetailView):
-    model = Maddeler
-    template_name = 'madde/maddeler_detail.html'
-'''
-
 
 def registration(request):
     form = CreateUserForm()
@@ -127,6 +127,7 @@ def registration(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
+            Kullanici.objects.create(kullanici=user)
 
             messages.success(request, 'Account created, now log in '+ username)
             return redirect('login')
@@ -138,6 +139,24 @@ def registration(request):
         context = {'form':form}
         return render(request, 'registration/register.html', context)
 
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(data=request.POST or None, instance=request.user)
+        profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.profile, files=request.FILES)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+    context = {
+        'user_form': user_form,
+        'profile_form':profile_form,
+
+    }
+    return render(request, 'edit_profile.html', context)
 @login_required(login_url="login/")
 def submitdeal(request):
     form = DealForm()
@@ -173,3 +192,11 @@ def submitkupon(request):
             form = KuponForm()
 
     return render(request, 'madde/kuponforma.html', {'form':form})
+
+@login_required
+def like_comment(request):
+    if request.method == 'POST':
+        yorum = get_object_or_404(Comment, id=request.POST.get('comment_id'))
+
+        yorum.likes.add(request.user)
+        return HttpResponseRedirect(post.get_absolute_url())

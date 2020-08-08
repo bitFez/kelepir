@@ -139,17 +139,19 @@
                 <hr>
                 {% include 'shareto.html' %}
                 <hr>
+
                 <div class="row">
-                  <div class="#commentsarea">
-                    <a href="#"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
+                  <div class="text-left col-md-3">
+                    <a href="#commentsarea"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
                   </div>
-                  <div class="">
+                  <div class="text-left col-md-3">
                     <a href="#"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
                   </div>
-                  <div class="">
+                  <div class="text-left col-md-3">
                     <a href="#"><i class="fas fa-flag"></i> İhbar et</a>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -165,8 +167,12 @@
             <div class="card-body">
               <h6 class="card-subtitle mb-2 text-muted">{{ yorum.kullanici}} {{ yorum.created_on }}</h6>
               <p class="card-text">{{ yorum.body |safe }}</p>
-              <a href="#">Beyen </a>
-              Beyen Sayısı 0
+              <form action="{% url 'like_comment' %}" method="POST">
+                  {% csrf_token %}
+                  <button class="btn btn-primary btn-sm" type="submit" value="{{ yorum.id }}" name="comment_id">Beyen</button>
+              </form>
+
+              - Beyen Sayısı ---
             </div>
             </div>
             <div class="comments" style="padding: 10px;">
@@ -200,4 +206,8 @@
 </div>
 </div>
 </div>
+<!-- Script for the comment likes -->
+<script type="text/javascript">
+
+</script>
 {% endblock %}

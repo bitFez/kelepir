@@ -1,8 +1,10 @@
 from django.db import models
-from hesaplar.models import Kullanici
+#from hesaplar.models import Kullanici
+from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from ckeditor.fields import RichTextField
+from django.template.defaultfilters import slugify # for ajax likes
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -19,7 +21,7 @@ class Katagoriler(models.Model):
 
 # Create your models here.
 class Maddeler(models.Model):
-    paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
+    paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>',)
     satici = models.CharField(max_length=200, blank=True)
     fiyat = models.DecimalField(max_digits=5, decimal_places=2,help_text='İndirimi fıyat', verbose_name='Fıyat')
@@ -47,6 +49,9 @@ class Maddeler(models.Model):
     def get_categories(self):
         return "\n".join([k.katagori for k in self.katagori.all()])
 
+    @property
+    def total_degrees(self):
+        return self.derece
 
     '''def get_absolute_url(self):
         """Returns the url to access a particular product detail (madde_detay)."""
@@ -55,7 +60,7 @@ class Maddeler(models.Model):
 KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
 
 class Kuponlar:
-    paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
+    paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>',)
     satici = models.CharField(max_length=200, blank=True)
     kupon = models.CharField(max_length=100, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
@@ -68,7 +73,7 @@ class Kuponlar:
     aktif = models.BooleanField(default=True)
 
 class Votes(models.Model):
-    kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
+    kullanici = models.ForeignKey(User, on_delete=models.CASCADE)
     madde = models.ForeignKey(Maddeler, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -76,13 +81,18 @@ class Votes(models.Model):
 
 class Comment(models.Model):
     madde = models.ForeignKey(Maddeler, on_delete=models.CASCADE,related_name='comments')
-    kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
+    kullanici = models.ForeignKey(User, on_delete=models.CASCADE)
     body = RichTextField()
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     class Meta:
         ordering = ['created_on']
 
     def __str__(self):
         return 'Comment {} by {}'.format(self.body, self.kullanici)
+
+
+    def total_likes(self):
+        return self.likes.count()
