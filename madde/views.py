@@ -143,20 +143,22 @@ def registration(request):
 def edit_profile(request):
     if request.method == 'POST':
         user_form = UserEditForm(data=request.POST or None, instance=request.user)
-        profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.profile, files=request.FILES)
+        profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.kullanici, files=request.FILES)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
     else:
         user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(instance=request.user.profile)
+        profile_form = ProfileEditForm(instance=request.user.kullanici)
     context = {
         'user_form': user_form,
         'profile_form':profile_form,
 
     }
-    return render(request, 'edit_profile.html', context)
+    return render(request, 'registration/edit_profile.html', context)
+
+
 @login_required(login_url="login/")
 def submitdeal(request):
     form = DealForm()
@@ -199,4 +201,4 @@ def like_comment(request):
         yorum = get_object_or_404(Comment, id=request.POST.get('comment_id'))
 
         yorum.likes.add(request.user)
-        return HttpResponseRedirect(post.get_absolute_url())
+        return HttpResponseRedirect(yorum.get_absolute_url())

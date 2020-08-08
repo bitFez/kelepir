@@ -1,0 +1,13 @@
+{% extends 'temel.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1>Profil Günceleme Formu</h1>
+<br>
+<form action="." method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ user_form.as_p }}
+  {{ profile_form.as_p }}
+  <input type="submit" value="kaydet" class="btn btn-outline-success">
+</form>
+{% endblock %}
