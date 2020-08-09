@@ -11,7 +11,7 @@
       </div>
       <br><br>
       <div class="row">
-        <table class="table">
+        <table class="table table-bordered">
           <tbody>
             <tr>
               <th scope="row">En Sıcak Kelepiri</th>
@@ -36,18 +36,36 @@
       </div>
     </div>
     <div class="col-8">
-      <br>
-      <form action="." method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ user_form.email|as_crispy_field }}
-        {{ user_form.username|as_crispy_field }}
-        {{ user_form.first_name|as_crispy_field }}
-        {{ user_form.last_name|as_crispy_field }}
-        {{ profile_form.dogum|as_crispy_field }}
-        {{ profile_form.sehir|as_crispy_field }}
+      <div class="row">
+        <br><br>
+        <br><br>
+        <br><br>
+        
+      </div>
+      <br><br>
+      <div class="row">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row">Kullanıcı Adı</th>
+              <td>{{profil.username}}</td>
+            </tr>
+            <tr>
+              <th scope="row">İsim</th>
+              <td>{{profil.first_name}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Soy İsim</th>
+              <td>{{profil.last_name}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Şehir</th>
+              <td>{{kullanici.sehir}}</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <input type="submit" value="kaydet" class="btn btn-outline-success">
-      </form>
+      </div>
     </div>
   </div>
 

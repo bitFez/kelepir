@@ -27,8 +27,8 @@
 
 
         </div>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Ara" aria-label="Ara">
+        <form class="form-inline my-2 my-lg-0" action="{% url 'index' %}">
+          <input class="form-control mr-sm-2" type="search" placeholder="Ara" aria-label="Ara" name='q'>
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ara</button>
         </form>
         <ul class="navbar-nav navbar-right">
@@ -42,9 +42,14 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'kpaylas' %}"><i class="fas fa-hashtag"></i> Kupon Paylaş</a>
             </div>
-          <li class="nav-item">
+          <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-user"></i> Selam, {{request.user|capfirst}}
+              {% if request.user.kullanici.resim %}
+                <img src="{{ request.user.kullanici.resim.url }}" class="navbar-img rounded-circle">
+              {% else %}
+                <img src="/static/images/profiler/profile.png" class="navbar-img">
+              {% endif %}
+              Selam, {{request.user|capfirst}}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="{% url 'edit_profile' %}"></i>Profilini Güncelle</a>

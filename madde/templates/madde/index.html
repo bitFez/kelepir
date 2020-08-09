@@ -127,7 +127,7 @@
             <div class="d-flex bd-highlight text-muted">
 
                 <div class="flex-grow-1 bd-highlight text-muted">
-                  <p class="card-text"><strong>{{kelepir.paylasan}}</strong></p>
+                  <p class="card-text"><strong> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a></strong></p>
                 </div>
                 <div class="p-2 bd-highlight">
                   <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
@@ -147,6 +147,10 @@
     </div>
 
   {% endif %}
+  {% empty %}
+    <div class="card mb-2" style="max-width: 1000px;">
+      <h5>Maalesef, {{ request.GET.q }} arayışınızda birşey bulunmadı!</h5>
+    </div>
 {% endfor %}
 {% endblock %}
 <!-- Photo by <a href="https://www.pexels.com/photo/person-holding-paper-bag-and-face-mask-3987245/">Anna</a> Shvets from Pexels -->

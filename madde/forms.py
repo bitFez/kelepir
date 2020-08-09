@@ -16,6 +16,8 @@ class CreateUserForm(UserCreationForm):
         fields = ['email', 'username', 'first_name', 'last_name', 'password1', 'password2']
 
 class UserEditForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
     class Meta:
         model = User
         fields = ['email', 'username', 'first_name', 'last_name']
@@ -23,7 +25,7 @@ class UserEditForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Kullanici
-        exclude = ('kullanici',)
+        exclude = ('kullanici','paylasimlar', )
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),

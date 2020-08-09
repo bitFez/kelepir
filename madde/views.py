@@ -1,5 +1,6 @@
 from urllib.parse import quote_plus
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
 from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment
 from hesaplar.models import Kullanici
 # list view adds a queryset for us and looks up all records in the DB.
@@ -8,6 +9,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
+from django.db.models import Q
 from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditForm, ProfileEditForm
 
 from django.http import HttpResponseRedirect
@@ -18,6 +20,14 @@ def index(request):
     katagoriler = Katagoriler.objects
     yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
+    query = request.GET.get('q')
+    if query:
+        kelepirler = Maddeler.objects.filter(aktif=True).filter(
+            Q(baslik__icontains=query)|
+            Q(paylasan__username=query)|
+            Q(ayrintilar__icontains=query)
+            )
+
     #comment_c = request.build_absolute_uri
 
     context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
@@ -92,6 +102,12 @@ def downvote(request,madde_id):
             vote.save()
             kelepir.save()
 
+def profil_detay(request, pk):
+    profil = get_object_or_404(User, pk=pk)
+    kullanici = get_object_or_404(Kullanici, pk=pk)
+    context = {'profil':profil, 'kullanici':kullanici}
+    return render(request, 'registration/profil_gor.html', context)
+
 def madde_detay(request, pk):
     template_name = 'madde/maddeler_detail.html'
     madde = get_object_or_404(Maddeler, pk=pk)
@@ -148,6 +164,7 @@ def edit_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            return HttpResponseRedirect(reverse('edit_profile'))
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.kullanici)
