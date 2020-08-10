@@ -187,6 +187,27 @@
         {% endfor %}
       </div>
   </div>
+  <div class="pagination">
+    <ul class="pagination">
+      {% if yorumsayfasi.has_previous %}
+        <li class="page-item">
+          <a href="?page=1" class="page-link">&laquo; first</a>
+          <a href="?page={{ yorumsayfasi.previous_page_number }}" class="page-link">previous</a>
+        </li>
+      {% endif %}
+      {% for y in page_range %}
+        {% if yorumsayfasi.number == y %}
+          <li class="page-item active"> <a href="?page={{ y }}" class="page-link">{{ y }}</a> </li>
+        {% else %}
+          <li class="page-item"> <a href="?page={{ y }}" class="page-link">{{ y }}</a> </li>
+        {% endif %}
+      {% endfor %}
+      {% if yorumsayfasi.has_next %}
+          <a href="?page={{ yorumsayfasi.next_page_number }}" class="page-link">next</a>
+          <a href="?page={{ yorumsayfasi.paginator.num_pages }}" class="page-link">last &raquo;</a>
+      {% endif %}
+    </ul>
+  </div>
   <div class="card mb-12" style="max-width: 1000px;">
     <div class="card-body">
       {% if new_comment %}

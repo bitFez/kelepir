@@ -1,8 +1,15 @@
 {% extends 'temel.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<br>
+<div class="row" style="justify-content: center;">
+  <i class="fas fa-fire-alt fa-10x"></i>
 
-<h1>Login Form</h1>
+</div>
+<div class="row" style="justify-content: center;">
+  <h1>Oturum Aç</h1>
+</div>
+
 <br>
 {% for message in messages %}
   <p id="messages">{{message}}</p>
@@ -14,6 +21,18 @@
 
   {{form.errors}}
   <button type="submit" name="button">Oturum aç</button>
+  <div class="row" style="justify-content: center;">
+    <p> Or login with social apps </p>
+  </div>
+  <div class="row" style="justify-content: center;">
+
+    <a href="{% url 'social:begin' 'github' %}">
+      <button type="button" name="button" class='btn btn-primary'>Github</button>
+    </a>
+    <a href="{% url 'social:begin' 'google-oauth2' %}">
+      <button type="button" name="button" class='btn btn-danger'>Google</button>
+    </a>
+  </div>
 </form>
 <br>
 <hr>

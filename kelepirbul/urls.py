@@ -7,7 +7,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('madde.urls')),
@@ -15,6 +14,10 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', views.registration, name='register'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
+
+    path('', include('social_django.urls', namespace='social')),
+    path('settings/', views.SettingsView.as_view(), name='settings'),
+    path('settings/password/', views.password, name='password'),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

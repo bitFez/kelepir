@@ -1,8 +1,15 @@
 {% extends 'temel.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<br>
+<div class="row" style="justify-content: center;">
+  <i class="fas fa-fire-alt fa-10x"></i>
 
-<h1>registration Form</h1>
+</div>
+<div class="row" style="justify-content: center;">
+  <h1>kayıt Forması</h1>
+</div>
+
 <br>
 <form method="POST">
   {% csrf_token %}

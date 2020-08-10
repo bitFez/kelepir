@@ -5,7 +5,7 @@ from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment
 from hesaplar.models import Kullanici
 # list view adds a queryset for us and looks up all records in the DB.
 # Detailview only looks up 1 id!
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
@@ -14,6 +14,14 @@ from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditFo
 
 from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from social_django.models import UserSocialAuth
+
 
 def index(request):
     kelepirler = Maddeler.objects
@@ -29,10 +37,34 @@ def index(request):
             )
 
     #comment_c = request.build_absolute_uri
+    paginator = Paginator(yorumlar, 3) # Show 10 comments per page.
+    page_number = request.GET.get('page')
+    try:
+        yorumsayfasi = paginator.page(page_number)
+    except PageNotAnInteger: #leads to page 1
+        yorumsayfasi = paginator.page(1)
+    except EmptyPage:
+        yorumsayfasi = paginator.page(paginator.num_pages)
 
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    if page_number is None:
+        start_index = 0
+        end_index = 7
+    else:
+        (start_index, end_index) = proper_pagination(yorumsayfasi, index=4)
+    page_range = list(paginator.page_range)[start_index:end_index]
+
+
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'yorumsayfasi':yorumsayfasi,
+    'page_range':page_range}
     return render(request, 'madde/index.html', context)
 
+def proper_pagination(yorumsayfasi, index):
+    start_index = 0
+    end_index = 7
+    if yorumsayfasi.number > index:
+        start_index = yorumsayfasi.number-index
+        end_index = start_index + end_index
+    return (start_index, end_index)
 def dealcategory(request, kat_id):
     kelepirler = Maddeler.objects.filter(katagori=kat_id)
     katagoriler = Katagoriler.objects
@@ -219,3 +251,52 @@ def like_comment(request):
 
         yorum.likes.add(request.user)
         return HttpResponseRedirect(yorum.get_absolute_url())
+
+class SettingsView(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        try:
+            github_login = user.social_auth.get(provider='github')
+        except UserSocialAuth.DoesNotExist:
+            github_login = None
+
+        try:
+            twitter_login = user.social_auth.get(provider='twitter')
+        except UserSocialAuth.DoesNotExist:
+            twitter_login = None
+
+        try:
+            facebook_login = user.social_auth.get(provider='facebook')
+        except UserSocialAuth.DoesNotExist:
+            facebook_login = None
+
+        can_disconnect = (user.social_auth.count() > 1 or user.has_usable_password())
+
+        return render(request, 'registration/settings.html', {
+            'github_login': github_login,
+            'twitter_login': twitter_login,
+            'facebook_login': facebook_login,
+            'can_disconnect': can_disconnect
+        })
+
+
+@login_required
+def password(request):
+    if request.user.has_usable_password():
+        PasswordForm = PasswordChangeForm
+    else:
+        PasswordForm = AdminPasswordChangeForm
+
+    if request.method == 'POST':
+        form = PasswordForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordForm(request.user)
+    return render(request, 'registration/password.html', {'form': form})
