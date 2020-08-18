@@ -2,11 +2,11 @@ from django.contrib import admin
 from ckeditor.widgets import CKEditorWidget
 
 # Register your models here.
-from .models import Maddeler, Votes, Katagoriler, Comment
+from .models import Maddeler, Votes, Katagoriler, Comment, Commentlike
 
 
 class MaddelerAdmin(admin.ModelAdmin):
-    fields = ['paylasan','url', 'satici','fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'goruntu', 'katagori', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'derece','kaynamavakti','duyurmaTarihi','aktif','oylar']
+    fields = ['paylasan','url', 'satici','fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'goruntu', 'katagori', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'derece','kaynamavakti','duyurmaTarihi', 'slug', 'bookmarked','aktif','oylar']
     list_display = ('paylasan', 'url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'goruntu', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'derece','duyurmaTarihi','kaynamavakti','aktif','oylar')
 
     list_filter = ('paylasan','url', 'satici','fiyat', 'kargo', 'kupon', 'baslik', 'katagori', 'bas_tarih', 'son_tarih', 'online', 'diyar','derece','duyurmaTarihi','kaynamavakti','aktif','oylar')
@@ -26,3 +26,4 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Maddeler, MaddelerAdmin)
 admin.site.register(Votes)
 admin.site.register(Katagoriler)
+admin.site.register(Commentlike)

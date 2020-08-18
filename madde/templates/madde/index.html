@@ -65,11 +65,20 @@
             		<div class="flex-grow-1 bd-highlight">
                   <p class="card-text"><strong>{{kelepir.paylasan}}</strong></p>
             		</div>
+
+                <!-- <div class="p-2 bd-highlight">
+                  {% if request.user.is_authenticated %}
+                      {% if request.user in kelepir.bookmarked %}
+                        <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                      {% else %}
+                        <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                      {% endif %}
+                  {% else %}
+                    <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                  {% endif %}
+            		</div> -->
             		<div class="p-2 bd-highlight">
-                  <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
-            		</div>
-            		<div class="p-2 bd-highlight">
-                  <a href="" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i>{{kelepir.yorumlar.count}}</a>
+                  <a href="" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {{kelepir.comments.count}}</a>
             		</div>
             		<div class="p-2 bd-highlight">
                   <a href="{{kelepir.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -129,9 +138,18 @@
                 <div class="flex-grow-1 bd-highlight text-muted">
                   <p class="card-text"><strong> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a></strong></p>
                 </div>
+                <!--
                 <div class="p-2 bd-highlight">
-                  <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
-                </div>
+                  {% if request.user.is_authenticated %}
+                      {% if bookmarked %}
+                        <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                      {% else %}
+                        <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                      {% endif %}
+                  {% else %}
+                    <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                  {% endif %}
+            		</div> -->
                 <div class="p-2 bd-highlight">
                   <a href="" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i></a>
                 </div>

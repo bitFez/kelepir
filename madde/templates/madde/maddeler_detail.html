@@ -24,9 +24,10 @@
                           <i class="fas fa-minus" style="color:DodgerBlue;"></i>
                       </a>
                     </li>
-                    <li class="list-group-item">{{madde.derece}}°</li>
+                    <li class="list-group-item" id="puanlar">{{madde.derece}}°</li>
                     <li class="list-group-item">
-                      <a href="{% url 'upvote' madde.id %}">
+                      <a class="upvotebutton " id="" href="{% url 'upvote' madde.id %}">
+                      <a class="likebutton btn btn-primary btn-sm" id="commentlike{{ comment.id }}" href="#" data-catid="{{ comment.id }}">Like</a> </p>
                         <i class="fas fa-plus" style="color:Tomato;"></i>
                       </a>
                     </li>
@@ -51,11 +52,19 @@
         <div class="d-flex bd-highlight">
 
         		<div class="flex-grow-1 bd-highlight">
-              <br> <p class="card-text"><strong>{{madde.paylasan}}</strong></p>
+              <br> <p class="card-text"><strong><a href="{% url 'profil_detay' madde.paylasan.id %}">{{madde.paylasan}}</a></strong></p>
         		</div>
-        		<div class="p-2 bd-highlight">
-              <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
-        		</div>
+            <div class="p-2 bd-highlight">
+              {% if request.user.is_authenticated %}
+                  {% if bookmarked %}
+                    <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                  {% else %}
+                    <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                  {% endif %}
+              {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+              {% endif %}
+            </div>
         		<div class="p-2 bd-highlight">
               <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{yorumlar.count}}</a>
         		</div>
@@ -125,7 +134,15 @@
                   <br> <p class="card-text"><strong>{{madde.paylasan}}</strong></p>
                 </div>
                 <div class="p-2 bd-highlight">
-                  <button type="button" class="btn btn-outline-dark"><i class="far fa-bookmark"></i></button>
+                  {% if request.user.is_authenticated %}
+                      {% if bookmarked %}
+                        <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                      {% else %}
+                        <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                      {% endif %}
+                  {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                  {% endif %}
                 </div>
                 <div class="p-2 bd-highlight">
                   <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{yorumlar.count}}</a>
@@ -167,12 +184,11 @@
             <div class="card-body">
               <h6 class="card-subtitle mb-2 text-muted">{{ yorum.kullanici}} {{ yorum.created_on }}</h6>
               <p class="card-text">{{ yorum.body |safe }}</p>
-              <form action="{% url 'like_comment' %}" method="POST">
-                  {% csrf_token %}
-                  <button class="btn btn-primary btn-sm" type="submit" value="{{ yorum.id }}" name="comment_id">Beyen</button>
-              </form>
 
-              - Beyen Sayısı ---
+            <a class="likebutton btn btn-primary btn-sm" id="commentlike{{ comment.id }}" href="#" data-catid="{{ comment.id }}">Like</a> </p>
+            <p id="message{{comment.id}}"></p>
+
+              - Beyen Sayısı {{yorum.total_likes}}
             </div>
             </div>
             <div class="comments" style="padding: 10px;">
@@ -185,6 +201,29 @@
 
             </div>
         {% endfor %}
+        <script type="text/javascript">
+
+        $('#myForm').trigger("reset");
+
+          $(document).on('click', '#like-button', function (e) {
+            e.preventDefault();
+            $.ajax({
+              type: 'POST',
+              url: '{% url "accounts:like" %}',
+              data: {
+                postid: $('#like-button').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+              },
+              success: function (json) {
+                document.getElementById("like_count").innerHTML = json['result']
+              },
+              error: function (xhr, errmsg, err) {
+
+              }
+            });
+          })
+        </script>
       </div>
   </div>
   <div class="pagination">
@@ -227,8 +266,4 @@
 </div>
 </div>
 </div>
-<!-- Script for the comment likes -->
-<script type="text/javascript">
-
-</script>
 {% endblock %}

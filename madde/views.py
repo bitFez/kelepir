@@ -1,7 +1,7 @@
 from urllib.parse import quote_plus
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
-from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment
+from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment, Commentlike
 from hesaplar.models import Kullanici
 # list view adds a queryset for us and looks up all records in the DB.
 # Detailview only looks up 1 id!
@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.db.models import Q
 from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditForm, ProfileEditForm
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import TemplateView
@@ -28,6 +28,8 @@ def index(request):
     katagoriler = Katagoriler.objects
     yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
+
+    # This section is for the search bar!
     query = request.GET.get('q')
     if query:
         kelepirler = Maddeler.objects.filter(aktif=True).filter(
@@ -36,26 +38,8 @@ def index(request):
             Q(ayrintilar__icontains=query)
             )
 
-    #comment_c = request.build_absolute_uri
-    paginator = Paginator(yorumlar, 3) # Show 10 comments per page.
-    page_number = request.GET.get('page')
-    try:
-        yorumsayfasi = paginator.page(page_number)
-    except PageNotAnInteger: #leads to page 1
-        yorumsayfasi = paginator.page(1)
-    except EmptyPage:
-        yorumsayfasi = paginator.page(paginator.num_pages)
 
-    if page_number is None:
-        start_index = 0
-        end_index = 7
-    else:
-        (start_index, end_index) = proper_pagination(yorumsayfasi, index=4)
-    page_range = list(paginator.page_range)[start_index:end_index]
-
-
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'yorumsayfasi':yorumsayfasi,
-    'page_range':page_range}
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def proper_pagination(yorumsayfasi, index):
@@ -65,6 +49,7 @@ def proper_pagination(yorumsayfasi, index):
         start_index = yorumsayfasi.number-index
         end_index = start_index + end_index
     return (start_index, end_index)
+
 def dealcategory(request, kat_id):
     kelepirler = Maddeler.objects.filter(katagori=kat_id)
     katagoriler = Katagoriler.objects
@@ -89,17 +74,22 @@ def hottestdeals(request):
     context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
-
-
 def kuponlarindeksi(request):
     kuponlar = Kuponlar.objects
 
     context = {'kuponlar':kuponlar}
     return render(request, 'madde/kuponlarindeksi.html', context)
 
-
 @login_required()
 def upvote(request,madde_id):
+    if request.method =='GET':
+        upvote_id = request.GET['commentlike_id']
+        likedcomment = Comment.objects.get(id=comment_id)
+        newlike = Commentlike(comment=likedcomment)
+        newlike.save()
+        return HttpResponse('You liked this comment')
+    else:
+        return HttpResponse('Like was not successful')
     if request.method == 'POST':
         try:
             vote = Votes.objects.get_object_or_404(madde=madde_id, kullanici=request.user)
@@ -118,6 +108,7 @@ def upvote(request,madde_id):
 
 @login_required()
 def downvote(request,madde_id):
+    kelepir = Maddeler.objects.get_object_or_404(id=madde_id)
     if request.method == 'POST':
         try:
             vote = Votes.objects.get_object_or_404(madde=madde_id, kullanici=request.user)
@@ -133,19 +124,32 @@ def downvote(request,madde_id):
 
             vote.save()
             kelepir.save()
+    return HttpResponseRedirect(kelepir.get_absolute_url())
 
 def profil_detay(request, pk):
     profil = get_object_or_404(User, pk=pk)
     kullanici = get_object_or_404(Kullanici, pk=pk)
+    bookmarked = Maddeler.objects.filter(bookmarked=request.user)
+
     context = {'profil':profil, 'kullanici':kullanici}
     return render(request, 'registration/profil_gor.html', context)
 
 def madde_detay(request, pk):
-    template_name = 'madde/maddeler_detail.html'
+    #template_name = 'madde/maddeler_detail.html'
     madde = get_object_or_404(Maddeler, pk=pk)
+
+    ### Bookmarks
+    bookmarked = False
+    if madde.bookmarked.filter(id=request.user.id).exists():
+        bookmarked = True
+    else:
+        bookmarked = False
+
+
     yorumlar = madde.comments.filter(active=True)
-    #share_string = quote_plus(madde.content)
+
     new_comment = None
+
 
     # Comment posted
     if request.method == 'POST':
@@ -163,8 +167,27 @@ def madde_detay(request, pk):
     else:
         comment_form = CommentForm()
 
-    context = {'madde':madde, 'yorumlar': yorumlar, 'new_comment': new_comment,
-    'comment_form': comment_form}
+    ### Comments Paginator
+    #comment_c = request.build_absolute_uri
+    paginator = Paginator(yorumlar, 3) # Show 10 comments per page.
+    page_number = request.GET.get('page')
+    try:
+        yorumsayfasi = paginator.page(page_number)
+    except PageNotAnInteger: #leads to page 1
+        yorumsayfasi = paginator.page(1)
+    except EmptyPage:
+        yorumsayfasi = paginator.page(paginator.num_pages)
+
+    if page_number is None:
+        start_index = 0
+        end_index = 7
+    else:
+        (start_index, end_index) = proper_pagination(yorumsayfasi, index=4)
+    page_range = list(paginator.page_range)[start_index:end_index]
+
+
+    context = {'madde':madde, 'yorumlar': yorumlar, 'new_comment': new_comment,'comment_form': comment_form, 
+    'page_range':page_range, 'bookmarked':bookmarked,'yorumsayfasi':yorumsayfasi}
     return render(request, 'madde/maddeler_detail.html', context)
 
 
@@ -246,11 +269,28 @@ def submitkupon(request):
 
 @login_required
 def like_comment(request):
-    if request.method == 'POST':
-        yorum = get_object_or_404(Comment, id=request.POST.get('comment_id'))
+    if request.method =='GET':
+        comment_id = request.GET['commentlike_id']
+        likedcomment = Comment.objects.get(id=comment_id)
+        newlike = Commentlike(comment=likedcomment)
+        newlike.save()
+        return HttpResponse('You liked this comment')
+    else:
+        return HttpResponse('Like was not successful')
 
-        yorum.likes.add(request.user)
-        return HttpResponseRedirect(yorum.get_absolute_url())
+    '''user = request.user
+    if request.method == 'POST':
+        pk = request.POST.get('comment_id')
+        comment_obj = Comment.objects.get(pk=pk)
+        if user in comment_obj.likes.all():
+            comment_obj.likes.remove(user)
+        else:
+            comment_obj.likes.add(user)
+    return HttpResponse()'''
+
+def madde_serialised(request):
+    data = list(Comment.objects.values())
+    return JsonResponse(data, safe=False)
 
 class SettingsView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
@@ -300,3 +340,13 @@ def password(request):
     else:
         form = PasswordForm(request.user)
     return render(request, 'registration/password.html', {'form': form})
+
+
+@login_required
+def bookmark(request,id):
+    madde = get_object_or_404(Maddeler, id=id)
+    if madde.bookmarked.filter(id=request.user.id).exists():
+        madde.bookmarked.remove(request.user)
+    else:
+        madde.bookmarked.add(request.user)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])

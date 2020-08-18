@@ -40,7 +40,7 @@
         <br><br>
         <br><br>
         <br><br>
-        
+
       </div>
       <br><br>
       <div class="row">
@@ -69,5 +69,29 @@
     </div>
   </div>
 
+  <div class="">
+
+    <table class="table">
+      <thead>
+        <tr>
+
+          <th scope="col">Kaydedilen kelepir</th>
+          <th scope="col">#</th>
+          <th scope="col">#</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for saved in bookmarked.all %}
+        <tr>
+          <td>saved.bookmarked</td>
+          <td>#</td>
+          <td>#</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+
+  </div>
 
 {% endblock %}
