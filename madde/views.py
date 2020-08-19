@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 from django.db.models import Q
 from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditForm, ProfileEditForm
-
+import urllib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -114,11 +114,13 @@ def downvote(request):
     return JsonResponse({'result':result})
 
 def profil_detay(request, pk):
-    profil = get_object_or_404(User, pk=pk)
-    kullanici = get_object_or_404(Kullanici, pk=pk)
-    bookmarked = Maddeler.objects.filter(bookmarked=request.user)
-
-    context = {'profil':profil, 'kullanici':kullanici}
+    kullanici = get_object_or_404(User, pk=pk)
+    profil = get_object_or_404(Kullanici, pk=pk)
+    bookmarked = Maddeler.objects.filter(bookmarked=kullanici.id)
+    kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
+    instagram = 'http://www.instagram.com/'
+    insta_handle = urllib.parse.urljoin(instagram, profil.insta)
+    context = {'profil':profil, 'kullanici':kullanici, 'kelepirler':kelepirler, 'bookmarked':bookmarked, 'insta_handle':insta_handle}
     return render(request, 'registration/profil_gor.html', context)
 
 def madde_detay(request, pk):
@@ -199,6 +201,11 @@ def registration(request):
 
 @login_required
 def edit_profile(request):
+    kullanici = get_object_or_404(User, pk=request.user.id)
+    profil = get_object_or_404(Kullanici, pk=request.user.id)
+    kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
+    instagram = 'http://www.instagram.com/'
+    insta_handle = urllib.parse.urljoin(instagram, profil.insta)
     if request.method == 'POST':
         user_form = UserEditForm(data=request.POST or None, instance=request.user)
         profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.kullanici, files=request.FILES)
@@ -213,7 +220,10 @@ def edit_profile(request):
     context = {
         'user_form': user_form,
         'profile_form':profile_form,
-
+        'profil':profil,
+        'kullanici':kullanici,
+        'kelepirler':kelepirler,
+        'insta_handle':insta_handle,
     }
     return render(request, 'registration/edit_profile.html', context)
 

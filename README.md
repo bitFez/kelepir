@@ -6,3 +6,4 @@
 * Django Comments -- pip install django-contrib-comments
 * django-ckeditor WYSIWYG -- pip install django-ckeditor
 * social_auth -- pip install social-auth-app-django
+* 

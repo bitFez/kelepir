@@ -1,97 +1,67 @@
 {% extends 'temel.html' %}
-{% load crispy_forms_tags %}
+
 {% block content %}
 <br>
-<h1>Profil Günceleme Formu</h1>
+<h1 align=center>{{kullanici.username}}'in Profili</h1>
 <br>
+<div class="container">
+
   <div class="row">
-    <div class="col-4">
-      <div class="row">
-        <img src="{{request.user.kullanici.resim.url}}" class="rounded-circle" width="304" height="236" >
-      </div>
-      <br><br>
-      <div class="row">
-        <table class="table table-bordered">
-          <tbody>
-            <tr>
-              <th scope="row">En Sıcak Kelepiri</th>
-              <td>{{request.user.kullanici.ensicak}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Takipçiler</th>
-              <td>{{request.user.kullanici.takipciler}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Paylaşımlar</th>
-              <td>{{request.user.kullanici.paylasimlar}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Yorumlar</th>
-              <td>{{request.user.kullanici.yorumlar}}</td>
-            </tr>
-          </tbody>
-        </table>
-         <br>
-
+    <div class="col-sm-3">
+      <div class="card">
+        <img src="{{profil.resim.url}} " class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Username: {{kullanici.username}}</h5>
+          <p class="card-text">En Yüksek puanlı Kelepiri: {{profil.kullanici.ensicak}}</p>
+          <p class="card-text">Kelepir Teslim Sayısı: {{kelepirler.count}}</p>
+          <p class="card-text">Yorum Sayısı: </p>
+          <p class="card-text">Takipçi Sayısı:</p>
+          <p class="card-text"><i class="fab fa-instagram"></i> <a href="{{insta_handle}}">{{profil.insta}}</a> </p>
+          {% if user == request.user and request.user.is_authenticated %}
+            <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+          {% endif %}
+        </div>
       </div>
     </div>
-    <div class="col-8">
-      <div class="row">
-        <br><br>
-        <br><br>
-        <br><br>
+    <div class="col-sm-9">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Teslim Edilmiş Kelipirleri</h5>
 
-      </div>
-      <br><br>
-      <div class="row">
-        <table class="table table-bordered">
-          <tbody>
-            <tr>
-              <th scope="row">Kullanıcı Adı</th>
-              <td>{{profil.username}}</td>
-            </tr>
-            <tr>
-              <th scope="row">İsim</th>
-              <td>{{profil.first_name}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Soy İsim</th>
-              <td>{{profil.last_name}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Şehir</th>
-              <td>{{kullanici.sehir}}</td>
-            </tr>
-          </tbody>
-        </table>
+          <ul class="list-group">
+            {% for kelepir in kelepirler %}
+              {% if kelepir.aktif %}
+                <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+              {% else %}
+                <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
 
+        </div>
       </div>
     </div>
   </div>
+<br><hr><br>
 
-  <div class="">
 
-    <table class="table">
-      <thead>
-        <tr>
-
-          <th scope="col">Kaydedilen kelepir</th>
-          <th scope="col">#</th>
-          <th scope="col">#</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for saved in bookmarked.all %}
-        <tr>
-          <td>saved.bookmarked</td>
-          <td>#</td>
-          <td>#</td>
-        </tr>
+  {% if user == request.user and request.user.is_authenticated %}
+    <h5>Sonraya Ayrılmış Kelepirler</h5>
+    <ul class="list-group">
+      {% for kelepir in bookmarked %}
+        {% if kelepir.aktif %}
+          <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+        {% else %}
+          <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+        {% endif %}
       {% endfor %}
-      </tbody>
-    </table>
+    </ul>
+  {% endif %}
+
+  <br><hr><br>
 
 
-  </div>
+
+
 
 {% endblock %}

@@ -2,54 +2,48 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <br>
-<h1>Profil Günceleme Formu</h1>
+<h1 align=center>{{kullanici.username}}'in Profili</h1>
 <br>
-  <div class="row">
-    <div class="col-4">
-      <div class="row">
-        <img src="{{request.user.kullanici.resim.url}}" class="rounded-circle" width="304" height="236" >
-      </div>
-      <br><br>
-      <div class="row">
-        <table class="table">
-          <tbody>
-            <tr>
-              <th scope="row">En Sıcak Kelepiri</th>
-              <td>{{request.user.kullanici.ensicak}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Takipçiler</th>
-              <td>{{request.user.kullanici.takipciler}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Paylaşımlar</th>
-              <td>{{request.user.kullanici.paylasimlar}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Yorumlar</th>
-              <td>{{request.user.kullanici.yorumlar}}</td>
-            </tr>
-          </tbody>
-        </table>
-         <br>
+<div class="container">
 
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="card">
+        <img src="{{profil.resim.url}} " class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Username: {{kullanici.username}}</h5>
+          <p class="card-text">En Yüksek puanlı Kelepiri: {{profil.kullanici.ensicak}}</p>
+          <p class="card-text">Kelepir Teslim Sayısı: {{kelepirler.count}}</p>
+          <p class="card-text">Yorum Sayısı: </p>
+          <p class="card-text">Takipçi Sayısı:</p>
+          <p class="card-text"><i class="fab fa-instagram"></i> <a href="{{insta_handle}}">{{profil.insta}}</a> </p>
+        </div>
       </div>
     </div>
-    <div class="col-8">
-      <br>
-      <form action="." method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ user_form.email|as_crispy_field }}
-        {{ user_form.username|as_crispy_field }}
-        {{ user_form.first_name|as_crispy_field }}
-        {{ user_form.last_name|as_crispy_field }}
-        {{ profile_form.dogum|as_crispy_field }}
-        {{ profile_form.sehir|as_crispy_field }}
+    <div class="col-sm-9">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Teslim Edilmiş Kelipirleri</h5>
 
-        <input type="submit" value="kaydet" class="btn btn-outline-success">
-      </form>
+          <form class="" action="." method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.email|as_crispy_field }}
+            {{ user_form.username|as_crispy_field }}
+            {{ user_form.first_name|as_crispy_field }}
+            {{ user_form.last_name|as_crispy_field }}
+            {{ profile_form.resim | as_crispy_field}}
+            {{ profile_form.dogum|as_crispy_field }}
+            {{ profile_form.sehir|as_crispy_field }}
+            {{ profile_form.insta|as_crispy_field }}
+
+            <input type="submit" value="kaydet" class="btn btn-outline-success">
+          </form>
+
+        </div>
+      </div>
     </div>
   </div>
+
 
 
 {% endblock %}
