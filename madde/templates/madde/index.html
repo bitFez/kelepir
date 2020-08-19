@@ -26,21 +26,30 @@
             		<div class="col-md-12">
             			<div class="row">
             				<div class="col-md-2">
-                      <ul class="list-group list-group-horizontal-xl">
-                        <li class="list-group-item">
-                          <a href="{% url 'downvote' kelepir.id %}">
-                              <i class="fas fa-minus" style="color:DodgerBlue;"></i>
-                          </a>
-                        </li>
-                        <li class="list-group-item">{{ kelepir.derece }}°</li>
-                        <li class="list-group-item">
-                          <a href="{% url 'upvote' kelepir.id %}">
-                            <span style="color:Tomato;">
-                              <i class="fas fa-plus"></i>
-                            </span>
-                          </a>
-                        </li>
-                      </ul>
+
+                        {% if request.user.is_authenticated %}
+                          {% if request.user in kelepir.oyveren.all %}
+                          <div class="btn-group">
+                            <button class="btn btn-secondary" disabled><i class="fas fa-minus"></i></button>
+                            <span class="btn btn" id="puanlar" disabled>{{kelepir.derece}}°</span>
+                            <button class="btn btn btn-secondary"disabled><i class="fas fa-plus"></i></button>
+                          </div>
+                          {% else %}
+                          <div class="btn-group">
+                            <button class="btn btn-danger" id="downvote_button" value="{{kelepir.id}}"><i class="fas fa-minus"></i></button>
+                            <span class="btn btn" id="puanlar" disabled>{{kelepir.derece}}°</span>
+                            <button class="btn btn-success" id="upvote_button" value="{{kelepir.id}}"><i class="fas fa-plus" ></i></button>
+                          </div>
+                          {% endif %}
+                        {% else %}
+                        <div class="btn-group">
+                          <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
+                          <span class="btn btn" id="puanlar" disabled>{{kelepir.derece}}°</span>
+                          <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                        </div>
+                        {% endif %}
+
+
             				</div>
             				<div class="col-md-5">
             				</div>
@@ -63,12 +72,12 @@
             <div class="d-flex bd-highlight">
 
             		<div class="flex-grow-1 bd-highlight">
-                  <p class="card-text"><strong>{{kelepir.paylasan}}</strong></p>
+                  <p class="card-text"><strong> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a></strong></p>
             		</div>
 
-                <!-- <div class="p-2 bd-highlight">
+                <div class="p-2 bd-highlight">
                   {% if request.user.is_authenticated %}
-                      {% if request.user in kelepir.bookmarked %}
+                      {% if request.user in kelepir.bookmarked.all %}
                         <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
                       {% else %}
                         <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
@@ -76,7 +85,7 @@
                   {% else %}
                     <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
                   {% endif %}
-            		</div> -->
+            		</div>
             		<div class="p-2 bd-highlight">
                   <a href="" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {{kelepir.comments.count}}</a>
             		</div>
@@ -90,15 +99,6 @@
         </div>
       </div>
     </div>
-
-    <form id="upvote{{ kelepir.id }}" action="{% url 'upvote' kelepir.id %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden">
-    </form>
-    <form id="downvote{{ kelepir.id }}" action="{% url 'downvote' kelepir.id %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden">
-    </form>
   {% else %}
   <div class="card mb-2 bg-light border-light" style="max-width: 1000px;">
       <div class="row no-gutters">
@@ -112,7 +112,7 @@
                 <div class="col-md-12">
                   <div class="row">
                     <div class="col-md-5">
-                      <button type="button" class="btn btn-outline-secondary btn-lg" disabled>{{ kelepir.derece }}° <i class="fas fa-hourglass-end"></i> kelepir tükendi</button>
+                      <button type="button" class="btn btn-outline-secondary btn" disabled>{{ kelepir.derece }}° <i class="fas fa-hourglass-end"></i> kelepir tükendi</button>
                     </div>
                     <div class="col-md-5">
                     </div>
@@ -138,10 +138,10 @@
                 <div class="flex-grow-1 bd-highlight text-muted">
                   <p class="card-text"><strong> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a></strong></p>
                 </div>
-                <!--
+
                 <div class="p-2 bd-highlight">
                   {% if request.user.is_authenticated %}
-                      {% if bookmarked %}
+                      {% if request.user.id in kelepir.bookmarked %}
                         <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
                       {% else %}
                         <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
@@ -149,9 +149,9 @@
                   {% else %}
                     <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
                   {% endif %}
-            		</div> -->
+            		</div>
                 <div class="p-2 bd-highlight">
-                  <a href="" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i></a>
+                  <a href="" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-comments"></i></a>
                 </div>
                 <div class="p-2 bd-highlight">
                   <a href="{{kelepir.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -165,6 +165,30 @@
     </div>
 
   {% endif %}
+  <script type="text/javascript">
+  $('#myForm').trigger("reset");
+
+    $(document).on('click', '#upvote_button', function (e) {
+      e.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: '{% url "upvote" %}',
+        data: {
+          maddeid: $('#upvote_button').val(),
+          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+          action: 'post'
+        },
+        success: function (json) {
+          document.getElementById("puanlar").innerHTML = json['result']
+          console.log(json)
+        },
+        error: function (xhr, errmsg, err) {
+
+        }
+      });
+    })
+
+  </script>
   {% empty %}
     <div class="card mb-2" style="max-width: 1000px;">
       <h5>Maalesef, {{ request.GET.q }} arayışınızda birşey bulunmadı!</h5>

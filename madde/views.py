@@ -81,50 +81,37 @@ def kuponlarindeksi(request):
     return render(request, 'madde/kuponlarindeksi.html', context)
 
 @login_required()
-def upvote(request,madde_id):
-    if request.method =='GET':
-        upvote_id = request.GET['commentlike_id']
-        likedcomment = Comment.objects.get(id=comment_id)
-        newlike = Commentlike(comment=likedcomment)
-        newlike.save()
-        return HttpResponse('You liked this comment')
-    else:
-        return HttpResponse('Like was not successful')
-    if request.method == 'POST':
-        try:
-            vote = Votes.objects.get_object_or_404(madde=madde_id, kullanici=request.user)
-        except Vote.DoesNotExist:
-            vote = None
+def upvote(request):
+    if request.POST.get('action')=='post':
 
-        if vote is None:
-            # find madde by id and increment
-            kelepir = Maddeler.objects.get_object_or_404(id=madde_id)
-            vote = Votes(kelepir=kelepir, user=request.user)
-            kelepir.votes_total += 1
-            kelepir.derece +=2
+        id=request.POST.get("maddeid") # gets id from AJAX function on html sheet
+        madde = get_object_or_404(Maddeler, id=id)
+        if not madde.oyveren.filter(id=request.user.id).exists():
+            result = ''
+            madde.oyveren.add(request.user)
+            madde.oylar +=1
+            madde.derece +=2
+            result = madde.derece
+            madde.save()
 
-            vote.save()
-            kelepir.save()
+        return JsonResponse({'result':result})
 
 @login_required()
-def downvote(request,madde_id):
-    kelepir = Maddeler.objects.get_object_or_404(id=madde_id)
-    if request.method == 'POST':
-        try:
-            vote = Votes.objects.get_object_or_404(madde=madde_id, kullanici=request.user)
-        except Vote.DoesNotExist:
-            vote = None
+def downvote(request):
+    if request.POST.get('action')=='post':
 
-        if vote is None:
-            # find madde by id and increment
-            kelepir = Maddeler.objects.get_object_or_404(id=madde_id)
-            vote = Votes(kelepir=kelepir, user=request.user)
-            kelepir.votes_total += 1
-            kelepir.derece -=2
+        id=request.POST.get("maddeid")
 
-            vote.save()
-            kelepir.save()
-    return HttpResponseRedirect(kelepir.get_absolute_url())
+        madde = get_object_or_404(Maddeler, id=id)
+        if not madde.oyveren.filter(id=request.user.id).exists():
+            result=''
+            madde.oyveren.add(request.user)
+            madde.oylar +=1
+            madde.derece -=2
+            result = madde.derece
+            madde.save()
+
+    return JsonResponse({'result':result})
 
 def profil_detay(request, pk):
     profil = get_object_or_404(User, pk=pk)
@@ -186,7 +173,7 @@ def madde_detay(request, pk):
     page_range = list(paginator.page_range)[start_index:end_index]
 
 
-    context = {'madde':madde, 'yorumlar': yorumlar, 'new_comment': new_comment,'comment_form': comment_form, 
+    context = {'madde':madde, 'yorumlar': yorumlar, 'new_comment': new_comment,'comment_form': comment_form,
     'page_range':page_range, 'bookmarked':bookmarked,'yorumsayfasi':yorumsayfasi}
     return render(request, 'madde/maddeler_detail.html', context)
 
@@ -349,4 +336,13 @@ def bookmark(request,id):
         madde.bookmarked.remove(request.user)
     else:
         madde.bookmarked.add(request.user)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+@login_required
+def expire(request,id):
+    madde = get_object_or_404(Maddeler, id=id)
+    if not madde.tukenmiscagiri.filter(id=request.user.id).exists():
+        madde.bookmarked.add(request.user)
+        if madde.tukenmiscagiri.count >= 5:
+            madde.aktif = False
     return HttpResponseRedirect(request.META['HTTP_REFERER'])

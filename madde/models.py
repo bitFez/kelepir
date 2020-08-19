@@ -43,6 +43,7 @@ class Maddeler(models.Model):
     slug = models.SlugField(max_length=250, unique_for_date='duyurmaTarihi')
     kaynamavakti = models.DateTimeField(null=True, blank=True, auto_now=False, auto_now_add=False)
     bookmarked = models.ManyToManyField(User, related_name='bookmarked', default=None, blank=True)
+    tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call', default=None, blank=True)
     aktif = models.BooleanField(default=True)
     oylar = models.IntegerField(default=0)
     oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes")
