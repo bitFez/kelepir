@@ -21,13 +21,15 @@ from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeFor
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from social_django.models import UserSocialAuth
-
+from datetime import datetime, timedelta
 
 def index(request):
     kelepirler = Maddeler.objects
     katagoriler = Katagoriler.objects
     yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
+    one_week_ago = datetime.today() - timedelta(days=7)
+    haftanin = Maddeler.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
 
     # This section is for the search bar!
     query = request.GET.get('q')
@@ -39,7 +41,7 @@ def index(request):
             )
 
 
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin}
     return render(request, 'madde/index.html', context)
 
 def proper_pagination(yorumsayfasi, index):
