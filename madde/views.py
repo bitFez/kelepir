@@ -69,7 +69,7 @@ def newdeals(request):
     return render(request, 'madde/index.html', context)
 
 def hottestdeals(request):
-    kelepirler = Maddeler.objects.order_by('derece')
+    kelepirler = Maddeler.objects.order_by('-derece')
     katagoriler = Katagoriler.objects
     yorumlar = Comment.objects.filter(active=True)
     h1 = 'Kaynayan Kelepirler'
@@ -238,8 +238,28 @@ def submitdeal(request):
         #form = ReviewForm(request.POST, request.DATA or None, instance=request.user)
         if form.is_valid():
             kullanici = Kullanici.objects.get(id=request.user.id)
+            madde = Maddeler.objects.create(
+                bas_tarih = form.cleaned_data.get("bas_tarih"),
+                son_tarih = form.cleaned_data.get("son_tarih"),
+                diyar = form.cleaned_data.get("diyar")
+            )
+            madde.url = form.cleaned_data.get("url")
+            madde.satici = form.cleaned_data.get("satici")
+            madde.fiyat = form.cleaned_data.get("fiyat")
+            madde.orjinalFiyat = form.cleaned_data.get("orjinalFiyat")
+            madde.kargo = form.cleaned_data.get("kargo")
+            madde.kupon = form.cleaned_data.get("kupon")
+            madde.baslik = form.cleaned_data.get("baslik")
+            madde.ayrintilar = form.cleaned_data.get("ayrintilar")
+            madde.goruntu = form.cleaned_data.get("goruntu")
+            madde.katagori = form.cleaned_data.get("katagori")
+
+            madde.online = form.cleaned_data.get("online")
+
+            madde.w3w = form.cleaned_data.get("w3w")
+
             madde = form.save(commit=False) # dont save juts yet!
-            madde.paylasan = kullanici # attach author to the instance of the review
+            madde.paylasan = request.user # attach author to the instance of the deal
 
             madde.save() # now save it with the author attached!
             return redirect('index')
