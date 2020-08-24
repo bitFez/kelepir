@@ -9,7 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
-from django.db.models import Q
+from django.db.models import Q, F
 from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditForm, ProfileEditForm
 import urllib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -82,7 +82,7 @@ def kuponlarindeksi(request):
     context = {'kuponlar':kuponlar}
     return render(request, 'madde/kuponlarindeksi.html', context)
 
-@login_required()
+'''@login_required()
 def upvote(request):
     if request.POST.get('action')=='post':
 
@@ -96,9 +96,61 @@ def upvote(request):
             result = madde.derece
             madde.save()
 
-        return JsonResponse({'result':result})
+        return JsonResponse({'result':result})'''
 
-@login_required()
+@login_required
+def product_vote(request):
+    if request.POST.get('action') == 'vote_id':
+        # get information from request about what item id it is
+        id = int(request.POST.get('maddeid'))
+        # And also which button was pressed
+        button = request.POST.get('button')
+        madde = Maddeler.objects.get(id=id)
+        #madde = get_object_or_404(Maddeler, id=id)
+
+        #get the users current vote on a product
+        '''if madde.oyveren.filter(id=request.user.id).exists():
+            q = Votes.objects.get(Q(madde=id) & Q(kullanici=request.user.id))
+            existingVote = q.oy
+            # change appearance of button if there is already a vote
+            if existingVote == True:
+                return JsonResponse({'existingVote'})
+
+            pass
+
+            if existingVote == False:
+                return JsonResponse({'existingVote'})
+
+        else:'''
+
+        if button == 'downvote_button':
+            if not madde.oyveren.filter(id=request.user.id).exists():
+                madde.oyveren.add(request.user)
+                madde.oylar +=1
+                madde.derece -=2
+                madde.save()
+
+                '''print(f'user {request.user} \n user id {request.user.id} \n {madde}')
+                existingVote = Votes(kullanici=request.user, madde=id, oy=False)
+                existingVote.save()'''
+
+        elif button == 'upvote_button':
+            if not madde.oyveren.filter(id=request.user.id).exists():
+                madde.oyveren.add(request.user)
+                madde.oylar +=1
+                madde.derece +=2
+                madde.save()
+                '''existingVote = Votes(kullanici=request.user, madde=id, oy=True)
+                existingVote.save()'''
+
+        # return result
+        madde.refresh_from_db()
+        result = madde.derece
+        return JsonResponse({'result':result}) #, 'existingVote':existingVote
+    pass
+
+
+'''@login_required()
 def downvote(request):
     if request.POST.get('action')=='post':
 
@@ -114,6 +166,11 @@ def downvote(request):
             madde.save()
 
     return JsonResponse({'result':result})
+'''
+
+
+
+
 
 def profil_detay(request, pk):
     kullanici = get_object_or_404(User, pk=pk)

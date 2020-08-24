@@ -5,8 +5,8 @@ from hesaplar.models import Kullanici
 from django import forms
 from .models import Maddeler, Katagoriler, Comment
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column
-from crispy_forms.bootstrap import PrependedText
+from crispy_forms.layout import Layout, Submit, Row, Column, Div, HTML
+from crispy_forms.bootstrap import PrependedText, InlineRadios
 from ckeditor.widgets import CKEditorWidget
 
 
@@ -89,9 +89,9 @@ class DealForm(forms.Form):
     baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
     ayrintilar = forms.CharField(widget=CKEditorWidget())
     goruntu = forms.ImageField(required=False)
-    katagori = forms.ModelMultipleChoiceField(
-        queryset=Katagoriler.objects,
-        widget=forms.CheckboxSelectMultiple,
+    katagori = forms.ModelChoiceField(
+        queryset=Katagoriler.objects.all().order_by('kategori'),
+        widget=forms.RadioSelect,
         required=True)
     bas_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),required=False)
     son_tarih = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
@@ -117,7 +117,8 @@ class DealForm(forms.Form):
             'kargo',
             'kupon',
             'goruntu',
-            'katagori',
+            Row(
+                InlineRadios('katagori', css_class="custom-control-input")),
             Row(
                 Column('bas_tarih', css_class='form-group col-md-6 mb-0'),
                 Column('son_tarih', css_class='form-group col-md-6 mb-0'),

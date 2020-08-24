@@ -29,21 +29,24 @@
                   		<div class="col-md-12">
                   			<div class="row">
                   				<div class="col-md-2">
+                            <span id="vote_id" data-value="{{kelepir.id}}"></span>
                             <div class="btn-group">
                               {% if request.user.is_authenticated %}
                                 {% if request.user in kelepir.oyveren.all %}
-                                  <button class="btn btn-secondary" disabled><i class="fas fa-minus"></i></button>
-                                  <span class="btn btn" id="puanlar" disabled>{{kelepir.derece}}°</span>
-                                  <button class="btn btn btn-secondary"disabled><i class="fas fa-plus"></i></button>
+                                  <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
+                                    <i class="fas fa-minus"></i></button>
+                                  <span class="list-group-item" id="puanlar">{{kelepir.derece}}°</span>
+                                  <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz" role="button">
+                                    <i class="fas fa-plus"></i></button>
                                 {% else %}
-                                  <button class="btn btn-danger" id="downvote_button" value="{{kelepir.id}}"><i class="fas fa-minus"></i></button>
-                                  <span class="btn btn" id="puanlar" disabled>{{kelepir.derece}}°</span>
-                                  <button class="btn btn-success" id="upvote_button" value="{{kelepir.id}}"><i class="fas fa-plus" ></i></button>
+                                  <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
+                                  <span class="list-group-item" id="puanlar">{{kelepir.derece}}°</span>
+                                  <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
                                 {% endif %}
                               {% else %}
-                                <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
-                                <span class="btn btn" id="puanlar" disabled>{{kelepir.derece}}°</span>
-                                <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                                <button href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></button>
+                                <span class="list-group-item" id="puanlar">{{kelepir.derece}}°</span>
+                                <button href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></button>
                               {% endif %}
                             </div>
 
@@ -64,7 +67,7 @@
                   <h5 class="card-title"> <a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</h5></a>
                   <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
                   <p class="card-text">{{kelepir.ayrintilar|truncatewords:30}}...
-                    <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></p></a>
+                    <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a></p>
 
                   <div class="d-flex bd-highlight">
 
@@ -187,27 +190,32 @@
   </div>
   </div>
       <script type="text/javascript">
-      $('#myForm').trigger("reset");
-
-        $(document).on('click', '#upvote_button', function (e) {
+      // JQUERY - AJAX SCRIPT FOR voting
+      $(document).ready(function(){
+        $('.vote_action').click(function(e) {
+          var maddeid = document.getElementById('vote_id').getAttribute('data-value');
+          var button = $(this).attr("value");
           e.preventDefault();
           $.ajax({
             type: 'POST',
-            url: '{% url "upvote" %}',
-            data: {
-              maddeid: $('#upvote_button').val(),
-              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-              action: 'post'
-            },
-            success: function (json) {
-              document.getElementById("puanlar").innerHTML = json['result']
-              console.log(json)
-            },
-            error: function (xhr, errmsg, err) {
+            url: '{% url "vote" %}',
 
-            }
-          });
+            data: {
+              maddeid: maddeid,
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+              action: 'vote_id',
+              button: button,
+            },
+            success: function(json){
+              if (json.length < 1 || json == undefined) {
+                //empty
+              }
+              document.getElementById("puanlar").innerHTML = json['result']
+            },
+            error: function(xhr, errmsg, err) {}
+          })
         })
+      })
 
       </script>
 {% endblock %}
