@@ -81,7 +81,7 @@
         		</div>
 
             </div>
-            <p class="card-text">{{madde.ayrintilar}}</p>
+            <p class="card-text">{{madde.ayrintilar|safe}}</p>
             <hr>
 
               {% include 'shareto.html' %}
@@ -164,7 +164,7 @@
                 </div>
 
                 </div>
-                <p class="card-text">{{madde.ayrintilar}}</p>
+                <p class="card-text">{{madde.ayrintilar|safe}}</p>
                 <hr>
                 {% include 'shareto.html' %}
                 <hr>

@@ -66,7 +66,7 @@
                   <br>
                   <h5 class="card-title"> <a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</h5></a>
                   <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
-                  <p class="card-text">{{kelepir.ayrintilar|truncatewords:30}}...
+                  <p class="card-text">{{kelepir.ayrintilar|truncatewords:30|safe}}...
                     <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a></p>
 
                   <div class="d-flex bd-highlight">
@@ -130,7 +130,7 @@
                   <br>
                   <h5 class="card-title text-muted"><a class="card-title" href="{% url 'madde_detay' kelepir.id %}" style="color:Grey">{{kelepir.baslik}}</h5></a>
                   <p><span style="color:Grey;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
-                  <p class="card-text text-muted">{{kelepir.ayrintilar|truncatewords:30}}...
+                  <p class="card-text text-muted">{{kelepir.ayrintilar|truncatewords:30|safe}}...
                     <a href="{% url 'madde_detay' kelepir.id %}" style="color:Grey"><strong>devamını oku</strong></p></a>
 
                   <div class="d-flex bd-highlight text-muted">
