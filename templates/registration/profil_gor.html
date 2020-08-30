@@ -14,7 +14,7 @@
           <h5 class="card-title">Username: {{kullanici.username}}</h5>
           <p class="card-text">En Yüksek puanlı Kelepiri: {{profil.kullanici.ensicak}}</p>
           <p class="card-text">Kelepir Teslim Sayısı: {{kelepirler.count}}</p>
-          <p class="card-text">Yorum Sayısı: </p>
+          <p class="card-text">Yorum Sayısı: {{comments.count}}</p>
           <p class="card-text">Takipçi Sayısı:</p>
           <p class="card-text"><i class="fab fa-instagram"></i> <a href="{{insta_handle}}">{{profil.insta}}</a> </p>
           {% if kullanici == request.user and request.user.is_authenticated %}
@@ -31,9 +31,11 @@
           <ul class="list-group">
             {% for kelepir in kelepirler %}
               {% if kelepir.aktif %}
-                <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+                <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
+                {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
               {% else %}
-                <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+                <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
+                {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
               {% endif %}
             {% endfor %}
           </ul>
@@ -50,9 +52,11 @@
     <ul class="list-group">
       {% for kelepir in bookmarked %}
         {% if kelepir.aktif %}
-          <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+          <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
+          {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
         {% else %}
-          <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+          <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
+          {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
         {% endif %}
       {% endfor %}
     </ul>

@@ -51,7 +51,7 @@
         </div>
         <br>
         <p><span style="color:Tomato;"><b>{{madde.fiyat}}₺</b></span>
-          <span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span></p>
+          {% if madde.orjinalFiyat %}<span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span> % {{pdiff}} fark!{% endif %}</p>
         <div class="card">
           <div class="card-body">
             {% if madde.son_tarih %} <i class="far fa-calendar-times"></i> {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
@@ -76,7 +76,7 @@
               {% endif %}
             </div>
         		<div class="p-2 bd-highlight">
-              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> </a>
+              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{comments.count}}</a>
         		</div>
         		<div class="p-2 bd-highlight">
               <a href="{{madde.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -85,8 +85,15 @@
             </div>
             <p class="card-text">{{madde.ayrintilar|safe}}</p>
             <hr>
-
-              {% include 'shareto.html' %}
+              <div class="row">
+                {% post_to_facebook object_or_url "Post to Facebook!" %}
+                {% post_to_twitter "Yeni bi kelepir!: {{madde.baslik}}. Check it out!" object_or_url "Post to Twitter" %}
+                {% post_to_gplus object_or_url "Post to Google+!" %}
+                {% post_to_linkedin object_or_url %}
+                {% post_to_reddit "Yeni bi kelepir!: {{madde.baslik}}" object_or_url %}
+                {% post_to_telegram "Yeni bi kelepir!: {{madde.baslik}}" object_or_url %}
+                {% post_to_whatsapp object_or_url "Share via WhatsApp" %}
+              </div>
 
             <hr>
 
@@ -133,7 +140,8 @@
             </div>
             <br>
             <p><span style="color:Grey;"><b>{{madde.fiyat}}₺</b></span>
-              <span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span></p>
+              <span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span>{% if madde.orjinalFiyat %} % {{pdiff}} fark!{% endif %}</p>
+            </p>
             <div class="card">
               <div class="card-body">
                 <p class="text-muted">kelepir tükendi</p>
@@ -159,7 +167,7 @@
                   {% endif %}
                 </div>
                 <div class="p-2 bd-highlight">
-                  <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{yorumlar.count}}</a>
+                  <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{comments.count}}</a>
                 </div>
                 <div class="p-2 bd-highlight">
                   <a href="{{madde.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -192,8 +200,13 @@
       <div class="row no-gutters">
       <div class="card-body">
 
+
         <!-- comments -->
         <a id="commentsarea"></a>
+
+        <h5>Şu teslime, {{comments.count}} yorum var. </h5>
+        <br>
+        <hr>
         {% if madde.allow_comments %}
           <div class="comment">
             <h5 class="text-center">Post your comment</h5>
@@ -205,14 +218,17 @@
           <h5 class="text-center">comments are disabled for this article</h5>
         {% endif %}
 
-
+        <hr>
+        <h2>Top Comments</h2>
         <div class="">
-          {% render_xtdcomment_tree for madde allow_flagging allow_feedback show_feedback  %}
-          <!-- {% render_comment_list for madde %} -->
+
         </div>
 
+        <hr>
+        <div class="">
+          {% render_xtdcomment_tree for madde allow_flagging allow_feedback show_feedback  %}
+        </div>
 
-{% endblock %}
         <script type="text/javascript">
 
           // JQUERY - AJAX SCRIPT FOR voting
@@ -241,10 +257,8 @@
               })
             })
           })
-
-
-
-
         </script>
+{% endblock %}
+
 {% block scripts %}
 {% endblock %}

@@ -24,8 +24,8 @@ class Maddeler(models.Model):
     paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>')
     satici = models.CharField(max_length=200, blank=True)
-    fiyat = models.DecimalField(max_digits=8, decimal_places=2, help_text='İndirimli fıyat', verbose_name='Fıyat')
-    orjinalFiyat = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, help_text='Orjinal fıyat', verbose_name='orjinal Fıyatı')
+    fiyat = models.DecimalField(max_digits=8, decimal_places=2, help_text='İndirimli fıyat')
+    orjinalFiyat = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, help_text='Orjinal fiyat', verbose_name='orjinal Fiyatı')
     kargo = models.BooleanField(help_text='Kargo ücretsizse burayı tıklayın',null=True)
     kupon = models.CharField(max_length=100, null=True, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
     baslik = models.CharField(max_length=300, help_text='Kısa bir tanımlayıcı başlık', verbose_name='Başlık')
@@ -60,7 +60,7 @@ class Maddeler(models.Model):
     def get_absolute_url(self):
         """Returns the url to access a particular product detail (madde_detay)."""
         return reverse('madde_detay', args=[str(self.id)])
-    
+
 KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
 
 class Kuponlar:

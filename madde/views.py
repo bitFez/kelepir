@@ -22,11 +22,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from social_django.models import UserSocialAuth
 from datetime import datetime, timedelta
+from django_comments_xtd.models import XtdComment
 
 def index(request):
     kelepirler = Maddeler.objects
     katagoriler = Katagoriler.objects
-    #yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
     one_week_ago = datetime.today() - timedelta(days=7)
     haftanin = Maddeler.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
@@ -41,7 +41,7 @@ def index(request):
             )
 
 
-    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin}
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin,}
     return render(request, 'madde/index.html', context)
 
 
@@ -172,12 +172,19 @@ def profil_detay(request, pk):
     kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
     instagram = 'http://www.instagram.com/'
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
-    context = {'profil':profil, 'kullanici':kullanici, 'kelepirler':kelepirler, 'bookmarked':bookmarked, 'insta_handle':insta_handle}
+    comments = XtdComment.objects.filter(user_id=kullanici.id)
+    context = {'profil':profil, 'kullanici':kullanici, 'kelepirler':kelepirler, 'bookmarked':bookmarked,
+    'insta_handle':insta_handle, 'comments':comments}
     return render(request, 'registration/profil_gor.html', context)
 
 def madde_detay(request, pk):
     madde = get_object_or_404(Maddeler, pk=pk)
-
+    comments = XtdComment.objects.filter(object_pk=madde.id)
+    pdiff = 0
+    pchange = madde.fiyat - madde.orjinalFiyat
+    pdiff = round((pchange / madde.orjinalFiyat) * 100, 0)
+    print(pdiff)
+    #top_Comments = django_comment_flags.objects.filter(flag=="I like it").filter(flag.count>=1)
     ### Bookmarks
     bookmarked = False
     if madde.bookmarked.filter(id=request.user.id).exists():
@@ -185,7 +192,7 @@ def madde_detay(request, pk):
     else:
         bookmarked = False
 
-    context = {'madde':madde,'bookmarked':bookmarked,}
+    context = {'madde':madde,'bookmarked':bookmarked, 'comments':comments, 'pdiff':pdiff}
     return render(request, 'madde/maddeler_detail.html', context)
 
 
@@ -213,6 +220,7 @@ def edit_profile(request):
     kullanici = get_object_or_404(User, pk=request.user.id)
     profil = get_object_or_404(Kullanici, pk=request.user.id)
     kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
+    comments = XtdComment.objects.filter(user_id=kullanici.id)
     instagram = 'http://www.instagram.com/'
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
     if request.method == 'POST':
@@ -244,30 +252,29 @@ def submitdeal(request):
         form = DealForm(request.POST, request.FILES)
         #form = ReviewForm(request.POST, request.DATA or None, instance=request.user)
         if form.is_valid():
-            kullanici = Kullanici.objects.get(id=request.user.id)
+            #kullanici = Kullanici.objects.get(id=request.user.id)
             madde = Maddeler.objects.create(
+                paylasan = request.user,
                 bas_tarih = form.cleaned_data.get("bas_tarih"),
                 son_tarih = form.cleaned_data.get("son_tarih"),
-                diyar = form.cleaned_data.get("diyar")
+                diyar = form.cleaned_data.get("diyar"),
+                url = form.cleaned_data.get("url"),
+                satici = form.cleaned_data.get("satici"),
+                fiyat = form.cleaned_data.get("fiyat"),
+                orjinalFiyat = form.cleaned_data.get("orjinalFiyat"),
+                kargo = form.cleaned_data.get("kargo"),
+                kupon = form.cleaned_data.get("kupon"),
+                baslik = form.cleaned_data.get("baslik"),
+                ayrintilar = form.cleaned_data.get("ayrintilar"),
+                goruntu = form.cleaned_data.get("goruntu"),
+                #katagori = form.cleaned_data.get("katagori"),
+                online = form.cleaned_data.get("online"),
+                w3w = form.cleaned_data.get("w3w")
             )
-            madde.url = form.cleaned_data.get("url")
-            madde.satici = form.cleaned_data.get("satici")
-            madde.fiyat = form.cleaned_data.get("fiyat")
-            madde.orjinalFiyat = form.cleaned_data.get("orjinalFiyat")
-            madde.kargo = form.cleaned_data.get("kargo")
-            madde.kupon = form.cleaned_data.get("kupon")
-            madde.baslik = form.cleaned_data.get("baslik")
-            madde.ayrintilar = form.cleaned_data.get("ayrintilar")
-            madde.goruntu = form.cleaned_data.get("goruntu")
+
+            #madde.save(commit=False) # dont save juts yet!
+            #madde.paylasan = request.user.id # attach author to the instance of the deal
             madde.katagori = form.cleaned_data.get("katagori")
-
-            madde.online = form.cleaned_data.get("online")
-
-            madde.w3w = form.cleaned_data.get("w3w")
-
-            madde = form.save(commit=False) # dont save juts yet!
-            madde.paylasan = request.user # attach author to the instance of the deal
-
             madde.save() # now save it with the author attached!
             return redirect('index')
         else:

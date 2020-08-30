@@ -82,7 +82,7 @@ class DealForm(forms.Form):
 
     url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
     satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
-    fiyat = forms.DecimalField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}),min_value=0)
+    fiyat = forms.DecimalField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}), min_value=0)
     orjinalFiyat = forms.DecimalField(min_value=0, required=False, widget=forms.NumberInput(attrs={'placeholder': '200.00'}))
     kargo = forms.BooleanField(required=False)
     kupon = forms.CharField(required=False)
