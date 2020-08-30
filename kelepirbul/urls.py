@@ -19,6 +19,8 @@ urlpatterns = [
     path('settings/', views.SettingsView.as_view(), name='settings'),
     path('settings/password/', views.password, name='password'),
 
+    path(r'comments/', include('django_comments_xtd.urls')),
+
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

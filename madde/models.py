@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from ckeditor.fields import RichTextField
-
+from django_comments_xtd.models import XtdComment
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -45,6 +45,7 @@ class Maddeler(models.Model):
     oylar = models.IntegerField(default=0, null=True, blank=True)
     oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes")
     w3w = models.CharField(max_length=100, null=True, blank=True,verbose_name='What3Words', help_text='<a href="https://what3words.com/susma.hurma.e%C5%9Fyal%C4%B1"><small>Yardım ve örnek için şurayı tıklayın</small></a>')
+    allow_comments = models.BooleanField('allow comments', default=True)
 
     def __str__(self):
         return f"{self.id}, {self.baslik}"
@@ -58,8 +59,8 @@ class Maddeler(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a particular product detail (madde_detay)."""
-        return reverse('madde_detay', args=[self.slug])
-
+        return reverse('madde_detay', args=[str(self.id)])
+    
 KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
 
 class Kuponlar:
@@ -83,34 +84,3 @@ class Votes(models.Model):
 
     def __str__(self):
         return f"{self.kullanici} , {self.madde}"
-
-
-
-class Comment(models.Model):
-    madde = models.ForeignKey(Maddeler, on_delete=models.CASCADE,related_name='comments')
-    kullanici = models.ForeignKey(User, on_delete=models.CASCADE)
-    body = RichTextField()
-    created_on = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=False)
-    #comment_slug = models.SlugField(unique=True, default=uuid.uuid4)
-    likes = models.ManyToManyField(User, related_name='likes', blank=True)
-    #parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ['created_on']
-
-    def __str__(self):
-        return 'Comment {} by {}'.format(self.body, self.kullanici)
-
-    '''def children(self): #replies
-        return Comment.objects.filter(parent=self)
-
-    def is_parent(self):
-        if self.parent is not None:
-            return False
-        return True'''
-    def total_likes(self):
-        return self.likes.count()
-
-class Commentlike(models.Model):
-    comment = models.ForeignKey(Comment, related_name='related_comment', on_delete=models.CASCADE)

@@ -1,7 +1,7 @@
 from urllib.parse import quote_plus
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
-from .models import Maddeler, Votes, Kuponlar, Katagoriler, Comment, Commentlike
+from .models import Maddeler, Votes, Kuponlar, Katagoriler
 from hesaplar.models import Kullanici
 # list view adds a queryset for us and looks up all records in the DB.
 # Detailview only looks up 1 id!
@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 from django.db.models import Q, F
-from . forms import CreateUserForm, DealForm, KuponForm, CommentForm, UserEditForm, ProfileEditForm
+from . forms import CreateUserForm, DealForm, KuponForm, UserEditForm, ProfileEditForm
 import urllib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 def index(request):
     kelepirler = Maddeler.objects
     katagoriler = Katagoriler.objects
-    yorumlar = Comment.objects.filter(active=True)
+    #yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
     one_week_ago = datetime.today() - timedelta(days=7)
     haftanin = Maddeler.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
@@ -41,39 +41,32 @@ def index(request):
             )
 
 
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin}
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin}
     return render(request, 'madde/index.html', context)
 
-def proper_pagination(yorumsayfasi, index):
-    start_index = 0
-    end_index = 7
-    if yorumsayfasi.number > index:
-        start_index = yorumsayfasi.number-index
-        end_index = start_index + end_index
-    return (start_index, end_index)
 
 def dealcategory(request, kat_id):
     kelepirler = Maddeler.objects.filter(katagori=kat_id)
     katagoriler = Katagoriler.objects
-    yorumlar = Comment.objects.filter(active=True)
+    #yorumlar = Comment.objects.filter(active=True)
     h1 = 'Günün Kelepirleri'
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def newdeals(request):
     kelepirler = Maddeler.objects.order_by('-duyurmaTarihi')
     katagoriler = Katagoriler.objects
-    yorumlar = Comment.objects.filter(active=True)
+    #yorumlar = Comment.objects.filter(active=True)
     h1 = 'En Yeni Kelepirleri'
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def hottestdeals(request):
     kelepirler = Maddeler.objects.order_by('-derece')
     katagoriler = Katagoriler.objects
-    yorumlar = Comment.objects.filter(active=True)
+    #yorumlar = Comment.objects.filter(active=True)
     h1 = 'Kaynayan Kelepirler'
-    context = {'yorumlar': yorumlar,'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def kuponlarindeksi(request):
@@ -183,7 +176,6 @@ def profil_detay(request, pk):
     return render(request, 'registration/profil_gor.html', context)
 
 def madde_detay(request, pk):
-    #template_name = 'madde/maddeler_detail.html'
     madde = get_object_or_404(Maddeler, pk=pk)
 
     ### Bookmarks
@@ -193,49 +185,7 @@ def madde_detay(request, pk):
     else:
         bookmarked = False
 
-
-    yorumlar = madde.comments.filter(active=True)
-
-    new_comment = None
-
-
-    # Comment posted
-    if request.method == 'POST':
-        comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            # Create Comment object but don't save to database yet
-            new_comment = comment_form.save(commit=False)
-            # Assign the current post to the comment
-            new_comment.madde = madde
-            # Assign the current post to an poster
-            kullanici = Kullanici.objects.get(id=request.user.id)
-            new_comment.kullanici = kullanici
-            # Save the comment to the database
-            new_comment.save()
-    else:
-        comment_form = CommentForm()
-
-    ### Comments Paginator
-    #comment_c = request.build_absolute_uri
-    paginator = Paginator(yorumlar, 3) # Show 10 comments per page.
-    page_number = request.GET.get('page')
-    try:
-        yorumsayfasi = paginator.page(page_number)
-    except PageNotAnInteger: #leads to page 1
-        yorumsayfasi = paginator.page(1)
-    except EmptyPage:
-        yorumsayfasi = paginator.page(paginator.num_pages)
-
-    if page_number is None:
-        start_index = 0
-        end_index = 7
-    else:
-        (start_index, end_index) = proper_pagination(yorumsayfasi, index=4)
-    page_range = list(paginator.page_range)[start_index:end_index]
-
-
-    context = {'madde':madde, 'yorumlar': yorumlar, 'new_comment': new_comment,'comment_form': comment_form,
-    'page_range':page_range, 'bookmarked':bookmarked,'yorumsayfasi':yorumsayfasi}
+    context = {'madde':madde,'bookmarked':bookmarked,}
     return render(request, 'madde/maddeler_detail.html', context)
 
 
@@ -343,30 +293,6 @@ def submitkupon(request):
 
     return render(request, 'madde/kuponforma.html', {'form':form})
 
-@login_required
-def like_comment(request):
-    if request.method =='GET':
-        comment_id = request.GET['commentlike_id']
-        likedcomment = Comment.objects.get(id=comment_id)
-        newlike = Commentlike(comment=likedcomment)
-        newlike.save()
-        return HttpResponse('You liked this comment')
-    else:
-        return HttpResponse('Like was not successful')
-
-    '''user = request.user
-    if request.method == 'POST':
-        pk = request.POST.get('comment_id')
-        comment_obj = Comment.objects.get(pk=pk)
-        if user in comment_obj.likes.all():
-            comment_obj.likes.remove(user)
-        else:
-            comment_obj.likes.add(user)
-    return HttpResponse()'''
-
-def madde_serialised(request):
-    data = list(Comment.objects.values())
-    return JsonResponse(data, safe=False)
 
 class SettingsView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):

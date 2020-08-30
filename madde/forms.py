@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from hesaplar.models import Kullanici
 from django import forms
-from .models import Maddeler, Katagoriler, Comment
+from .models import Maddeler, Katagoriler
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Div, HTML
 from crispy_forms.bootstrap import PrependedText, InlineRadios
@@ -192,8 +192,8 @@ class DealForm(forms.Form):
                 Submit('submit','Kelepiri Paylaş')
             )
 '''
-class CommentForm(forms.ModelForm):
+'''class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         body = forms.CharField(widget=CKEditorWidget())
-        fields = ['body']
+        fields = ['body']'''

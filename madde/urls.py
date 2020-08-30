@@ -5,7 +5,7 @@ from .import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('serialised',views.madde_serialised, name='serialised_view'),
+    #path('serialised',views.madde_serialised, name='serialised_view'),
     #path('new', IndexView.as_view(), name='newindex'),
     path('katogori/<int:kat_id>', views.dealcategory, name='dealcategory'),
     path('yenikelepirler', views.newdeals, name='newdeals'),
@@ -23,7 +23,7 @@ urlpatterns = [
     # Bookmarking a post
     path('kayitla/<int:id>/', views.bookmark, name='bookmark'),
     # for likes and votes
-    path('like/', views.like_comment, name='like_comment'),
+    #path('like/', views.like_comment, name='like_comment'),
     path('expire/<int:id>', views.expire, name='expire'),
 
 ]

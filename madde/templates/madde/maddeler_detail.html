@@ -2,8 +2,10 @@
 {% load static %}
 {% load social_share %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+{% load comments %}
+{% load comments_xtd %}
 {% block content %}
-
 <br>
 <h1>{{madde.baslik}}</h1>
 <br>
@@ -74,7 +76,7 @@
               {% endif %}
             </div>
         		<div class="p-2 bd-highlight">
-              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{yorumlar.count}}</a>
+              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> </a>
         		</div>
         		<div class="p-2 bd-highlight">
               <a href="{{madde.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -189,30 +191,28 @@
     <div class="card mb-12" style="max-width: 1000px;">
       <div class="row no-gutters">
       <div class="card-body">
+
         <!-- comments -->
         <a id="commentsarea"></a>
-        {% for yorum in yorumlar %}
-          <div class="card comments" style="width: 100%;">
-            <div class="card-body">
-              <h6 class="card-subtitle mb-2 text-muted">{{ yorum.kullanici}} {{ yorum.created_on }}</h6>
-              <p class="card-text">{{ yorum.body |safe }}</p>
-
-            <a class="likebutton btn btn-primary btn-sm" id="commentlike{{ comment.id }}" href="#" data-catid="{{ comment.id }}">Like</a> </p>
-            <p id="message{{comment.id}}"></p>
-
-              - Beyen Sayısı {{yorum.total_likes}}
+        {% if madde.allow_comments %}
+          <div class="comment">
+            <h5 class="text-center">Post your comment</h5>
+            <div class="well my-4">
+              {% render_comment_form for madde %}
             </div>
-            </div>
-            <div class="comments" style="padding: 10px;">
-              <p class="font-weight-bold">
+          </div>
+        {% else %}
+          <h5 class="text-center">comments are disabled for this article</h5>
+        {% endif %}
 
-                <span class=" text-muted font-weight-normal">
 
-                </span>
-              </p>
+        <div class="">
+          {% render_xtdcomment_tree for madde allow_flagging allow_feedback show_feedback  %}
+          <!-- {% render_comment_list for madde %} -->
+        </div>
 
-            </div>
-        {% endfor %}
+
+{% endblock %}
         <script type="text/javascript">
 
           // JQUERY - AJAX SCRIPT FOR voting
@@ -246,49 +246,5 @@
 
 
         </script>
-      </div>
-  </div>
-  <div class="pagination">
-    <ul class="pagination">
-      {% if yorumsayfasi.has_previous %}
-        <li class="page-item">
-          <a href="?page=1" class="page-link">&laquo; first</a>
-          <a href="?page={{ yorumsayfasi.previous_page_number }}" class="page-link">previous</a>
-        </li>
-      {% endif %}
-      {% for y in page_range %}
-        {% if yorumsayfasi.number == y %}
-          <li class="page-item active"> <a href="?page={{ y }}" class="page-link">{{ y }}</a> </li>
-        {% else %}
-          <li class="page-item"> <a href="?page={{ y }}" class="page-link">{{ y }}</a> </li>
-        {% endif %}
-      {% endfor %}
-      {% if yorumsayfasi.has_next %}
-          <a href="?page={{ yorumsayfasi.next_page_number }}" class="page-link">next</a>
-          <a href="?page={{ yorumsayfasi.paginator.num_pages }}" class="page-link">last &raquo;</a>
-      {% endif %}
-    </ul>
-  </div>
-  <div class="card mb-12" style="max-width: 1000px;">
-    <div class="card-body">
-      {% if new_comment %}
-      <div class="alert alert-success" role="alert">
-        Your comment is awaiting moderation
-      </div>
-      {% else %}
-        <h3>Leave a comment</h3>
-        <form method="post" style="margin-top: 1.3em;">
-          {{ comment_form|crispy }}
-          {% csrf_token %}
-          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
-        </form>
-      {% endif %}
-    </div>
-  </div>
-</div>
-</div>
-</div>
-{% endblock %}
-
 {% block scripts %}
 {% endblock %}
