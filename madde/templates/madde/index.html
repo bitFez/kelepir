@@ -19,7 +19,8 @@
 
 <div class="row">
   <div class="col-sm-9">
-      {% for kelepir in kelepirler.all %}
+
+      {% for kelepir in kelepirler %}
 
         {% if kelepir.aktif == True %}
           <div class="card mb-2" style="max-width: 1000px;">
@@ -34,26 +35,25 @@
                   		<div class="col-md-12">
                   			<div class="row">
                   				<div class="col-md-2">
-                            <span id="vote_id" data-value="{{kelepir.id}}"></span>
-                            <div class="btn-group">
+
                               {% if request.user.is_authenticated %}
                                 {% if request.user in kelepir.oyveren.all %}
-                                  <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
-                                    <i class="fas fa-minus"></i></button>
-                                  <span class="list-group-item" id="puanlar">{{kelepir.derece}}°</span>
                                   <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz" role="button">
                                     <i class="fas fa-plus"></i></button>
+                                  <button class="btn btn-outline" id="puanlar">%{{kelepir.derece}}</span>
+                                  <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
+                                    <i class="fas fa-minus"></i></button>
                                 {% else %}
-                                  <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
-                                  <span class="list-group-item" id="puanlar">{{kelepir.derece}}°</span>
+                                  <span id="kelepir_{{forloop.counter}}" data-value="{{kelepir.id}}"></span>
                                   <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
+                                  <span class="btn btn-outline" id="puanlar">%{{kelepir.derece}}</span>
+                                  <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
                                 {% endif %}
                               {% else %}
-                                <button href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></button>
-                                <span class="list-group-item" id="puanlar">{{kelepir.derece}}°</span>
-                                <button href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></button>
+                                <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                                <span class="btn btn-outline" id="puanlar">%{{kelepir.derece}}</span>
+                                <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
                               {% endif %}
-                            </div>
 
                   				</div>
                   				<div class="col-md-5">
@@ -160,7 +160,7 @@
                   		</div>
                       <div class="p-2 bd-highlight">
                         {% get_comment_count for madde.maddeler kelepir.id as comment_count %}
-                        <a href="" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-comments"></i> {{comment_count}}</a>
+                        <a href="" type="button" class="btn btn-outline-dark btn"><i class="fas fa-comments"></i> {{comment_count}}</a>
                       </div>
                       <div class="p-2 bd-highlight">
                         <a href="{{kelepir.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -202,8 +202,9 @@
       <script type="text/javascript">
       // JQUERY - AJAX SCRIPT FOR voting
       $(document).ready(function(){
+        {% for kelepir in kelepirler %}
         $('.vote_action').click(function(e) {
-          var maddeid = document.getElementById('vote_id').getAttribute('data-value');
+          var maddeid = document.getElementById('kelepir_{{forloop.counter}}').getAttribute('data-value');
           var button = $(this).attr("value");
           e.preventDefault();
           $.ajax({
@@ -225,6 +226,7 @@
             error: function(xhr, errmsg, err) {}
           })
         })
+        {% endfor %}
       })
       </script>
 {% endblock %}

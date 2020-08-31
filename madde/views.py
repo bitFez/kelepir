@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 from django_comments_xtd.models import XtdComment
 
 def index(request):
-    kelepirler = Maddeler.objects
+    kelepirler = Maddeler.objects.all
     katagoriler = Katagoriler.objects
     h1 = 'Günün Kelepirleri'
     one_week_ago = datetime.today() - timedelta(days=7)
@@ -181,9 +181,11 @@ def madde_detay(request, pk):
     madde = get_object_or_404(Maddeler, pk=pk)
     comments = XtdComment.objects.filter(object_pk=madde.id)
     pdiff = 0
-    pchange = madde.fiyat - madde.orjinalFiyat
-    pdiff = round((pchange / madde.orjinalFiyat) * 100, 0)
-    print(pdiff)
+    if madde.orjinalFiyat != None:
+        pchange = madde.fiyat - madde.orjinalFiyat
+        pdiff = round((pchange / madde.orjinalFiyat) * 100, 0)
+        pdiff = abs(pdiff)
+
     #top_Comments = django_comment_flags.objects.filter(flag=="I like it").filter(flag.count>=1)
     ### Bookmarks
     bookmarked = False

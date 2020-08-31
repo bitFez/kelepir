@@ -22,26 +22,26 @@
         		<div class="col-md-12">
         			<div class="row">
         				<div class="col-md-2">
-                  <span id="vote_id" data-value="{{madde.id}}"></span>
-                  <div class="btn-group">
+
                     {% if request.user.is_authenticated %}
-                      {% if request.user in madde.oyveren.all %}
-                        <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
-                          <i class="fas fa-minus"></i></button>
-                        <span class="list-group-item" id="puanlar">{{madde.derece}}°</span>
-                        <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz" role="button">
+                    {% if request.user in madde.oyveren.all %}
+                      <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz" role="button">
                         <i class="fas fa-plus"></i></button>
-                      {% else %}
-                        <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
-                        <span class="list-group-item" id="puanlar">{{madde.derece}}°</span>
-                        <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
-                      {% endif %}
+                      <button class="btn btn-outline" id="puanlar">%{{madde.derece}}</span>
+                      <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
+                        <i class="fas fa-minus"></i></button>
                     {% else %}
-                      <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
-                      <span class="list-group-item" id="puanlar">{{madde.derece}}°</span>
-                      <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                      <span id="vote_id" data-value="{{madde.id}}"></span>
+                      <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
+                      <span class="btn btn-outline" id="puanlar">%{{madde.derece}}</span>
+                      <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
                     {% endif %}
-                  </div>
+                  {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                        <span class="btn btn-outline" id="puanlar">%{{madde.derece}}</span>
+                        <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
+                  {% endif %}
+
         				</div>
         				<div class="col-md-10">
         				</div>
