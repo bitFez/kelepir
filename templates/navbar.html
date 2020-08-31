@@ -2,69 +2,80 @@
   <div class="menu-bar">
 
     <div class="container">
-      <nav class="navbar navbar-expand-md navbar-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <nav class="navbar navbar-expand-sm navbar-light">
+        <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fas fa-bars"></i>
-        </button>
+        </button>-->
         <a class="navbar-brand" href="/"><img src="/images/kelepirBorsa_logo2.png" height="50"><span class="navText">Kelepir Borsa</span></a>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-list">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="/">Tüm Kelepirler</a>
+              <a class="nav-link" href="/">Tümü</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'ensicakkel' %}">Ateşliler</a>
+              <a class="nav-link" href="{% url 'ensicakkel' %}">Yüksek</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'newdeals' %}">Yeni fırsatlar</a>
+              <a class="nav-link" href="{% url 'newdeals' %}">Yeni</a>
             </li>
+            <!--
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'kuponlarindeksi' %}">Kuponlar</a>
+              <a class="nav-link" href="#">Kuponlar</a>
             </li>
+          -->
           </ul>
-
-
+          <div class="right-side d-flex">
+            <form class="form-inline my-2 my-lg-0" action="{% url 'index' %}">
+              <input class="form-control mr-2" type="search" placeholder="Ara" aria-label="Ara" name='q'>
+              <button class="btn btn-secondary-lg my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+            </form>
         </div>
-        <form class="form-inline my-2 my-lg-0" action="{% url 'index' %}">
-          <input class="form-control mr-sm-2" type="search" placeholder="Ara" aria-label="Ara" name='q'>
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ara</button>
-        </form>
-        <ul class="navbar-nav navbar-right">
-          {% if user.is_authenticated %}
-          <li class="nav-item dropdown right">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-plus-square"></i> Paylaş
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{% url 'paylas' %}"><i class="fas fa-tag"></i>  Kelepir Paylaş</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'kpaylas' %}"><i class="fas fa-hashtag"></i> Kupon Paylaş</a>
-            </div>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {% if request.user.kullanici.resim %}
-                <img src="{{ request.user.kullanici.resim.url }}" class="navbar-img rounded-circle">
-              {% else %}
-                <img src="/static/images/profiler/profile.png" class="navbar-img">
-              {% endif %}
-              Selam, {{request.user|capfirst}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{% url 'edit_profile' %}"></i>Profilini Güncelle</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'logout' %}">Oturumu kapat</a>
-            </div>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="btn btn-outline-light" href="{% url 'login' %}">Oturmu aç</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-light" href="{% url 'register' %}">Kayıt ol</a>
-          </li>
-          {% endif %}
-        </ul>
+
+
+        <!-- Right side -->
+
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-plus-square"></i> Paylaş
+                </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'paylas' %}"><i class="fas fa-tag"></i> Kelepir Paylaş</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'kpaylas' %}"><i class="fas fa-hashtag"></i> Kupon Paylaş</a>
+                  </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if request.user.kullanici.resim %}
+                  <img src="{{ request.user.kullanici.resim.url }}" class="navbar-img rounded-circle">
+                {% else %}
+                  <img src="/static/images/profiler/profile.png" class="navbar-img rounded-circle">
+                {% endif %}
+                Selam, {{request.user|capfirst}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="{% url 'edit_profile' %}"></i>Profilini Güncelle</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Oturumu kapat</a>
+                </div>
+              </li>
+                {% else %}
+                  <li class="nav-item">
+                    <a class="btn btn-outline-light" href="{% url 'login' %}">Oturmu aç</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="btn btn-light" href="{% url 'register' %}">Kayıt ol</a>
+                  </li>
+                {% endif %}
+          </ul>
+        </div>
+
       </nav>
     </div>
   </div>
