@@ -34,20 +34,34 @@
                   	<div class="row">
                   		<div class="col-md-12">
                   			<div class="row">
-                  				<div class="col-md-2">
+                          <!-- Voting buttons -->
+                  				<div class="col-md-1">
 
                               {% if request.user.is_authenticated %}
                                 {% if request.user in kelepir.oyveren.all %}
+                                <div class="row">
                                   <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz" role="button">
                                     <i class="fas fa-plus"></i></button>
-                                  <button class="btn btn-outline" id="puanlar">%{{kelepir.derece}}</span>
+                                </div>
+                                <div class="row">
+                                  <button class="btn btn-outline" id="puanlar">{{kelepir.derece}}</span>
+                                </div>
+                                <div class="row">
                                   <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
                                     <i class="fas fa-minus"></i></button>
+                                </div>
+
                                 {% else %}
-                                  <span id="kelepir_{{forloop.counter}}" data-value="{{kelepir.id}}"></span>
-                                  <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
-                                  <span class="btn btn-outline" id="puanlar">%{{kelepir.derece}}</span>
-                                  <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
+                                  <div class="row">
+                                    <span id="kelepir_{{forloop.counter}}" data-value="{{kelepir.id}}"></span>
+                                    <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
+                                  </div>
+                                  <div class="row">
+                                    <span class="btn btn-outline" id="puanlar">{{kelepir.derece}}</span>
+                                  </div>
+                                  <div class="row">
+                                    <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
+                                  </div>
                                 {% endif %}
                               {% else %}
                                 <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
@@ -56,14 +70,22 @@
                               {% endif %}
 
                   				</div>
-                  				<div class="col-md-5">
-                  				</div>
-                  				<div class="col-md-3">
-                            <small class="text-muted">{% if kelepir.son_tarih %}<i class="far fa-calendar-alt"></i><br>{{ kelepir.son_tarih }}'de kelepir tükenir{% endif %}</small>
-                  				</div>
-                  				<div class="col-md-2">
-                            <small class="text-muted"><i class="fas fa-bullhorn"></i><br>{{kelepir.duyurmaTarihi|timesince}}</small>
-                  				</div>
+
+                          <!-- To the right of the buttons -->
+                          <div class="card col-11">
+                            <div class="card-body">
+
+                      				<div class="col-md-8 float-left">
+                                <small class="text-muted">{% if kelepir.son_tarih|date:"SHORT_DATE_FORMAT" %}<i class="far fa-calendar-alt"></i> Tükenme tarihi: <br>{{ kelepir.son_tarih|date:"SHORT_DATE_FORMAT" }}{% endif %}</small>
+                      				</div>
+                      				<div class="col-md-3 float-right">
+                                <small class="text-muted"><i class="fas fa-bullhorn"></i><br>{{kelepir.duyurmaTarihi|timesince}}<br>duyuruldu</small>
+                      				</div>
+
+                            </div>
+                          </div>
+
+
                   			</div>
                   		</div>
                   	</div>
@@ -73,9 +95,10 @@
                   <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}
                     {% if pdiff %}, %{{pdiff}} fark!{% endif %}
                   </p>
-                  <p class="card-text">{{kelepir.ayrintilar|truncatewords:30|safe}}...
-                    <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a></p>
-
+                  <div class="row min-vh-50">
+                    <p class="card-text">{{kelepir.ayrintilar|truncatewords:30|safe}}...
+                  </div>
+                  <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a></p>
                   <div class="d-flex bd-highlight">
 
                   		<div class="flex-grow-1 bd-highlight">

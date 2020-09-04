@@ -6,13 +6,13 @@
         <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fas fa-bars"></i>
         </button>-->
-        <a class="navbar-brand" href="/"><img src="/images/kelepirBorsa_logo2.png" height="50"><span class="navText">Kelepir Borsa</span></a>
+        <a class="navbar-brand" href="/"><img src="/images/kelepirBorsa_logo2.png" height="40"></a><a href="/"><span class="navText navbar-brand"> Kelepir Borsa</span></a>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler h-100" type="button" data-toggle="collapse" data-target="#navbar-list" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar-list">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav h-100">
             <li class="nav-item">
               <a class="nav-link" href="/">Tümü</a>
             </li>
@@ -28,7 +28,7 @@
             </li>
           -->
           </ul>
-          <div class="right-side d-flex">
+          <div class="right-side d-flex h-100">
             <form class="form-inline my-2 my-lg-0" action="{% url 'index' %}">
               <input class="form-control mr-2" type="search" placeholder="Ara" aria-label="Ara" name='q'>
               <button class="btn btn-secondary-lg my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
@@ -38,7 +38,7 @@
 
         <!-- Right side -->
 
-          <ul class="navbar-nav">
+          <ul class="navbar-nav d-lg-flex align-items-center">
             {% if user.is_authenticated %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -57,7 +57,9 @@
                 {% else %}
                   <img src="/static/images/profiler/profile.png" class="navbar-img rounded-circle">
                 {% endif %}
-                Selam, {{request.user|capfirst}}
+                <div class="">
+                  Selam, {{request.user|capfirst}}
+                </div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <a class="dropdown-item" href="{% url 'edit_profile' %}"></i>Profilini Güncelle</a>
