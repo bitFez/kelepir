@@ -93,7 +93,7 @@ def upvote(request):
 
 @login_required
 def product_vote(request):
-    if request.POST.get('action') == 'vote_id':
+    if request.POST.get('action') == 'postvote':
         # get information from request about what item id it is
         id = int(request.POST.get('maddeid'))
         # And also which button was pressed
@@ -141,28 +141,6 @@ def product_vote(request):
         result = madde.derece
         return JsonResponse({'result':result}) #, 'existingVote':existingVote
     pass
-
-
-'''@login_required()
-def downvote(request):
-    if request.POST.get('action')=='post':
-
-        id=request.POST.get("maddeid")
-
-        madde = get_object_or_404(Maddeler, id=id)
-        if not madde.oyveren.filter(id=request.user.id).exists():
-            result=''
-            madde.oyveren.add(request.user)
-            madde.oylar +=1
-            madde.derece -=2
-            result = madde.derece
-            madde.save()
-
-    return JsonResponse({'result':result})
-'''
-
-
-
 
 
 def profil_detay(request, pk):
