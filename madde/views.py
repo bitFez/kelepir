@@ -75,21 +75,6 @@ def kuponlarindeksi(request):
     context = {'kuponlar':kuponlar}
     return render(request, 'madde/kuponlarindeksi.html', context)
 
-'''@login_required()
-def upvote(request):
-    if request.POST.get('action')=='post':
-
-        id=request.POST.get("maddeid") # gets id from AJAX function on html sheet
-        madde = get_object_or_404(Maddeler, id=id)
-        if not madde.oyveren.filter(id=request.user.id).exists():
-            result = ''
-            madde.oyveren.add(request.user)
-            madde.oylar +=1
-            madde.derece +=2
-            result = madde.derece
-            madde.save()
-
-        return JsonResponse({'result':result})'''
 
 @login_required
 def product_vote(request):
@@ -101,20 +86,6 @@ def product_vote(request):
         madde = Maddeler.objects.get(id=id)
         #madde = get_object_or_404(Maddeler, id=id)
 
-        #get the users current vote on a product
-        '''if madde.oyveren.filter(id=request.user.id).exists():
-            q = Votes.objects.get(Q(madde=id) & Q(kullanici=request.user.id))
-            existingVote = q.oy
-            # change appearance of button if there is already a vote
-            if existingVote == True:
-                return JsonResponse({'existingVote'})
-
-            pass
-
-            if existingVote == False:
-                return JsonResponse({'existingVote'})
-
-        else:'''
 
         if button == 'downvote_button':
             if not madde.oyveren.filter(id=request.user.id).exists():
@@ -123,9 +94,6 @@ def product_vote(request):
                 madde.derece -=2
                 madde.save()
 
-                '''print(f'user {request.user} \n user id {request.user.id} \n {madde}')
-                existingVote = Votes(kullanici=request.user, madde=id, oy=False)
-                existingVote.save()'''
 
         elif button == 'upvote_button':
             if not madde.oyveren.filter(id=request.user.id).exists():
@@ -133,13 +101,11 @@ def product_vote(request):
                 madde.oylar +=1
                 madde.derece +=2
                 madde.save()
-                '''existingVote = Votes(kullanici=request.user, madde=id, oy=True)
-                existingVote.save()'''
 
         # return result
         madde.refresh_from_db()
         result = madde.derece
-        return JsonResponse({'result':result}) #, 'existingVote':existingVote
+        return JsonResponse({'result':result})
     pass
 
 

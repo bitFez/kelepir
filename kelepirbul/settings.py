@@ -32,7 +32,6 @@ INSTALLED_APPS = [
 
     'madde.apps.MaddeConfig',
     'hesaplar.apps.HesaplarConfig',
-    'corsheaders',
 
     'crispy_forms',
     'ckeditor',
@@ -43,7 +42,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -172,14 +170,3 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/settings/'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/settings/'
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
-
-'''CORS_ALLOWED_ORIGIN_REGEXES = [
-    path('', views.index, name='index'),
-    path('madde/<int:pk>', views.madde_detay, name='madde_detay'),
-    path('vote/', views.product_vote, name='vote' ),
-]'''
-'''CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:9000"
-]'''
-CORS_ALLOW_ALL_ORIGINS = True

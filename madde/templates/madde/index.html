@@ -21,7 +21,7 @@
   <div class="col-sm-9">
 
       {% for kelepir in kelepirler %}
-
+        <div class="herkelepir">
         {% if kelepir.aktif == True %}
           <div class="card mb-2" style="max-width: 1000px;">
             <div class="row no-gutters">
@@ -44,7 +44,7 @@
                                     <i class="fas fa-plus"></i></button>
                                 </div>
                                 <div class="row">
-                                  <button class="btn btn-outline p-1" id="puanlar_{{kelepir.id}}">{{kelepir.derece}}</span>
+                                  <button class="kel_puanlar btn btn-outline p-1" id="puanlar_{{kelepir.id}}">{{kelepir.derece}}</span>
                                 </div>
                                 <div class="row">
                                   <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
@@ -53,14 +53,14 @@
 
                                 {% else %}
                                   <div class="row">
-                                    <span id="kelepir_{{kelepir.id}}" data-value="{{kelepir.id}}"></span>
-                                    <button id="uvb_{{kelepir.id}}" class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
+                                    <span id="kelepir_{{forloop.counter}}" data-value="{{kelepir.id}}"></span>
+                                    <button class="btn btn-success vote_action" id="uvb_{{forloop.counter}}" value="upvote_button"><i class="fas fa-plus"></i></button>
                                   </div>
                                   <div class="row">
-                                    <span class="btn btn-outline p-1" id="puanlar_{{kelepir.id}}">{{kelepir.derece}}</span>
+                                    <span id="puanlar_{{forloop.counter}}" class="kel_puanlar btn btn-outline p-1" >{{kelepir.derece}}</span>
                                   </div>
                                   <div class="row">
-                                    <button id="dvb_{{kelepir.id}}" class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
+                                    <button class="btn btn-danger vote_action" id="dvb_{{forloop.counter}}" value="downvote_button"><i class="fas fa-minus"></i></button>
                                   </div>
                                 {% endif %}
                               {% else %}
@@ -202,6 +202,7 @@
           <div class="card mb-2" style="max-width: 1000px;">
             <h5>Maalesef, {{ request.GET.q }} arayışınızda birşey bulunmadı!</h5>
           </div>
+        </div>
       {% endfor %}
 
   </div>
@@ -225,10 +226,15 @@
       <script type="text/javascript">
       // JQUERY - AJAX SCRIPT FOR voting
       $(document).ready(function(){
-        {% for kelepir in kelepirler %}
         $('.vote_action').click(function(e) {
-          var maddeid = document.getElementById('kelepir_{{forloop.counter}}').getAttribute('data-value');
+          //get closest div
+          var selector = $(this).closest('div.herkelepir');
           var button = $(this).attr("value");
+          var counter = selector.find('.kel_puanlar').attr('id').split('_');
+          // get span data
+          var maddeid = selector.find("span[id=kelepir_"+counter[1]+"]").attr('data-value');
+
+          console.log("maddeID-->"+maddeid+"Button-->"+button+"counter[1]-->"+counter[1])
           e.preventDefault();
           $.ajax({
             type: 'POST',
@@ -244,14 +250,15 @@
               if (json.length < 1 || json == undefined) {
                 //empty
               }
-              document.getElementById("puanlar_{{forloop.counter}}").innerHTML = json['result'];
-              $("#uvb_{{forloop.counter}}").addClass("disabled");
-              $("#dvb_{{forloop.counter}}").addClass("disabled");
+              //selector.find('.kel_puanlar').text(json['result']);
+              $("#puanlar_"+counter[1]).text(json['result']);
+              $("#uvb_"+counter[1]).removeClass( "btn btn-success" ).addClass("btn btn-secondary disabled");
+              $("#dvb_"+counter[1]).removeClass( "btn btn-danger" ).addClass("btn btn-secondary disabled");
             },
             error: function(xhr, errmsg, err) {}
           })
         })
-        {% endfor %}
+
       })
       </script>
 {% endblock %}
