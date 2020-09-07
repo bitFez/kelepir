@@ -44,7 +44,7 @@
                                     <i class="fas fa-plus"></i></button>
                                 </div>
                                 <div class="row">
-                                  <button class="btn btn-outline" id="puanlar">{{kelepir.derece}}</span>
+                                  <button class="btn btn-outline p-1" id="puanlar_{{kelepir.id}}">{{kelepir.derece}}</span>
                                 </div>
                                 <div class="row">
                                   <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
@@ -53,19 +53,19 @@
 
                                 {% else %}
                                   <div class="row">
-                                    <span id="kelepir_{{forloop.counter}}" data-value="{{kelepir.id}}"></span>
-                                    <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
+                                    <span id="kelepir_{{kelepir.id}}" data-value="{{kelepir.id}}"></span>
+                                    <button id="uvb_{{kelepir.id}}" class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
                                   </div>
                                   <div class="row">
-                                    <span class="btn btn-outline" id="puanlar">{{kelepir.derece}}</span>
+                                    <span class="btn btn-outline p-1" id="puanlar_{{kelepir.id}}">{{kelepir.derece}}</span>
                                   </div>
                                   <div class="row">
-                                    <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
+                                    <button id="dvb_{{kelepir.id}}" class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
                                   </div>
                                 {% endif %}
                               {% else %}
                                 <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                                <span class="btn btn-outline" id="puanlar">%{{kelepir.derece}}</span>
+                                <span class="btn btn-outline p-1">%{{kelepir.derece}}</span>
                                 <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
                               {% endif %}
 
@@ -236,7 +236,7 @@
 
             data: {
               maddeid: maddeid,
-              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+              csrfmiddlewaretoken: '{{ csrf_token }}',
               action: 'postvote',
               button: button,
             },
@@ -244,7 +244,9 @@
               if (json.length < 1 || json == undefined) {
                 //empty
               }
-              document.getElementById("puanlar").innerHTML = json['result']
+              document.getElementById("puanlar_{{forloop.counter}}").innerHTML = json['result'];
+              $("#uvb_{{forloop.counter}}").addClass("disabled");
+              $("#dvb_{{forloop.counter}}").addClass("disabled");
             },
             error: function(xhr, errmsg, err) {}
           })
