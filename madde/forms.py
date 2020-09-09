@@ -74,11 +74,12 @@ class KuponForm(forms.Form):
             Submit('submit','Kuponu Paylaş')
         )
 
+'''
 class DealForm(forms.Form):
-    '''class Meta:
+    class Meta:
         model = Maddeler
         fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
-                    'son_tarih', 'online', 'diyar', 'w3w']'''
+                    'son_tarih', 'online', 'diyar', 'w3w']
 
     url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
     satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
@@ -132,20 +133,37 @@ class DealForm(forms.Form):
             'w3w',
             Submit('submit','Kelepiri Paylaş')
         )
+'''
 
 
-
-
-'''class DealForm(forms.ModelForm):
+class DealForm(forms.ModelForm):
     class Meta:
         model = Maddeler
-        url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
-        satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
-        fiyat = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}),min_value=0)
-        orjinalFiyat = forms.IntegerField(min_value=0, required=False, widget=forms.NumberInput(attrs={'placeholder': '200.00'}))
+        fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
+                    'son_tarih', 'online', 'diyar', 'w3w']
+        '''widgets = {
+            'baslik': forms.TextInput(
+				attrs={'class': 'form-control', 'placeholder': 'Örnek... Bayan elbise %30 indirimli'}
+				),
+            'url': forms.URLInput(
+				attrs={'class': 'form-control', 'placeholder': 'http://www.....'}
+				),
+            'satici': forms.TextInput(
+                attrs={'class': 'form-control','placeholder': 'Örnek... HepsiBurada'}
+                ),
+            'fiyat': forms.NumberInput(attrs={'class': 'form-control','placeholder': '99.00'}
+                ),
+
+			}'''
+
+
+        url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....', 'class': 'form-control'}))
+        satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada', 'class': 'form-control'}))
+        fiyat = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': '99.00', 'class': 'form-control',}),min_value=0)
+        orjinalFiyat = forms.IntegerField(min_value=0, required=False, widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': '200.00'}))
         kargo = forms.BooleanField(required=False)
         kupon = forms.CharField(required=False)
-        baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
+        baslik = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
         ayrintilar = forms.CharField(widget=CKEditorWidget())
         goruntu = forms.ImageField(required=False)
         katagori = forms.ModelMultipleChoiceField(
@@ -158,9 +176,7 @@ class DealForm(forms.Form):
         diyar =forms.ChoiceField(choices=SEHIRLER, required=False)
         w3w = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '///sultan.hurma.hisar'}))
 
-        fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
-                    'son_tarih', 'online', 'diyar', 'w3w']
-
+        '''
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.helper = FormHelper()
@@ -191,9 +207,4 @@ class DealForm(forms.Form):
                 'w3w',
                 Submit('submit','Kelepiri Paylaş')
             )
-'''
-'''class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        body = forms.CharField(widget=CKEditorWidget())
-        fields = ['body']'''
+            '''
