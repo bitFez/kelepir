@@ -5,7 +5,7 @@ from hesaplar.models import Kullanici
 from django import forms
 from .models import Maddeler, Katagoriler
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column, Div, HTML
+from crispy_forms.layout import Layout, Submit, Row, Column, Div, HTML, Field, ButtonHolder
 from crispy_forms.bootstrap import PrependedText, InlineRadios
 from ckeditor.widgets import CKEditorWidget
 
@@ -137,33 +137,76 @@ class DealForm(forms.Form):
 
 
 class DealForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DealForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-horizontal'
+        # NEW:
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-10'
+
+        self.helper.layout = Layout(
+                'baslik',
+                'ayrintilar',
+                PrependedText('url', '<span class="fas fa-globe"></span>'),
+                PrependedText('satici', '<span class="fas fa-store"></span>'),
+                Row(
+                    Column(PrependedText('fiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group offset-md-2 col-md-4 mb-0'),
+                    Column(PrependedText('orjinalFiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group offset-md-2 col-md-4 mb-0'),
+                    css_class='form-row'
+                ),
+                'kargo',
+                'kupon',
+                'goruntu',
+                'katagori',
+                Row(
+                    Column('bas_tarih', css_class='form-group offset-md-2 col-md-4 mb-0'),
+                    Column('son_tarih', css_class='form-group offset-md-2 col-md-4 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column('online', css_class='form-group col-md-6 mb-0'),
+                    Column('diyar', css_class='form-group col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                'w3w',
+                Submit('submit','Kelepiri Paylaş')
+            )
     class Meta:
         model = Maddeler
         fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
                     'son_tarih', 'online', 'diyar', 'w3w']
-        '''widgets = {
+        widgets = {
+            'baslik':forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}),
+            'url':forms.URLInput(attrs={'placeholder': 'http://www.....'}),
+            'satici': forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}),
+            'bas_tarih':forms.TextInput(attrs={'type': 'date'}),
+            'son_tarih':forms.TextInput(attrs={'type': 'date'}),
+            'fiyat': forms.NumberInput(attrs={'placeholder': '99.00'}),
+            'orjinalFiyat': forms.NumberInput(attrs={'placeholder': '200.00'}),
+
+        }
+        '''
+        widgets = {
             'baslik': forms.TextInput(
-				attrs={'class': 'form-control', 'placeholder': 'Örnek... Bayan elbise %30 indirimli'}
-				),
+				attrs={'class': 'form-control', 'placeholder': 'Örnek... Bayan elbise %30 indirimli'}),
             'url': forms.URLInput(
-				attrs={'class': 'form-control', 'placeholder': 'http://www.....'}
-				),
+				attrs={'class': 'form-control', 'placeholder': 'http://www.....'}),
             'satici': forms.TextInput(
-                attrs={'class': 'form-control','placeholder': 'Örnek... HepsiBurada'}
-                ),
-            'fiyat': forms.NumberInput(attrs={'class': 'form-control','placeholder': '99.00'}
-                ),
+                attrs={'class': 'form-control','placeholder': 'Örnek... HepsiBurada'}),
+            'fiyat': forms.NumberInput(attrs={'class': 'form-control','placeholder': '99.00'}),
+            'orjinalFiyat': forms.NumberInput(attrs={'class': 'form-control','placeholder': '200.00'}),
+            'kargo':forms.BooleanField(),
+			}
 
-			}'''
 
-
-        url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....', 'class': 'form-control'}))
-        satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada', 'class': 'form-control'}))
-        fiyat = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': '99.00', 'class': 'form-control',}),min_value=0)
-        orjinalFiyat = forms.IntegerField(min_value=0, required=False, widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': '200.00'}))
+        url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
+        satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
+        fiyat = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}),min_value=0)
+        orjinalFiyat = forms.IntegerField(min_value=0, required=False, widget=forms.NumberInput(attrs={'placeholder': '200.00'}))
         kargo = forms.BooleanField(required=False)
         kupon = forms.CharField(required=False)
-        baslik = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
+        baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
         ayrintilar = forms.CharField(widget=CKEditorWidget())
         goruntu = forms.ImageField(required=False)
         katagori = forms.ModelMultipleChoiceField(
@@ -176,7 +219,7 @@ class DealForm(forms.ModelForm):
         diyar =forms.ChoiceField(choices=SEHIRLER, required=False)
         w3w = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '///sultan.hurma.hisar'}))
 
-        '''
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.helper = FormHelper()

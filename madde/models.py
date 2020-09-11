@@ -22,7 +22,7 @@ class Katagoriler(models.Model):
 # Create your models here.
 class Maddeler(models.Model):
     paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
-    url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>')
+    url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi paylaşın</small>')
     satici = models.CharField(max_length=200, blank=True)
     fiyat = models.DecimalField(max_digits=8, decimal_places=2, help_text='İndirimli fıyat')
     orjinalFiyat = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, help_text='Orjinal fiyat', verbose_name='orjinal Fiyatı')
