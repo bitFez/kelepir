@@ -44,7 +44,6 @@ SEHIRLER = (("---","---"),("Adana","Adana"), ("Adıyaman","Adıyaman"), ("Afyonk
 ("Siirt","Siirt"), ("Sinop","Sinop"), ("Şırnak","Şırnak"), ("Sivas","Sivas"), ("Tekirdağ","Tekirdağ"), ("Tokat","Tokat"), ("Trabzon","Trabzon"), ("Tunceli","Tunceli"), ("Uşak","Uşak"), ("Van","Van"),
 ("Yalova","Yalova"), ("Yozgat","Yozgat"), ("Zonguldak","Zonguldak"))
 
-
 class KuponForm(forms.Form):
     baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
     ayrintilar = forms.CharField(widget=CKEditorWidget())
@@ -74,180 +73,14 @@ class KuponForm(forms.Form):
             Submit('submit','Kuponu Paylaş')
         )
 
-'''
-class DealForm(forms.Form):
-    class Meta:
-        model = Maddeler
-        fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
-                    'son_tarih', 'online', 'diyar', 'w3w']
-
-    url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
-    satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
-    fiyat = forms.DecimalField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}), min_value=0)
-    orjinalFiyat = forms.DecimalField(min_value=0, required=False, widget=forms.NumberInput(attrs={'placeholder': '200.00'}))
-    kargo = forms.BooleanField(required=False)
-    kupon = forms.CharField(required=False)
-    baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
-    ayrintilar = forms.CharField(widget=CKEditorWidget())
-    goruntu = forms.ImageField(required=False)
-    katagori = forms.ModelChoiceField(
-        queryset=Katagoriler.objects.all().order_by('kategori'),
-        widget=forms.RadioSelect,
-        required=True)
-    bas_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),required=False)
-    son_tarih = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
-    online = forms.BooleanField(required=False)
-    diyar =forms.ChoiceField(choices=SEHIRLER, required=False)
-    w3w = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '///sultan.hurma.hisar'}))
-
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            'baslik',
-            'ayrintilar',
-            PrependedText('url', '<span class="fas fa-globe"></span>'),
-            PrependedText('satici', '<span class="fas fa-store"></span>'),
-            Row(
-                Column(PrependedText('fiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group col-md-3 mb-0'),
-                Column(PrependedText('orjinalFiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group col-md-3 mb-0'),
-                css_class='form-row'
-            ),
-            'kargo',
-            'kupon',
-            'goruntu',
-            Row(
-                InlineRadios('katagori', css_class="custom-control-input")),
-            Row(
-                Column('bas_tarih', css_class='form-group col-md-6 mb-0'),
-                Column('son_tarih', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('online', css_class='form-group col-md-6 mb-0'),
-                Column('diyar', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            'w3w',
-            Submit('submit','Kelepiri Paylaş')
-        )
-'''
-
-
 class DealForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(DealForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_class = 'form-horizontal'
-        # NEW:
-        self.helper.label_class = 'col-sm-2'
-        self.helper.field_class = 'col-sm-10'
-
-        self.helper.layout = Layout(
-                'baslik',
-                'ayrintilar',
-                PrependedText('url', '<span class="fas fa-globe"></span>'),
-                PrependedText('satici', '<span class="fas fa-store"></span>'),
-                Row(
-                    Column(PrependedText('fiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group offset-md-2 col-md-4 mb-0'),
-                    Column(PrependedText('orjinalFiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group offset-md-2 col-md-4 mb-0'),
-                    css_class='form-row'
-                ),
-                'kargo',
-                'kupon',
-                'goruntu',
-                'katagori',
-                Row(
-                    Column('bas_tarih', css_class='form-group offset-md-2 col-md-4 mb-0'),
-                    Column('son_tarih', css_class='form-group offset-md-2 col-md-4 mb-0'),
-                    css_class='form-row'
-                ),
-                Row(
-                    Column('online', css_class='form-group col-md-6 mb-0'),
-                    Column('diyar', css_class='form-group col-md-6 mb-0'),
-                    css_class='form-row'
-                ),
-                'w3w',
-                Submit('submit','Kelepiri Paylaş')
-            )
+    katagori = forms.ModelChoiceField(queryset=Katagoriler.objects.all(), initial=0)
+    diyar = forms.ChoiceField(required=False, choices=SEHIRLER)
     class Meta:
         model = Maddeler
         fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
                     'son_tarih', 'online', 'diyar', 'w3w']
         widgets = {
-            'baslik':forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}),
-            'url':forms.URLInput(attrs={'placeholder': 'http://www.....'}),
-            'satici': forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}),
-            'bas_tarih':forms.TextInput(attrs={'type': 'date'}),
-            'son_tarih':forms.TextInput(attrs={'type': 'date'}),
-            'fiyat': forms.NumberInput(attrs={'placeholder': '99.00'}),
-            'orjinalFiyat': forms.NumberInput(attrs={'placeholder': '200.00'}),
-
+        'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+        'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
         }
-        '''
-        widgets = {
-            'baslik': forms.TextInput(
-				attrs={'class': 'form-control', 'placeholder': 'Örnek... Bayan elbise %30 indirimli'}),
-            'url': forms.URLInput(
-				attrs={'class': 'form-control', 'placeholder': 'http://www.....'}),
-            'satici': forms.TextInput(
-                attrs={'class': 'form-control','placeholder': 'Örnek... HepsiBurada'}),
-            'fiyat': forms.NumberInput(attrs={'class': 'form-control','placeholder': '99.00'}),
-            'orjinalFiyat': forms.NumberInput(attrs={'class': 'form-control','placeholder': '200.00'}),
-            'kargo':forms.BooleanField(),
-			}
-
-
-        url = forms.URLField(required=False, widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
-        satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
-        fiyat = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': '99.00'}),min_value=0)
-        orjinalFiyat = forms.IntegerField(min_value=0, required=False, widget=forms.NumberInput(attrs={'placeholder': '200.00'}))
-        kargo = forms.BooleanField(required=False)
-        kupon = forms.CharField(required=False)
-        baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
-        ayrintilar = forms.CharField(widget=CKEditorWidget())
-        goruntu = forms.ImageField(required=False)
-        katagori = forms.ModelMultipleChoiceField(
-            queryset=Katagoriler.objects,
-            widget=forms.CheckboxSelectMultiple,
-            required=True)
-        bas_tarih = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
-        son_tarih = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
-        online = forms.BooleanField(required=False)
-        diyar =forms.ChoiceField(choices=SEHIRLER, required=False)
-        w3w = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '///sultan.hurma.hisar'}))
-
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.helper = FormHelper()
-            self.helper.layout = Layout(
-                'baslik',
-                'ayrintilar',
-                PrependedText('url', '<span class="fas fa-globe"></span>'),
-                PrependedText('satici', '<span class="fas fa-store"></span>'),
-                Row(
-                    Column(PrependedText('fiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group col-md-3 mb-0'),
-                    Column(PrependedText('orjinalFiyat', '<span class="fas fa-lira-sign"></span>'), css_class='form-group col-md-3 mb-0'),
-                    css_class='form-row'
-                ),
-                'kargo',
-                'kupon',
-                'goruntu',
-                'katagori',
-                Row(
-                    Column('bas_tarih', css_class='form-group col-md-6 mb-0'),
-                    Column('son_tarih', css_class='form-group col-md-6 mb-0'),
-                    css_class='form-row'
-                ),
-                Row(
-                    Column('online', css_class='form-group col-md-6 mb-0'),
-                    Column('diyar', css_class='form-group col-md-6 mb-0'),
-                    css_class='form-row'
-                ),
-                'w3w',
-                Submit('submit','Kelepiri Paylaş')
-            )
-            '''

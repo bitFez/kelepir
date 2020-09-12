@@ -4,7 +4,16 @@
 {% block content %}
 
   <h1>Kupon Paylaşma Forması</h1>
+
   <br>
-  <hr>
-  {% crispy form %}
+
+    <br><hr>
+    <form action="{% url 'kpaylas' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form | crispy }}
+
+      <input type="submit" class="btn btn-primary btn-lg" value="Kuponu Paylaş" />
+    </form>
+
+  <br>
 {% endblock %}

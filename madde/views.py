@@ -194,56 +194,34 @@ def edit_profile(request):
 @login_required(login_url="login/")
 def submitdeal(request):
     form = DealForm()
+
     if request.method == 'POST':
         form = DealForm(request.POST, request.FILES)
-        #form = ReviewForm(request.POST, request.DATA or None, instance=request.user)
-        if form.is_valid():
-            #kullanici = Kullanici.objects.get(id=request.user.id)
-            madde = Maddeler.objects.create(
-                paylasan = request.user,
-                bas_tarih = form.cleaned_data.get("bas_tarih"),
-                son_tarih = form.cleaned_data.get("son_tarih"),
-                diyar = form.cleaned_data.get("diyar"),
-                url = form.cleaned_data.get("url"),
-                satici = form.cleaned_data.get("satici"),
-                fiyat = form.cleaned_data.get("fiyat"),
-                orjinalFiyat = form.cleaned_data.get("orjinalFiyat"),
-                kargo = form.cleaned_data.get("kargo"),
-                kupon = form.cleaned_data.get("kupon"),
-                baslik = form.cleaned_data.get("baslik"),
-                ayrintilar = form.cleaned_data.get("ayrintilar"),
-                goruntu = form.cleaned_data.get("goruntu"),
-                #katagori = form.cleaned_data.get("katagori"),
-                online = form.cleaned_data.get("online"),
-                w3w = form.cleaned_data.get("w3w")
-            )
 
-            #madde.save(commit=False) # dont save juts yet!
-            #madde.paylasan = request.user.id # attach author to the instance of the deal
-            madde.katagori = form.cleaned_data.get("katagori")
-            madde.save() # now save it with the author attached!
+        if form.is_valid():
+            submission = form.save(commit=False) # Dont save just yet
+            submission.paylasan = request.user
+            submission.save()
             return redirect('index')
         else:
             form = DealForm()
-
     return render(request, 'madde/paylasforma.html', {'form':form})
+
 
 @login_required(login_url="login/")
 def submitkupon(request):
     form = KuponForm()
+
     if request.method == 'POST':
-        form = KuponForm(request.POST, request.FILES)
-        #form = ReviewForm(request.POST, request.DATA or None, instance=request.user)
+        form = DealForm(request.POST, request.FILES)
+
         if form.is_valid():
-            kullanici = Kullanici.objects.get(id=request.user.id)
-            madde = form.save(commit=False) # dont save juts yet!
-            madde.paylasan = kullanici # attach author to the instance of the review
-
-            madde.save() # now save it with the author attached!
-            return redirect('index')
+            submission = form.save(commit=False) # Dont save just yet
+            submission.paylasan = request.user
+            submission.save()
+            return redirect('kuponlar')
         else:
-            form = KuponForm()
-
+            form = DealForm()
     return render(request, 'madde/kuponforma.html', {'form':form})
 
 

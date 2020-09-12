@@ -7,7 +7,13 @@
 <br>
 
   <br><hr>
-  {% crispy form %}
+  <form action="{% url 'paylas' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form | crispy }}
+
+    <input type="submit" class="btn btn-primary btn-lg" value="Kelepiri Paylaş" />
+  </form>
+
 <br>
 <br>
 {% endblock %}
