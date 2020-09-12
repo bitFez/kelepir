@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from hesaplar.models import Kullanici
 from django import forms
-from .models import Maddeler, Katagoriler
+from .models import Maddeler, Katagoriler, Kuponlar
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Div, HTML, Field, ButtonHolder
 from crispy_forms.bootstrap import PrependedText, InlineRadios
@@ -44,34 +44,15 @@ SEHIRLER = (("---","---"),("Adana","Adana"), ("Adıyaman","Adıyaman"), ("Afyonk
 ("Siirt","Siirt"), ("Sinop","Sinop"), ("Şırnak","Şırnak"), ("Sivas","Sivas"), ("Tekirdağ","Tekirdağ"), ("Tokat","Tokat"), ("Trabzon","Trabzon"), ("Tunceli","Tunceli"), ("Uşak","Uşak"), ("Van","Van"),
 ("Yalova","Yalova"), ("Yozgat","Yozgat"), ("Zonguldak","Zonguldak"))
 
-class KuponForm(forms.Form):
-    baslik = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... Bayan elbise %30 indirimli'}))
-    ayrintilar = forms.CharField(widget=CKEditorWidget())
-    url = forms.URLField(widget=forms.TextInput(attrs={'placeholder': 'http://www.....'}))
-    satici = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Örnek... HepsiBurada'}))
+class KuponForm(forms.ModelForm):
     kuponCesiti = forms.ChoiceField(choices=KUPON_CESIT)
-    kupon = forms.CharField(widget=forms.TextInput())
-    bas_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
-    son_tarih = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            'baslik',
-            'ayrintilar',
-            PrependedText('url', '<span class="fas fa-globe"></span>'),
-            PrependedText('satici', '<span class="fas fa-store"></span>'),
-            'kuponCesiti',
-            PrependedText('kupon', '<span class="fas fa-hand-scissors></span>'),
-            Row(
-                Column('bas_tarih', css_class='form-group col-md-6 mb-0'),
-                Column('son_tarih', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-
-            Submit('submit','Kuponu Paylaş')
-        )
+    class Meta:
+        model = Kuponlar
+        fields = ['baslik', 'ayrintilar', 'url', 'satici', 'kuponCesiti', 'kupon', 'bas_tarih','son_tarih']
+        widgets = {
+            'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+            'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+        }
 
 class DealForm(forms.ModelForm):
     katagori = forms.ModelChoiceField(queryset=Katagoriler.objects.all(), initial=0)
@@ -81,6 +62,6 @@ class DealForm(forms.ModelForm):
         fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
                     'son_tarih', 'online', 'diyar', 'w3w']
         widgets = {
-        'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
-        'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+            'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+            'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
         }

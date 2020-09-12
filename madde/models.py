@@ -63,7 +63,7 @@ class Maddeler(models.Model):
 
 KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
 
-class Kuponlar:
+class Kuponlar(models.Model):
     paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>',)
     satici = models.CharField(max_length=200, blank=True)
@@ -74,7 +74,20 @@ class Kuponlar:
     bas_tarih = models.DateField(blank=True, null=True,verbose_name='İndirimin Başlangıç Tarihi')
     son_tarih = models.DateField(blank=True, null=True, verbose_name='İndirimin bitme tarihi')
     duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
+    derece = models.IntegerField(default='0', null=True, blank=True)
     aktif = models.BooleanField(default=True)
+    bookmarked = models.ManyToManyField(User, related_name='bookmarked_coupons', default=None, blank=True)
+    tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call_coupons', default=None, blank=True)
+    oylar = models.IntegerField(default=0, null=True, blank=True)
+    oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes_coupons")
+    allow_comments = models.BooleanField('allow comments', default=True)
+
+    def __str__(self):
+        return f"{self.id}, {self.baslik}"
+
+    def get_absolute_url(self):
+        """Returns the url to access a particular product detail (kupon_detay)."""
+        return reverse('kupon_detay', args=[str(self.id)])
 
 class Votes(models.Model):
     kullanici = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -13,32 +13,41 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar-list">
           <ul class="navbar-nav h-100">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Tümü</a>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-shopping-basket"></i> kelepirler!
+              </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/"><i class="fas fa-tag"></i> Tümü</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'ensicakkel' %}">En Yüksek puanlı</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'newdeals' %}">En Yeni</a>
+                </div>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'ensicakkel' %}">Yüksek</a>
+
+
+          <ul class="navbar-nav h-100">
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-barcode"></i> Kuponlar!
+              </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{% url 'kuponlarindeksi' %}"><i class="fas fa-tag"></i> Tümü</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'ensicakkel' %}">En Yüksek puanlı</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'newdeals' %}">En Yeni</a>
+                </div>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'newdeals' %}">Yeni</a>
-            </li>
-            <!--
-            <li class="nav-item">
-              <a class="nav-link" href="#">Kuponlar</a>
-            </li>
-          -->
           </ul>
-          <div class="right-side d-flex h-100">
-            <form class="form-inline my-2 my-lg-0" action="{% url 'index' %}">
-              <input class="form-control mr-2" type="search" placeholder="Ara" aria-label="Ara" name='q'>
-              <button class="btn btn-secondary-lg my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
 
 
         <!-- Right side -->
 
-          <ul class="navbar-nav d-lg-flex align-items-center">
+          <ul class="navbar-nav d-lg-flex align-items-right">
             {% if user.is_authenticated %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,7 +56,7 @@
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{% url 'paylas' %}"><i class="fas fa-tag"></i> Kelepir Paylaş</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'kpaylas' %}"><i class="fas fa-hashtag"></i> Kupon Paylaş</a>
+                    <a class="dropdown-item" href="{% url 'kpaylas' %}"><i class="fas fa-barcode"></i> Kupon Paylaş</a>
                   </div>
               </li>
               <li class="nav-item dropdown">

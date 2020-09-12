@@ -141,6 +141,19 @@ def madde_detay(request, pk):
     context = {'madde':madde,'bookmarked':bookmarked, 'comments':comments, 'pdiff':pdiff}
     return render(request, 'madde/maddeler_detail.html', context)
 
+def kupon_detay(request, pk):
+    kupon = get_object_or_404(Kuponlar, pk=pk)
+    comments = XtdComment.objects.filter(object_pk=kupon.id)
+
+    ### Bookmarks
+    bookmarked = False
+    if kupon.bookmarked.filter(id=request.user.id).exists():
+        bookmarked = True
+    else:
+        bookmarked = False
+
+    context = {'kupon':kupon,'bookmarked':bookmarked, 'comments':comments, }
+    return render(request, 'madde/kuponlar_detail.html', context)
 
 def registration(request):
     form = CreateUserForm()

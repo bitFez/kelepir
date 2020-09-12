@@ -1,0 +1,310 @@
+{% extends 'temel.html' %}
+{% load static %}
+{% load social_share %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load comments %}
+{% load comments_xtd %}
+{% block content %}
+<br>
+<h1>{{kupon.baslik}}</h1>
+<br>
+{% if kupon.aktif == True %}
+<div class="card mb-12" style="max-width: 1000px;">
+  <div class="row no-gutters">
+    <div class="col-md-3">
+      <img src="{{kupon.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
+    </div>
+    <div class="col-md-9">
+      <div class="card-body">
+        <div class="container-fluid">
+        	<div class="row">
+        		<div class="col-md-12">
+        			<div class="row">
+                <!-- Voting Buttons -->
+        				<div class="col-md-1">
+
+                    {% if request.user.is_authenticated %}
+                    {% if request.user in kupon.oyveren.all %}
+                      <div class="row">
+                        <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kupona oy vermişsiniz" role="button">
+                          <i class="fas fa-plus"></i></button>
+                      </div>
+                      <div class="row">
+                        <button class="btn btn-outline" id="puanlar">{{kupon.derece}}</span>
+                      </div>
+                      <div class="row">
+                        <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kupona oy vermişsiniz" role="button">
+                          <i class="fas fa-minus"></i></button>
+                      </div>
+
+                    {% else %}
+                      <div class="row">
+                        <span id="vote_id" data-value="{{kupon.id}}"></span>
+                        <button class="btn btn-success vote_action" value="upvote_button"><i class="fas fa-plus"></i></button>
+                      </div>
+                      <div class="row">
+                        <span class="btn btn-outline" id="puanlar">{{kupon.derece}}</span>
+                      </div>
+                      <div class="row">
+                        <button class="btn btn-danger vote_action" value="downvote_button"><i class="fas fa-minus"></i></button>
+                      </div>
+                    {% endif %}
+                  {% else %}
+                    <div class="row">
+                      <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="row">
+                      <span class="btn btn-outline" id="puanlar">{{kupon.derece}}</span>
+                    </div>
+                    <div class="row">
+                      <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
+                    </div>
+                  {% endif %}
+
+        				</div>
+
+                <!-- To the right of the buttons -->
+        				<div class="card col-md-11">
+                  <div class="card-body">
+                    <div class="col-md-8 float-left">
+                      <div class="row">
+
+                          <div class="col md-3 float-left">
+                            <small>
+                            {% if kupon.son_tarih %} <i class="far fa-calendar-times"></i> Tükenme tarihi:<br>{{ kupon.son_tarih|date:"SHORT_DATE_FORMAT" }}{% endif %}
+                          </small>
+                          </div>
+                          <div class="col md-2 float-middle">
+                            <small>
+                              {% if kupon.bas_tarih %} <i class="far fa-calendar-alt"></i> Başlangıç tarihi:<br>{{kupon.bas_tarih|date:"SHORT_DATE_FORMAT"}}{% endif %}
+                            </small>
+                          </div>
+                          <div class="col md-2 float-right">
+                            <small>
+                              <i class="fas fa-calendar-day"></i> Paylaşma Tarihi: <br>{{kupon.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
+                            </small>
+                          </div>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-2 float-right">
+                      <small class="text-muted"><i class="fas fa-bullhorn"></i><br>{{kupon.duyurmaTarihi|timesince}}<br>duyuruldu</small>
+                    </div>
+                  </div>
+
+        				</div>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+
+        <div class="d-flex bd-highlight">
+
+        		<div class="flex-grow-1 bd-highlight">
+              <br> <p class="card-text"><strong><a href="{% url 'profil_detay' madde.paylasan.id %}">{{kupon.paylasan}}</a></strong></p>
+        		</div>
+            <div class="p-2 bd-highlight">
+              {% if request.user.is_authenticated %}
+                  {% if bookmarked %}
+                    <a href="{% url 'bookmark_coupon' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                  {% else %}
+                    <a href="{% url 'bookmark_coupon' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                  {% endif %}
+              {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+              {% endif %}
+            </div>
+        		<div class="p-2 bd-highlight">
+              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{comments.count}}</a>
+        		</div>
+        		<div class="p-2 bd-highlight">
+              <a href="{{kupon.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+        		</div>
+
+            </div>
+            <p class="card-text">{{kupon.ayrintilar|safe}}</p>
+            <hr>
+
+            <div class="row">
+              <div class="col-4">
+                <h5>Paylaş</h5>
+                <div class="row">
+                  {% post_to_facebook object_or_url "Post to Facebook!" %}
+                  {% post_to_twitter "Yeni bi kupon!: {{kupon.baslik}}. Check it out!" object_or_url "Twitter'e paylaş" %}
+                  {% post_to_gplus object_or_url "Post to Google+!" %}
+                  {% post_to_reddit "Yeni bi kupon!: {{kupon.baslik}}" object_or_url %}
+                  {% post_to_telegram "Yeni bi kupon!: {{kupon.baslik}}" object_or_url %}
+                  {% post_to_whatsapp object_or_url "Share via WhatsApp" %}
+
+                </div>
+              </div>
+
+              <div class="col-8">
+                <div class="row">
+                  <div class="text-left col-md">
+                    <a href="#commentsarea" class="btn btn-outline btn-lg"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
+                  </div>
+                  <div class="text-left col-md">
+                    {% if request.user.is_authenticated %}
+                      <a href="{% url 'expire' kupon.id %}" class="btn btn-outline btn-lg"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
+                    {% else %}
+                      <a href="{% url 'login' %}" class="btn btn-outline btn-lg"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
+                    {% endif %}
+                  </div>
+                  <div class="text-left col-md">
+                    <a href="#" class="btn btn-outline btn-lg"><i class="fas fa-flag"></i> İhbar et</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="card mb-12" style="max-width: 1000px;">
+      <div class="row no-gutters">
+        <div class="col-md-3">
+          <img src="{{kupon.goruntu.url}}" style="width: 100%; height: 15vw; opacity: 0.5" class="card-img image-fluid">
+        </div>
+        <div class="col-md-9">
+          <div class="card-body text-secondary">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <button type="button" class="btn btn-outline-secondary btn" disabled>{{ kupon.derece }}° <i class="fas fa-hourglass-end"></i> kupon tükendi</button>
+                    </div>
+                    <div class="col-md-7">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+
+            <div class="card">
+              <div class="card-body">
+                <p class="text-muted">kupon tükendi</p>
+                {% if kupon.son_tarih %} <i class="far fa-calendar-times"></i> {{ kupon.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kupon tükenir {% endif %}
+                {% if kupon.bas_tarih %} <i class="far fa-calendar-alt"></i> {{kupon.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşım Tarihi {{maddeler.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
+              </div>
+            </div>
+
+            <div class="d-flex bd-highlight">
+
+                <div class="flex-grow-1 bd-highlight">
+                  <br> <p class="card-text"><strong>{{kupon.paylasan}}</strong></p>
+                </div>
+                <div class="p-2 bd-highlight">
+                  {% if request.user.is_authenticated %}
+                      {% if bookmarked %}
+                        <a href="{% url 'bookmark_coupon' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                      {% else %}
+                        <a href="{% url 'bookmark_coupon' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                      {% endif %}
+                  {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                  {% endif %}
+                </div>
+                <div class="p-2 bd-highlight">
+                  <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{comments.count}}</a>
+                </div>
+                <div class="p-2 bd-highlight">
+                  <a href="{{kupon.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
+                </div>
+
+                </div>
+                <p class="card-text">{{kupon.ayrintilar|safe}}</p>
+                <hr>
+                {% include 'shareto.html' %}
+                <hr>
+
+                <div class="row">
+                  <div class="text-left col-md-3">
+                    <a href="#commentsarea"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
+                  </div>
+                  <div class="text-left col-md-3">
+                    <a href="#"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
+                  </div>
+                  <div class="text-left col-md-3">
+                    <a href="#"><i class="fas fa-flag"></i> İhbar et</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endif %}
+    <div class="card mb-12" style="max-width: 1000px;">
+      <div class="row no-gutters">
+      <div class="card-body">
+
+
+        <!-- comments -->
+        <a id="commentsarea"></a>
+
+        <h5>Şu teslime, {{comments.count}} yorum var. </h5>
+        <br>
+        <hr>
+        {% if kupon.allow_comments %}
+          <div class="comment">
+            <h5 class="text-center">Post your comment</h5>
+            <div class="well my-4">
+              {% render_comment_form for kupon %}
+            </div>
+          </div>
+        {% else %}
+          <h5 class="text-center">comments are disabled for this article</h5>
+        {% endif %}
+
+        <hr>
+        <h2>Top Comments</h2>
+        <div class="">
+
+        </div>
+
+        <hr>
+        <div class="">
+          {% render_xtdcomment_tree for kupon allow_flagging allow_feedback show_feedback  %}
+        </div>
+
+        <script type="text/javascript">
+
+          // JQUERY - AJAX SCRIPT FOR voting
+          $(document).ready(function(){
+            $('.vote_action').click(function(e) {
+              var kuponid = document.getElementById('vote_id').getAttribute('data-value');
+              var button = $(this).attr("value");
+              e.preventDefault();
+              $.ajax({
+                type: 'POST',
+                url: '{% url "vote" %}',
+
+                data: {
+                  kuponid: kuponid,
+                  csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                  action: 'postvote',
+                  button: button,
+                },
+                success: function(json){
+                  if (json.length < 1 || json == undefined) {
+                    //empty
+                  }
+                  document.getElementById("puanlar").innerHTML = json['result']
+                },
+                error: function(xhr, errmsg, err) {}
+              })
+            })
+          })
+        </script>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

@@ -202,10 +202,13 @@
           <div class="card mb-2" style="max-width: 1000px;">
             <h5>Maalesef, {{ request.GET.q }} arayışınızda birşey bulunmadı!</h5>
           </div>
-        </div>
-      {% endfor %}
 
-  </div>
+          </div>
+        {% endfor %}
+
+
+
+  </div> <!-- Sol kolon sonu  -->
 
   <!-- Main page sidebar -->
   <div class="col-sm-3">
@@ -221,8 +224,10 @@
       {% endfor %}
     </ul>
 
-  </div>
-  </div>
+  </div> <!-- Sag kolon sonu -->
+</div> <!-- End of row for both columns -->
+
+
       <script type="text/javascript">
       // JQUERY - AJAX SCRIPT FOR voting
       $(document).ready(function(){
