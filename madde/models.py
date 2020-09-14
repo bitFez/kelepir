@@ -41,6 +41,7 @@ class Maddeler(models.Model):
     kaynamavakti = models.DateTimeField(null=True, blank=True, auto_now=False, auto_now_add=False)
     bookmarked = models.ManyToManyField(User, related_name='bookmarked', default=None, blank=True)
     tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call', default=None, blank=True)
+    tukenmisSayi = models.IntegerField(default=0, null=True, blank=True)
     aktif = models.BooleanField(default=True)
     oylar = models.IntegerField(default=0, null=True, blank=True)
     oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes")
@@ -71,6 +72,7 @@ class Kuponlar(models.Model):
     kuponCesiti = models.CharField(null=True, max_length=50, choices=KUPON_CESIT, verbose_name='Küpon çeşiti')
     baslik = models.CharField(max_length=300, help_text='Kısa bir tanımlayıcı başlık', verbose_name='Başlık')
     ayrintilar = RichTextField(help_text='Kelepiri kendi sözlerinizle anlatın ve neden kaçılmaz fırsat olduğunu başkalarına açıklayın.' ,verbose_name='Detaylı ayrıntılar')
+    goruntu = models.ImageField(upload_to='kupon_goruntuleri', null=True, blank=True, default="madde_goruntuleri/shopping.jpg", help_text='bir resim yüklemek, başkalarının anlaşmayı daha iyi anlamasına yardımcı olur', verbose_name='Görüntü')
     bas_tarih = models.DateField(blank=True, null=True,verbose_name='İndirimin Başlangıç Tarihi')
     son_tarih = models.DateField(blank=True, null=True, verbose_name='İndirimin bitme tarihi')
     duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
@@ -78,6 +80,7 @@ class Kuponlar(models.Model):
     aktif = models.BooleanField(default=True)
     bookmarked = models.ManyToManyField(User, related_name='bookmarked_coupons', default=None, blank=True)
     tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call_coupons', default=None, blank=True)
+    tukenmisSayi = models.IntegerField(default=0, null=True, blank=True)
     oylar = models.IntegerField(default=0, null=True, blank=True)
     oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes_coupons")
     allow_comments = models.BooleanField('allow comments', default=True)

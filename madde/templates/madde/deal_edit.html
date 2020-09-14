@@ -1,0 +1,20 @@
+{% extends 'temel.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1>Kelepir Güncelleme Forması</h1>
+<br>
+
+  <br><hr>
+  <form action="{% url 'paylas' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ edit_form | crispy }}
+
+    <input type="submit" class="btn btn-primary btn-lg" value="Kelepiri Güncelle" />
+  </form>
+
+<br>
+<br>
+{% endblock %}
+<script src="https://assets.what3words.com/sdk/v3/what3words.js?key=OVTORHOM"></script>

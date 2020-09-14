@@ -43,3 +43,8 @@
 .nav-link:hover{
 
 }
+
+/* Style the input container */
+.topnav .login-container {
+  float: right;
+}

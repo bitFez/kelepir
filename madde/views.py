@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 from django.db.models import Q, F
-from . forms import CreateUserForm, DealForm, KuponForm, UserEditForm, ProfileEditForm
+from . forms import CreateUserForm, DealForm, KuponForm, UserEditForm, ProfileEditForm, DealEditForm
 import urllib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
@@ -58,6 +58,17 @@ def newdeals(request):
     katagoriler = Katagoriler.objects
     #yorumlar = Comment.objects.filter(active=True)
     h1 = 'En Yeni Kelepirleri'
+    one_week_ago = datetime.today() - timedelta(days=7)
+    haftanin = Maddeler.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
+
+    # This section is for the search bar!
+    query = request.GET.get('q')
+    if query:
+        kelepirler = Maddeler.objects.filter(aktif=True).filter(
+            Q(baslik__icontains=query)|
+            Q(paylasan__username=query)|
+            Q(ayrintilar__icontains=query)
+            )
     context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
@@ -66,15 +77,73 @@ def hottestdeals(request):
     katagoriler = Katagoriler.objects
     #yorumlar = Comment.objects.filter(active=True)
     h1 = 'Kaynayan Kelepirler'
+    one_week_ago = datetime.today() - timedelta(days=7)
+    haftanin = Maddeler.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
+
+    # This section is for the search bar!
+    query = request.GET.get('q')
+    if query:
+        kelepirler = Maddeler.objects.filter(aktif=True).filter(
+            Q(baslik__icontains=query)|
+            Q(paylasan__username=query)|
+            Q(ayrintilar__icontains=query)
+            )
     context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1}
     return render(request, 'madde/index.html', context)
 
 def kuponlarindeksi(request):
-    kuponlar = Kuponlar.objects
+    kuponlar = Kuponlar.objects.all
+    h1 = 'Günün Kuponları'
 
-    context = {'kuponlar':kuponlar}
+    one_week_ago = datetime.today() - timedelta(days=7)
+    haftanin = Kuponlar.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
+
+    # This section is for the search bar!
+    query = request.GET.get('q')
+    if query:
+        kelepirler = Kuponlar.objects.filter(aktif=True).filter(
+            Q(baslik__icontains=query)|
+            Q(paylasan__username=query)|
+            Q(ayrintilar__icontains=query)
+            )
+    context = {'kuponlar':kuponlar,'h1':h1, 'haftanin':haftanin,}
     return render(request, 'madde/kuponlarindeksi.html', context)
 
+def ateslikuponlar(request):
+    kuponlar = Kuponlar.objects.order_by('-derece')
+    h1 = 'En Yüksek puanlı Kuponlar'
+
+    one_week_ago = datetime.today() - timedelta(days=7)
+    haftanin = Kuponlar.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
+
+    # This section is for the search bar!
+    query = request.GET.get('q')
+    if query:
+        kelepirler = Kuponlar.objects.filter(aktif=True).filter(
+            Q(baslik__icontains=query)|
+            Q(paylasan__username=query)|
+            Q(ayrintilar__icontains=query)
+            )
+    context = {'kuponlar':kuponlar,'h1':h1, 'haftanin':haftanin,}
+    return render(request, 'madde/kuponlarindeksi.html', context)
+
+def yenikuponlar(request):
+    kuponlar = Kuponlar.objects.order_by('-duyurmaTarihi')
+    h1 = 'En Yeni Kuponlar'
+
+    one_week_ago = datetime.today() - timedelta(days=7)
+    haftanin = Kuponlar.objects.filter(duyurmaTarihi__gte=one_week_ago).order_by('-derece')
+
+    # This section is for the search bar!
+    query = request.GET.get('q')
+    if query:
+        kelepirler = Kuponlar.objects.filter(aktif=True).filter(
+            Q(baslik__icontains=query)|
+            Q(paylasan__username=query)|
+            Q(ayrintilar__icontains=query)
+            )
+    context = {'kuponlar':kuponlar,'h1':h1, 'haftanin':haftanin,}
+    return render(request, 'madde/kuponlarindeksi.html', context)
 
 @login_required
 def product_vote(request):
@@ -105,6 +174,38 @@ def product_vote(request):
         # return result
         madde.refresh_from_db()
         result = madde.derece
+        return JsonResponse({'result':result})
+    pass
+
+@login_required
+def coupon_vote(request):
+    if request.POST.get('action') == 'postvote':
+        # get information from request about what item id it is
+        id = int(request.POST.get('kuponid'))
+        # And also which button was pressed
+        button = request.POST.get('button')
+        kupon = Kuponlar.objects.get(id=id)
+        #madde = get_object_or_404(Maddeler, id=id)
+
+
+        if button == 'downvote_button':
+            if not kupon.oyveren.filter(id=request.user.id).exists():
+                kupon.oyveren.add(request.user)
+                kupon.oylar +=1
+                kupon.derece -=2
+                kupon.save()
+
+
+        elif button == 'upvote_button':
+            if not kupon.oyveren.filter(id=request.user.id).exists():
+                kupon.oyveren.add(request.user)
+                kupon.oylar +=1
+                kupon.derece +=2
+                kupon.save()
+
+        # return result
+        kupon.refresh_from_db()
+        result = kupon.derece
         return JsonResponse({'result':result})
     pass
 
@@ -203,6 +304,32 @@ def edit_profile(request):
     }
     return render(request, 'registration/edit_profile.html', context)
 
+@login_required
+def madde_guncelle(request):
+    madde = Maddeler.objects.filter(paylasan=request.user.id)
+
+    if request.method == 'POST':
+        edit_form = DealEditForm(data=request.POST or None, instance=request.user, files=request.FILES)
+        #profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.kullanici, files=request.FILES)
+
+        if edit_form.is_valid():
+            edit_form.save()
+            return HttpResponseRedirect(reverse('madde_guncelle'))
+    else:
+        edit_form = UserEditForm(instance=request.user)
+        #profile_form = ProfileEditForm(instance=request.user.kullanici)
+    context = {
+        'edit_form': edit_form,
+        #'profile_form':profile_form,
+        #'profil':profil,
+        #'kullanici':kullanici,
+        #'kelepirler':kelepirler,
+        #'insta_handle':insta_handle,
+    }
+    return render(request, 'madde/deal_edit.html', context)
+
+
+
 
 @login_required(login_url="login/")
 def submitdeal(request):
@@ -226,15 +353,15 @@ def submitkupon(request):
     form = KuponForm()
 
     if request.method == 'POST':
-        form = DealForm(request.POST, request.FILES)
+        form = KuponForm(request.POST, request.FILES)
 
         if form.is_valid():
             submission = form.save(commit=False) # Dont save just yet
             submission.paylasan = request.user
             submission.save()
-            return redirect('kuponlar')
+            return redirect('kuponlarindeksi')
         else:
-            form = DealForm()
+            form = KuponForm()
     return render(request, 'madde/kuponforma.html', {'form':form})
 
 
@@ -299,9 +426,24 @@ def bookmark(request,id):
 
 @login_required
 def expire(request,id):
-    madde = get_object_or_404(Maddeler, id=id)
-    if not madde.tukenmiscagiri.filter(id=request.user.id).exists():
-        madde.bookmarked.add(request.user)
-        if madde.tukenmiscagiri.count >= 5:
-            madde.aktif = False
+    if request.method == 'POST':
+        madde = get_object_or_404(Maddeler, id=id)
+        if not madde.tukenmiscagiri.filter(id=request.user.id).exists():
+            madde.tukenmiscagiri.add(request.user)
+            madde.tukenmisSayi += 1
+            if madde.tukenmisSayi >= 5:
+                madde.aktif = False
+            madde.save()
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+@login_required
+def expirek(request,id):
+    if request.method == 'POST':
+        kupon = get_object_or_404(Kuponlar, id=id)
+        if not kupon.tukenmiscagiri.filter(id=request.user.id).exists():
+            kupon.tukenmiscagiri.add(request.user)
+            kupon.tukenmisSayi += 1
+            if kupon.tukenmisSayi >= 5:
+                kupon.aktif = False
+            kupon.save()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
