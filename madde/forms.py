@@ -28,11 +28,9 @@ class ProfileEditForm(forms.ModelForm):
         exclude = ('kullanici','paylasimlar', 'yorumlar','ensicak','takipciler',)
 
 class DealEditForm(forms.ModelForm):
-    paylasan = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
-
     class Meta:
         model = Maddeler
-        exclude = ('derece', 'duyurmaTarihi', 'kaynamavakti', 'bookmarked', 'tukenmiscagiri', 'tukenmisSayi', 'aktif', 'oylar', 'oyveren','allow_comments')
+        exclude = ('paylasan','derece', 'duyurmaTarihi', 'kaynamavakti', 'bookmarked', 'tukenmiscagiri', 'tukenmisSayi', 'aktif', 'oylar', 'oyveren','allow_comments')
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),

@@ -305,26 +305,21 @@ def edit_profile(request):
     return render(request, 'registration/edit_profile.html', context)
 
 @login_required
-def madde_guncelle(request):
-    madde = Maddeler.objects.filter(paylasan=request.user.id)
+def madde_guncelle(request, pk):
+    madde = Maddeler.objects.get(id=pk)
 
     if request.method == 'POST':
-        edit_form = DealEditForm(data=request.POST or None, instance=request.user, files=request.FILES)
+        edit_form = DealEditForm(data=request.POST or None, instance=madde, files=request.FILES)
         #profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.kullanici, files=request.FILES)
 
         if edit_form.is_valid():
             edit_form.save()
             return HttpResponseRedirect(reverse('madde_guncelle'))
     else:
-        edit_form = UserEditForm(instance=request.user)
-        #profile_form = ProfileEditForm(instance=request.user.kullanici)
+        edit_form = DealEditForm(instance=madde)
     context = {
         'edit_form': edit_form,
-        #'profile_form':profile_form,
-        #'profil':profil,
-        #'kullanici':kullanici,
-        #'kelepirler':kelepirler,
-        #'insta_handle':insta_handle,
+
     }
     return render(request, 'madde/deal_edit.html', context)
 

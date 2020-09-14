@@ -16,7 +16,7 @@ urlpatterns = [
     path('kupon/<int:pk>', views.kupon_detay, name='kupon_detay'),
 
     path('madde/<int:pk>', views.madde_detay, name='madde_detay'),
-    path('madde_guncelle', views.madde_guncelle, name='madde_guncelle'),
+    path('madde_guncelle/<int:pk>', views.madde_guncelle, name='madde_guncelle'),
 
     path('profil/<int:pk>', views.profil_detay, name='profil_detay'),
 
