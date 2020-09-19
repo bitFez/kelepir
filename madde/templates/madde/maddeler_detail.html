@@ -107,7 +107,7 @@
 
         		<div class="flex-grow-1 bd-highlight">
               <br> <p class="card-text"><strong><a href="{% url 'profil_detay' madde.paylasan.id %}">{{madde.paylasan}}</a></strong>
-                {% if madde.paylasan == request.user and request.user.is_authenticated %}
+                {% if madde.paylasan == request.user and request.user.is_authenticated or request.user.is_staff %}
                   -  <a href="{% url 'madde_guncelle' madde.id %}" class="btn btn-primary btn-sm">Paylaşımı Güncelle</a>
                 {% endif %} </p>
         		</div>

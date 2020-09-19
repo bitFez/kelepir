@@ -104,16 +104,16 @@
 
         		<div class="flex-grow-1 bd-highlight">
               <br> <p class="card-text"><strong><a href="{% url 'profil_detay' kupon.paylasan.id %}">{{kupon.paylasan}}</a></strong>
-              {% if kupon.paylasan == request.user and request.user.is_authenticated %}
-                -  <a href="{% url 'edit_profile' %}" class="btn btn-primary">Paylaşımı Güncelle</a>
+              {% if kupon.paylasan == request.user and request.user.is_authenticated or request.user.is_staff %}
+                -  <a href="{% url 'kupon_guncelle' kupon.id %}" class="btn btn-primary">Paylaşımı Güncelle</a>
               {% endif %} </p>
         		</div>
             <div class="p-2 bd-highlight">
               {% if request.user.is_authenticated %}
                   {% if bookmarked %}
-                    <a href="{% url 'bookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                    <a href="{% url 'kbookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
                   {% else %}
-                    <a href="{% url 'bookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                    <a href="{% url 'kbookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
                   {% endif %}
               {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
@@ -210,9 +210,9 @@
                 <div class="p-2 bd-highlight">
                   {% if request.user.is_authenticated %}
                       {% if bookmarked %}
-                        <a href="{% url 'bookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                        <a href="{% url 'kbookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
                       {% else %}
-                        <a href="{% url 'bookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                        <a href="{% url 'kbookmark' kupon.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
                       {% endif %}
                   {% else %}
                     <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>

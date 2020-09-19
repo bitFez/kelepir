@@ -7,7 +7,7 @@
 <br>
 
   <br><hr>
-  <form action="{% url 'paylas' %}" method="POST" enctype="multipart/form-data">
+  <form action="{% url 'madde_guncelle' madde.pk %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ edit_form | crispy }}
 

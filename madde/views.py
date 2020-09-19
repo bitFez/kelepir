@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 from django.db.models import Q, F
-from . forms import CreateUserForm, DealForm, KuponForm, UserEditForm, ProfileEditForm, DealEditForm
+from . forms import CreateUserForm, DealForm, KuponForm, UserEditForm, ProfileEditForm, DealEditForm, KuponEditForm
 import urllib
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
@@ -214,6 +214,7 @@ def profil_detay(request, pk):
     kullanici = get_object_or_404(User, pk=pk)
     profil = get_object_or_404(Kullanici, pk=pk)
     bookmarked = Maddeler.objects.filter(bookmarked=kullanici.id)
+    kbookmarked = Kuponlar.objects.filter(bookmarked=kullanici.id)
     kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
     instagram = 'http://www.instagram.com/'
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
@@ -314,16 +315,33 @@ def madde_guncelle(request, pk):
 
         if edit_form.is_valid():
             edit_form.save()
-            return HttpResponseRedirect(reverse('madde_guncelle'))
+            return redirect('madde_detay', pk=madde.id)
     else:
         edit_form = DealEditForm(instance=madde)
     context = {
         'edit_form': edit_form,
-
+        'madde':madde,
     }
     return render(request, 'madde/deal_edit.html', context)
 
+@login_required
+def kupon_guncelle(request, pk):
+    kupon = Kuponlar.objects.get(id=pk)
 
+    if request.method == 'POST':
+        edit_form = KuponEditForm(data=request.POST or None, instance=kupon, files=request.FILES)
+        #profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.kullanici, files=request.FILES)
+
+        if edit_form.is_valid():
+            edit_form.save()
+            return redirect('kupon_detay', pk=kupon.id)
+    else:
+        edit_form = KuponEditForm(instance=kupon)
+    context = {
+        'edit_form': edit_form,
+        'kupon':kupon,
+    }
+    return render(request, 'madde/coupon_edit.html', context)
 
 
 @login_required(login_url="login/")
@@ -417,6 +435,15 @@ def bookmark(request,id):
         madde.bookmarked.remove(request.user)
     else:
         madde.bookmarked.add(request.user)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+@login_required
+def kbookmark(request,id):
+    kupon = get_object_or_404(Kuponlar, id=id)
+    if kupon.bookmarked.filter(id=request.user.id).exists():
+        kupon.bookmarked.remove(request.user)
+    else:
+        kupon.bookmarked.add(request.user)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 @login_required

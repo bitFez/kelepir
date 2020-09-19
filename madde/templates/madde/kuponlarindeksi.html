@@ -94,9 +94,9 @@
                 		<div class="p-2 bd-highlight">
                       {% if request.user.is_authenticated %}
                           {% if request.user in kupon.bookmarked.all %}
-                            <a href="{% url 'bookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                            <a href="{% url 'kbookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
                           {% else %}
-                            <a href="{% url 'bookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                            <a href="{% url 'kbookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
                           {% endif %}
                       {% else %}
                         <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
@@ -160,9 +160,9 @@
                     <div class="p-2 bd-highlight">
                       {% if request.user.is_authenticated %}
                           {% if request.user.id in kupon.bookmarked %}
-                            <a href="{% url 'bookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                            <a href="{% url 'kbookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
                           {% else %}
-                            <a href="{% url 'bookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                            <a href="{% url 'kbookmark' kupon.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
                           {% endif %}
                       {% else %}
                         <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
@@ -247,6 +247,9 @@
     })
 
   })
+
+  
+
 </script>
 
 {% endblock %}

@@ -27,10 +27,6 @@ class ProfileEditForm(forms.ModelForm):
         model = Kullanici
         exclude = ('kullanici','paylasimlar', 'yorumlar','ensicak','takipciler',)
 
-class DealEditForm(forms.ModelForm):
-    class Meta:
-        model = Maddeler
-        exclude = ('paylasan','derece', 'duyurmaTarihi', 'kaynamavakti', 'bookmarked', 'tukenmiscagiri', 'tukenmisSayi', 'aktif', 'oylar', 'oyveren','allow_comments')
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -66,6 +62,21 @@ class DealForm(forms.ModelForm):
         model = Maddeler
         fields = ['url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih',
                     'son_tarih', 'online', 'diyar', 'w3w']
+        widgets = {
+            'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+            'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
+        }
+
+class DealEditForm(forms.ModelForm):
+    class Meta:
+        model = Maddeler
+        exclude = ('paylasan','derece', 'duyurmaTarihi', 'kaynamavakti', 'bookmarked', 'tukenmiscagiri', 'tukenmisSayi', 'aktif', 'oylar', 'oyveren','allow_comments')
+
+class KuponEditForm(forms.ModelForm):
+    kuponCesiti = forms.ChoiceField(choices=KUPON_CESIT)
+    class Meta:
+        model = Kuponlar
+        exclude = ('paylasan','derece', 'duyurmaTarihi', 'kaynamavakti', 'bookmarked', 'tukenmiscagiri', 'tukenmisSayi', 'aktif', 'oylar', 'oyveren','allow_comments')
         widgets = {
             'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
             'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),

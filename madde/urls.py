@@ -14,6 +14,7 @@ urlpatterns = [
     path('ateslikuponlar', views.ateslikuponlar, name='ateslikuponlar'),
     path('yenikuponlar', views.yenikuponlar, name='yenikuponlar'),
     path('kupon/<int:pk>', views.kupon_detay, name='kupon_detay'),
+    path('kupon_guncelle/<int:pk>', views.kupon_guncelle, name='kupon_guncelle'),
 
     path('madde/<int:pk>', views.madde_detay, name='madde_detay'),
     path('madde_guncelle/<int:pk>', views.madde_guncelle, name='madde_guncelle'),
@@ -26,7 +27,7 @@ urlpatterns = [
     path('kpaylas/', views.submitkupon, name='kpaylas'),
     # Bookmarking a post
     path('kayitla/<int:id>/', views.bookmark, name='bookmark'),
-    path('kkayitla/<int:id>/', views.bookmark, name='bookmark_coupons'),
+    path('kkayitla/<int:id>/', views.kbookmark, name='kbookmark'),
     # for likes and votes
     path('expire/<int:id>', views.expire, name='expire'),
     path('expirek/<int:id>', views.expirek, name='expire_coupons'),
