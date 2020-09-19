@@ -16,7 +16,10 @@
           <p class="card-text">Kelepir Teslim Sayısı: {{kelepirler.count}}</p>
           <p class="card-text">Yorum Sayısı: {{comments.count}}</p>
           <p class="card-text">Takipçi Sayısı:</p>
-          <p class="card-text"><i class="fab fa-instagram"></i> <a href="{{insta_handle}}">{{profil.insta}}</a> </p>
+          {% if profil.insta %}
+            <p class="card-text"><i class="fab fa-instagram"></i> <a href="{{insta_handle}}">{{profil.insta}}</a> </p>
+          {% endif %}
+
           {% if kullanici == request.user and request.user.is_authenticated %}
             <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
           {% endif %}
@@ -41,6 +44,26 @@
           </ul>
 
         </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Teslim Edilmiş Kuponlar</h5>
+            <ul class="list-group">
+              {% for kupon in kuponlar %}
+                {% if kupon.aktif %}
+                  <li class="list-group-item"><a href="{% url 'kupon_detay' kupon.id %}"><img src="{{kopun.goruntu.url}}" height=50px alt="">
+                  {{kupon.baslik}}</a> - {{kupon.derece}} puan</li>
+                {% else %}
+                  <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'kupon_detay' kupon.id %}"><img src="{{kopun.goruntu.url}}" height=50px alt="">
+                  {{kupon.baslik}}</a> - {{kupon.derece}} puan</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+
+          </div>
+
+        </div>
+
+
       </div>
     </div>
   </div>
@@ -57,6 +80,15 @@
         {% else %}
           <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
           {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
+        {% endif %}
+      {% endfor %}
+      {% for kupon in kbookmarked %}
+        {% if kupon.aktif %}
+          <li class="list-group-item"><a href="{% url 'kupon_detay' kupon.id %}"><img src="{{kupon.goruntu.url}}" height=50px alt="">
+          {{kupon.baslik}}</a> - {{kupon.derece}} puan</li>
+        {% else %}
+          <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'kupon_detay' kupon.id %}"><img src="{{kupon.goruntu.url}}" height=50px alt="">
+          {{kupon.baslik}}</a> - {{kupon.derece}} puan</li>
         {% endif %}
       {% endfor %}
     </ul>

@@ -220,7 +220,7 @@ def profil_detay(request, pk):
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
     comments = XtdComment.objects.filter(user_id=kullanici.id)
     context = {'profil':profil, 'kullanici':kullanici, 'kelepirler':kelepirler, 'bookmarked':bookmarked,
-    'insta_handle':insta_handle, 'comments':comments}
+    'kbookmarked':kbookmarked,'insta_handle':insta_handle, 'comments':comments}
     return render(request, 'registration/profil_gor.html', context)
 
 def madde_detay(request, pk):
@@ -281,6 +281,7 @@ def edit_profile(request):
     kullanici = get_object_or_404(User, pk=request.user.id)
     profil = get_object_or_404(Kullanici, pk=request.user.id)
     kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
+    kuponlar = Kuponlar.objects.filter(paylasan=kullanici.id)
     comments = XtdComment.objects.filter(user_id=kullanici.id)
     instagram = 'http://www.instagram.com/'
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
@@ -301,6 +302,7 @@ def edit_profile(request):
         'profil':profil,
         'kullanici':kullanici,
         'kelepirler':kelepirler,
+        'kuponlar':kuponlar,
         'insta_handle':insta_handle,
     }
     return render(request, 'registration/edit_profile.html', context)
