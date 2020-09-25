@@ -4,7 +4,13 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from ckeditor.fields import RichTextField
-from django_comments_xtd.models import XtdComment
+#from django_comments_xtd.models import XtdComment
+
+# For comments_DAB
+from django.contrib.contenttypes.fields import GenericRelation
+from comment.models import Comment
+###
+
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -46,7 +52,8 @@ class Maddeler(models.Model):
     oylar = models.IntegerField(default=0, null=True, blank=True)
     oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes")
     w3w = models.CharField(max_length=100, null=True, blank=True,verbose_name='What3Words', help_text='<a href="https://what3words.com/susma.hurma.e%C5%9Fyal%C4%B1"><small>Yardım ve örnek için şurayı tıklayın</small></a>')
-    allow_comments = models.BooleanField('allow comments', default=True)
+    #allow_comments = models.BooleanField('allow comments', default=True)
+    comments = GenericRelation(Comment)
 
     def __str__(self):
         return f"{self.id}, {self.baslik}"
@@ -83,7 +90,8 @@ class Kuponlar(models.Model):
     tukenmisSayi = models.IntegerField(default=0, null=True, blank=True)
     oylar = models.IntegerField(default=0, null=True, blank=True)
     oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes_coupons")
-    allow_comments = models.BooleanField('allow comments', default=True)
+    #allow_comments = models.BooleanField('allow comments', default=True)
+    comments = GenericRelation(Comment)
 
     def __str__(self):
         return f"{self.id}, {self.baslik}"

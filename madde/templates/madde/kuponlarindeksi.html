@@ -2,8 +2,8 @@
 {% load static %}
 {% block content %}
 {% load i18n %}
-{% load comments %}
-{% load comments_xtd %}
+{% load comment_tags %}
+
 <br>
 <h1>{{h1}}</h1>
 <br>
@@ -103,8 +103,8 @@
                       {% endif %}
                 		</div>
                     <div class="p-2 bd-highlight">
-                      {% get_comment_count for madde.kuponlar kupon.id as comment_count %}
-                      <a href="{% url 'kupon_detay' kupon.id %}#commentsarea" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {{comment_count}} </a>
+
+                      <a href="{% url 'kupon_detay' kupon.id %}#commentsarea" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {% get_comments_count kupon user %} </a>
                     </div>
                 		<div class="p-2 bd-highlight">
                       <a href="{{kupon.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -170,7 +170,7 @@
                     </div>
                     <div class="p-2 bd-highlight">
 
-                      <a href="" type="button" class="btn btn-outline-dark btn"><i class="fas fa-comments"></i> 55 </a>
+                      <a href="" type="button" class="btn btn-outline-dark btn"><i class="fas fa-comments"></i> {% get_comments_count kupon user %} </a>
                     </div>
                     <div class="p-2 bd-highlight">
                       <a href="{{kupon.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -248,7 +248,7 @@
 
   })
 
-  
+
 
 </script>
 

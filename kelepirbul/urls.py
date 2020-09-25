@@ -19,7 +19,9 @@ urlpatterns = [
     path('settings/', views.SettingsView.as_view(), name='settings'),
     path('settings/password/', views.password, name='password'),
 
-    path(r'comments/', include('django_comments_xtd.urls')),
+    path('comment/', include('comment.urls')),
+    path('api/', include('comment.api.urls')),  # only required for API Framework
+    #path(r'comments/', include('django_comments_xtd.urls')),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

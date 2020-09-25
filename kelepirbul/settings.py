@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 
     'django_comments_xtd',
     'django_comments',
+    'comment',
 
     'madde.apps.MaddeConfig',
     'hesaplar.apps.HesaplarConfig',
@@ -128,7 +129,10 @@ USE_L10N = True
 USE_TZ = False
 
 # Comments app
-COMMENTS_APP = 'django_comments_xtd'
+#PROFILE_APP_NAME = 'hesaplar'
+#PROFILE_MODEL_NAME = 'Kullanici' # letter case insensitive
+COMMENT_FLAGS_ALLOWED = 2
+'''COMMENTS_APP = 'django_comments_xtd'
 COMMENTS_XTD_CONFIRM_EMAIL = False
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #  To help obfuscating comments before they are sent for confirmation.
@@ -146,9 +150,9 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
         'show_feedback': True,
         'who_can_post': 'users'  # Valid values: 'all', users'
     }
-}
+}'''
 
-
+SITE_ID=4
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -158,6 +162,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '691575177250-vik22urqe0vsm0c6t17q9sbvtj1ofi8e.apps.googleusercontent.com'

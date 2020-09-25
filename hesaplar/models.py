@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 
 # Create your models here.
 class Kullanici(models.Model):
@@ -16,3 +17,10 @@ class Kullanici(models.Model):
 
     def __str__(self):
         return self.kullanici.username
+
+    def get_absolute_url(self):
+        return reverse('profil_detay')
+
+    @property
+    def user(self):
+        return self.kullanici

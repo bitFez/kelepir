@@ -3,8 +3,8 @@
 {% load social_share %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% load comments %}
-{% load comments_xtd %}
+{% load comment_tags %}
+
 {% block content %}
 <br>
 <h1>{{kupon.baslik}}</h1>
@@ -256,29 +256,27 @@
         <!-- comments -->
         <a id="commentsarea"></a>
 
-        <h5>Şu teslime, {{comments.count}} yorum var. </h5>
-        <br>
-        <hr>
-        {% if kupon.allow_comments %}
-          <div class="comment">
-            <h5 class="text-center">Post your comment</h5>
-            <div class="well my-4">
-              {% render_comment_form for kupon %}
+        {% if top_comments.likes > 0 %}
+        <div class="card">
+          <div class="card-header"><strong>En Fazla Beyenilen Yorum </strong> <i class="fas fa-thumbs-up"></i> {{top_comments.likes}}</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-1"><i class="fas fa-user"></i></div>
+              <div class="col-11"><p>{{top_comments.user}}</p></div>
             </div>
-          </div>
-        {% else %}
-          <h5 class="text-center">comments are disabled for this article</h5>
-        {% endif %}
 
-        <hr>
-        <h2>Top Comments</h2>
-        <div class="">
+            <div class="row">
+              <div class="col-1"><i class="fas fa-comment"></i></div>
+              <div class="col-11"><div class="card p-2">{{top_comments.content}}</div></div>
+            </div>
+
+          </div>
 
         </div>
-
-        <hr>
+        {% endif %}
         <div class="">
-          {% render_xtdcomment_tree for kupon allow_flagging allow_feedback show_feedback  %}
+          {% include_static %} {# Include comment CSS and JS files #}
+          {% render_comments kupon request %}
         </div>
 
         <script type="text/javascript">

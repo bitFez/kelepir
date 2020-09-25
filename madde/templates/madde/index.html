@@ -2,8 +2,9 @@
 {% load static %}
 {% block content %}
 {% load i18n %}
-{% load comments %}
-{% load comments_xtd %}
+{% load comment_tags %}
+
+
 
 <br>
 
@@ -117,8 +118,8 @@
                         {% endif %}
                   		</div>
                   		<div class="p-2 bd-highlight">
-                        {% get_comment_count for madde.maddeler kelepir.id as comment_count %}
-                        <a href="{% url 'madde_detay' kelepir.id %}#commentsarea" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {{comment_count}}</a>
+
+                        <a href="{% url 'madde_detay' kelepir.id %}#commentsarea" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {% get_comments_count kelepir user %}</a>
                   		</div>
                   		<div class="p-2 bd-highlight">
                         <a href="{{kelepir.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
@@ -182,8 +183,7 @@
                         {% endif %}
                   		</div>
                       <div class="p-2 bd-highlight">
-                        {% get_comment_count for madde.maddeler kelepir.id as comment_count %}
-                        <a href="" type="button" class="btn btn-outline-dark btn"><i class="fas fa-comments"></i> {{comment_count}}</a>
+                        <a href="" type="button" class="btn btn-outline-dark btn"><i class="fas fa-comments"></i> {% get_comments_count kelepir user %}</a>
                       </div>
                       <div class="p-2 bd-highlight">
                         <a href="{{kelepir.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>

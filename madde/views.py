@@ -22,7 +22,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from social_django.models import UserSocialAuth
 from datetime import datetime, timedelta
-from django_comments_xtd.models import XtdComment
+#from django_comments_xtd.models import XtdComment
+from comment.models import Comment
 
 def index(request):
     kelepirler = Maddeler.objects.all
@@ -218,14 +219,17 @@ def profil_detay(request, pk):
     kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
     instagram = 'http://www.instagram.com/'
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
-    comments = XtdComment.objects.filter(user_id=kullanici.id)
+    comments = Comment.objects.filter(user_id=kullanici)
+
     context = {'profil':profil, 'kullanici':kullanici, 'kelepirler':kelepirler, 'bookmarked':bookmarked,
-    'kbookmarked':kbookmarked,'insta_handle':insta_handle, 'comments':comments}
+    'comments':comments, 'kbookmarked':kbookmarked,'insta_handle':insta_handle}
     return render(request, 'registration/profil_gor.html', context)
 
 def madde_detay(request, pk):
     madde = get_object_or_404(Maddeler, pk=pk)
-    comments = XtdComment.objects.filter(object_pk=madde.id)
+    comments = Comment.objects.filter(content_type_id=9, object_id=madde.id)
+    #top_comments = Comment.objects.filter_comments_by_object(madde).order_by('-reaction__likes')
+    top_comments = Comment.objects.all_comments_by_object(madde).order_by('-reaction__likes').first()
     pdiff = 0
     if madde.orjinalFiyat != None:
         pchange = madde.fiyat - madde.orjinalFiyat
@@ -240,13 +244,13 @@ def madde_detay(request, pk):
     else:
         bookmarked = False
 
-    context = {'madde':madde,'bookmarked':bookmarked, 'comments':comments, 'pdiff':pdiff}
+    context = {'madde':madde,'bookmarked':bookmarked, 'pdiff':pdiff, 'comments':comments, 'top_comments':top_comments}
     return render(request, 'madde/maddeler_detail.html', context)
 
 def kupon_detay(request, pk):
     kupon = get_object_or_404(Kuponlar, pk=pk)
-    comments = XtdComment.objects.filter(object_pk=kupon.id)
-
+    comments = Comment.objects.filter(content_type_id=24, object_id=kupon.id)
+    top_comments = Comment.objects.all_comments_by_object(kupon).order_by('-reaction__likes').first()
     ### Bookmarks
     bookmarked = False
     if kupon.bookmarked.filter(id=request.user.id).exists():
@@ -254,7 +258,7 @@ def kupon_detay(request, pk):
     else:
         bookmarked = False
 
-    context = {'kupon':kupon,'bookmarked':bookmarked, 'comments':comments, }
+    context = {'kupon':kupon,'bookmarked':bookmarked, 'comments':comments, 'top_comments':top_comments}
     return render(request, 'madde/kuponlar_detail.html', context)
 
 def registration(request):
@@ -282,7 +286,7 @@ def edit_profile(request):
     profil = get_object_or_404(Kullanici, pk=request.user.id)
     kelepirler = Maddeler.objects.filter(paylasan=kullanici.id)
     kuponlar = Kuponlar.objects.filter(paylasan=kullanici.id)
-    comments = XtdComment.objects.filter(user_id=kullanici.id)
+    #comments = XtdComment.objects.filter(user_id=kullanici.id)
     instagram = 'http://www.instagram.com/'
     insta_handle = urllib.parse.urljoin(instagram, profil.insta)
     if request.method == 'POST':
