@@ -156,14 +156,12 @@ def product_vote(request):
         madde = Maddeler.objects.get(id=id)
         #madde = get_object_or_404(Maddeler, id=id)
 
-
         if button == 'downvote_button':
             if not madde.oyveren.filter(id=request.user.id).exists():
                 madde.oyveren.add(request.user)
                 madde.oylar +=1
                 madde.derece -=2
                 madde.save()
-
 
         elif button == 'upvote_button':
             if not madde.oyveren.filter(id=request.user.id).exists():
@@ -209,7 +207,6 @@ def coupon_vote(request):
         result = kupon.derece
         return JsonResponse({'result':result})
     pass
-
 
 def profil_detay(request, pk):
     kullanici = get_object_or_404(User, pk=pk)
@@ -442,6 +439,28 @@ def bookmark(request,id):
     else:
         madde.bookmarked.add(request.user)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+'''
+def bookmark(request):
+    if request.POST.get('action') == 'postbookmark':
+        # get information from request about what item id it is
+        id = int(request.POST.get('maddeid'))
+        # And also which button was pressed
+        #button = request.POST.get('button')
+        madde = Maddeler.objects.get(id=id)
+        #madde = get_object_or_404(Maddeler, id=id)
+
+        if not madde.bookmarked.filter(id=request.user.id).exists():
+            madde.bookmarked.add(request.user)
+            madde.save()
+        else:
+            madde.bookmarked.remove(request.user)
+            madde.save()
+
+        madde.refresh_from_db()
+        result = madde.bookmarked
+        return JsonResponse({'result':result})
+    pass
+    '''
 
 @login_required
 def kbookmark(request,id):

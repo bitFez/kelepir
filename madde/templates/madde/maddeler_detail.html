@@ -113,11 +113,11 @@
         		</div>
             <div class="p-2 bd-highlight">
               {% if request.user.is_authenticated %}
-                  {% if bookmarked %}
-                    <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
-                  {% else %}
-                    <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                  {% endif %}
+                {% if bookmarked %}
+                  <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
+                {% else %}
+                  <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
+                {% endif %}
               {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
               {% endif %}
@@ -315,6 +315,10 @@
               })
             })
           })
+
+          // JQUERY - AJAX SCRIPT FOR BOOKMARKING
+
+
         </script>
 {% endblock %}
 

@@ -65,9 +65,12 @@
                                   </div>
                                 {% endif %}
                               {% else %}
+                              <div class="row">
                                 <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
                                 <span class="btn btn-outline p-1">%{{kelepir.derece}}</span>
                                 <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
+                              </div>
+
                               {% endif %}
 
                   				</div>

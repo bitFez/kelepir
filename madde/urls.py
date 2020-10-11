@@ -27,6 +27,7 @@ urlpatterns = [
     path('kpaylas/', views.submitkupon, name='kpaylas'),
     # Bookmarking a post
     path('kayitla/<int:id>/', views.bookmark, name='bookmark'),
+    #path('kayitla/', views.bookmark, name='bookmark'),
     path('kkayitla/<int:id>/', views.kbookmark, name='kbookmark'),
     # for likes and votes
     path('expire/<int:id>', views.expire, name='expire'),
