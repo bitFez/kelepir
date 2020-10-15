@@ -6,10 +6,10 @@ cryptography==3.0
 defusedxml==0.7.0rc1
 Django==3.1
 django-ckeditor==5.9.0
-django-comments-xtd==2.7.1
-django-contrib-comments==1.9.2
+django-comments-dab==2.0.0
 django-crispy-forms==1.9.2
 django-js-asset==1.2.2
+django-rest-auth==0.9.5
 django-social-share==2.0.0
 django-summernote==0.8.11.6
 idna==2.10
