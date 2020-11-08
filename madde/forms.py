@@ -65,7 +65,7 @@ class DealForm(forms.ModelForm):
         widgets = {
             'bas_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
             'son_tarih': forms.DateInput(format=('%d/%m/%Y'), attrs={'class':'form-control', 'placeholder':'Tarih seçin', 'type':'date'}),
-            'w3w': forms.TextInput(attrs={'placeholder': 'çıktı.alırsan.tatilde'}),
+             'w3w': forms.TextInput(attrs={'placeholder': 'çıktı.alırsan.tatilde'}),
         }
 
 class DealEditForm(forms.ModelForm):
