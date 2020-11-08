@@ -131,6 +131,28 @@
 
             </div>
             <p class="card-text">{{madde.ayrintilar|safe}}</p>
+        
+            <p>
+              {% if madde.w3w %}
+              <div class="card border-danger">
+                <div class="card-body">
+
+                  <div class="row align-items-center">
+                    <div class="col-4">
+                      <img src="/images/w3w_Red.svg" height="48px"><a href="https://what3words.com/{{madde.w3w}}">{{madde.w3w}}</a>
+                    </div>
+                    <div class="col-8">
+
+                      <br><p>What 3 words (yani <i>"hangi 3 kelime"</i> dünyayı 3 metre karelere bölmüş. Aradığınız mekanı bulmak artık çok kolay!)</p>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              {% endif %}
+            </p>
+      
             <hr>
 
             <div class="row">
