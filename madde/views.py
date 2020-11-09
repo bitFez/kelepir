@@ -27,6 +27,7 @@ from comment.models import Comment
 
 def index(request):
     kelepirler = Maddeler.objects.all
+    paginate = 2
     katagoriler = Katagoriler.objects
     h1 = 'Günün Kelepirleri'
     one_week_ago = datetime.today() - timedelta(days=7)
