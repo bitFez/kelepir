@@ -20,6 +20,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from social_django.models import UserSocialAuth
 from datetime import datetime, timedelta
 #from django_comments_xtd.models import XtdComment
@@ -27,7 +28,18 @@ from comment.models import Comment
 
 def index(request):
     kelepirler = Maddeler.objects.all
-    paginate = 2
+    
+    #paginate = 2
+    numbers_list = range(1, 1000)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(numbers_list, 2)
+    try:
+        numbers = paginator.page(page)
+    except PageNotAnInteger:
+        numbers = paginator.page(1)
+    except EmptyPage:
+        numbers = paginator.page(paginator.num_pages)
+
     katagoriler = Katagoriler.objects
     h1 = 'Günün Kelepirleri'
     one_week_ago = datetime.today() - timedelta(days=7)
@@ -43,7 +55,7 @@ def index(request):
             )
 
 
-    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin,}
+    context = {'kelepirler':kelepirler, 'katagoriler':katagoriler, 'h1':h1, 'haftanin':haftanin, 'numbers': numbers}
     return render(request, 'madde/index.html', context)
 
 
