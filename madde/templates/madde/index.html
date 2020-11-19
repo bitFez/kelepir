@@ -3,8 +3,7 @@
 {% load static %}
 {% load i18n %}
 {% load comment_tags %}
-<script src="/static/js/jquery.waypoints.min.js"></script>
-<script src="/static/js/infinite.min.js"></script>
+
 <br>
 
 <div class="row">
@@ -18,7 +17,7 @@
 
 
 <div class="row">
-  <div class="col-sm-9 infinite-container">
+  <div class="col-sm-12 infinite-container">
 
     {% for kelepir in kelepirler %}
       <div class="herkelepir infinite-item">
@@ -220,14 +219,14 @@
   </div>
   <div class="row">
     <div class="col-12">
-        {% if numbers.has_next %}
-        <a class="infinite-more-link" href="?page={{ numbers.next_page_number }}">more</a>
-        {% endif %}
-        </span>
+      {% if page_obj.has_next %}
+      <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">next</a>
+      {% endif %}
     </div>
   </div>
   
   <!-- Main page sidebar -->
+   
   <div class="col-sm-3">
     <h5>Haftanın En İyi Kelepirleri</h5>
     <ul class="list-group">
@@ -243,24 +242,26 @@
     </ul>
 
   </div> <!-- Sag kolon sonu -->
+
 </div> <!-- End of row for both columns -->
 
-{% block javaScript %}
-<script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/infinite.min.js"></script>
+<script type="text/javascript">
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
-    
-    //offset: 'bottom-in-view',
-    
+
+    offset: 'bottom-in-view',
+
     onBeforePageLoad: function () {
       $('.loading').show();
     },
-    onAfterPageLoad: function ($items) {
+    onAfterPageLoad: function () {
       $('.loading').hide();
     }
+
   });
 </script>
-
 
 <script type="text/javascript">
 // JQUERY - AJAX SCRIPT FOR voting
@@ -300,5 +301,5 @@ $(document).ready(function(){
 
 })
 </script>
-{% endblock %}
+
 {% endblock %}
