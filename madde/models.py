@@ -43,7 +43,8 @@ class Maddeler(models.Model):
     online = models.BooleanField(help_text='Yerel fırsat (mağazada / çevrimdışı)')
     diyar = models.CharField(max_length=100, null=True, blank=True)
     derece = models.IntegerField(default='0', null=True, blank=True)
-    duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
+    duyurmaTarihi = models.DateTimeField(auto_now_add=True) # auto_now=False, auto_now_add=True, blank=True
+    guncelenmisTarihi = models.DateTimeField(auto_now=True) # auto_now=False, blank=True
     kaynamavakti = models.DateTimeField(null=True, blank=True, auto_now=False, auto_now_add=False)
     bookmarked = models.ManyToManyField(User, related_name='bookmarked', default=None, blank=True)
     tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call', default=None, blank=True)

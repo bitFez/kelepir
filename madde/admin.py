@@ -5,8 +5,8 @@ from ckeditor.widgets import CKEditorWidget
 from .models import Maddeler, Katagoriler, Kuponlar
 
 class MaddelerAdmin(admin.ModelAdmin):
-    fields = ['paylasan','url', 'satici','fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'w3w', 'derece','kaynamavakti','duyurmaTarihi','oyveren', 'bookmarked','aktif','oylar', 'tukenmiscagiri', 'tukenmisSayi']
-    list_display = ('paylasan', 'url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'derece','duyurmaTarihi','kaynamavakti','aktif')
+    fields = ['paylasan','url', 'satici','fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'ayrintilar', 'goruntu', 'katagori', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'w3w', 'derece','kaynamavakti','oyveren', 'bookmarked','aktif','oylar', 'tukenmiscagiri', 'tukenmisSayi']
+    list_display = ('paylasan', 'url', 'satici', 'fiyat', 'orjinalFiyat', 'kargo', 'kupon', 'baslik', 'bas_tarih', 'son_tarih', 'online', 'diyar', 'derece','duyurmaTarihi', 'kaynamavakti','aktif')
 
     list_filter = ('paylasan','url', 'satici','fiyat', 'kargo', 'kupon', 'baslik', 'katagori', 'bas_tarih', 'son_tarih', 'online', 'diyar','derece','duyurmaTarihi','kaynamavakti','aktif','oylar')
 
