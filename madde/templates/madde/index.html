@@ -8,18 +8,21 @@
 
 <br>
 
-<div class="row">
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs mt-1">
   {% for kat in katagoriler.all %}
-    <a type="button" class="btn-outline-dark btn-lg" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+  <li class="nav-item">
+    <a class="nav-link " href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+  </li>
   {% endfor %}
-</div>
-<br>
-<h1>{{h1}}</h1>
-<br>
+</ul>
+<!-- End of Nav Tabs -->
 
 
-<div class="row">
-  <div class="col-sm-9">
+<div class="container">
+  <div class="row justify-content-start g-2">
+    <!-- Left Column	-->
+    <div class="col-9">
 
       {% for kelepir in kelepirler %}
           <div class="herkelepir">
@@ -27,23 +30,48 @@
           </div> 
       {% endfor %}
 
-  </div> <!-- Sol kolon sonu  -->
+    </div> <!-- Sol kolon sonu  -->
+    <!-- End Left Columns	 -->	
+    <!-- Right column	 -->
+    
+    <div class="col-3">
+      <div class="card my-2 g-0">
+        <div class="card-body">
+          <p class="text-primary"> Haftanın En İyi Kelepirleri </p>
 
-  <!-- Main page sidebar -->
-  <div class="col-sm-3">
-    <h5>Haftanın En İyi Kelepirleri</h5>
-    <ul class="list-group">
-      {% for kelepir in haftanin.all %}
-        {% if kelepir.aktif %}
-          <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
-          {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
-        {% else %}
-          <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
-            {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-
+          {% for kelepir in haftanin.all %}
+            {% if kelepir.aktif %}
+              <div class="card my-2 mx-1 border-0" style="">
+                <div class="row g-0">
+                <div class="col-md-5" style="">
+                  <img src="{{kelepir.goruntu.url}}" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-7">
+                  <div class="card-body">
+                  <span class="text-danger"> {{kelepir.derece}}% </span> 
+                    <a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a>{{kelepir.fiyat}}₺
+                  </div>
+                </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="card my-2 mx-1 border-0" style="color:Grey">
+                  <div class="row g-0">
+                  <div class="col-md-5" style="">
+                    <img src="{{kelepir.goruntu.url}}" class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-7">
+                    <div class="card-body">
+                    <span class="text-danger"> {{kelepir.derece}}% </span> 
+                      <a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a>{{kelepir.fiyat}}₺
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              {% endif %}
+          {% endfor %}
+        </div>
+      </div>
   </div> <!-- Sag kolon sonu -->
 </div> <!-- End of row for both columns -->
 

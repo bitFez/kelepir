@@ -2,7 +2,7 @@
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <!DOCTYPE html>
-<html lang="tr" dir="ltr">
+<html data-bs-theme="light" lang="tr" dir="ltr">
   <head>
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto&display=swap" rel="stylesheet">
@@ -17,11 +17,9 @@
   </head>
   <body>
     {%  include 'navbar.html' %}
-    <div class="container">
 
       {% block content %}
       {% endblock content %}
-    </div>
     <script type="text/javascript">
       {% block scripts %}
       {% endblock scripts %}
