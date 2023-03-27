@@ -106,10 +106,10 @@
               <p class="card-muted" style="color:Grey">{{kelepir.ayrintilar|truncatewords:30|safe}}...
                 <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a>
               </p>
-              <div class="row d-flex justify-content-between">
-                  <div class="col-3"><i class="bi bi-person-circle"></i> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
+              <div class="row">
+                  <div class="col-3 d-flex justify-content-start"><i class="bi bi-person-circle"></i> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
                   
-                  <div class="col-6">
+                  <div class="col-9 d-flex justify-content-end">
                     {% if request.user.is_authenticated %}
                         {% if request.user.id in kelepir.bookmarked %}
                         <button class="btn btn-primary rounded-pill"><i class="bi bi-bookmark"></i></button>
