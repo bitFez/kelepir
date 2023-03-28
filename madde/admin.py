@@ -16,9 +16,11 @@ class KuponlarAdmin(admin.ModelAdmin):
 
     list_filter = ('paylasan','url', 'satici', 'kupon', 'baslik', 'kuponCesiti', 'bas_tarih', 'son_tarih', 'derece','duyurmaTarihi','aktif','oylar')
 
-
+class KatagorilerAdmin(admin.ModelAdmin):
+    fields = ['kategori', 'ikon']
+    list_display = ('kategori', 'id','ikon')
 
 admin.site.register(Maddeler, MaddelerAdmin)
 admin.site.register(Kuponlar, KuponlarAdmin)
 #admin.site.register(Votes)
-admin.site.register(Katagoriler)
+admin.site.register(Katagoriler,KatagorilerAdmin)

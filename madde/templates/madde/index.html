@@ -9,10 +9,10 @@
 <br>
 
 <!-- Nav Tabs -->
-<ul class="nav nav-tabs mt-1">
+<ul class="nav nav-tabs mt-1 ">
   {% for kat in katagoriler.all %}
-  <li class="nav-item">
-    <a class="nav-link " href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+  <li class="nav-item ">
+    <a class="nav-link link-primary bg-primary-subtle" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
   </li>
   {% endfor %}
 </ul>
