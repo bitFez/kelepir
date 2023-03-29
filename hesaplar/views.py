@@ -29,7 +29,6 @@ product_categories = [
     {"kategori":"eğlence", "ikon":"fa-solid fa-masks-threater"},
     {"kategori":"bakkal alışveriş", "ikon":"fa-solid fa-basket-shopping"},
     {"kategori":"Oyun", "ikon":"fa-solid fa-gamepad"},
-    
 ]
 
 products = [

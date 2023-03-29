@@ -10,9 +10,12 @@
 
 <!-- Nav Tabs -->
 <ul class="nav nav-tabs mt-1 ">
+  <li class="nav-item ">
+    <a class="nav-link link-warning bg-primary" href="/"><i class="fa-regular fa-rectangle-list"></i> Tümü</a>
+  </li>
   {% for kat in katagoriler.all %}
   <li class="nav-item ">
-    <a class="nav-link link-primary bg-primary-subtle" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+    <a class="nav-link link-warning bg-primary" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
   </li>
   {% endfor %}
 </ul>
