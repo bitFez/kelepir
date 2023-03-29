@@ -14,9 +14,9 @@
     <a class="nav-link link-warning bg-primary" href="/"><i class="fa-regular fa-rectangle-list"></i> Tümü</a>
   </li>
   {% for kat in katagoriler.all %}
-  <li class="nav-item ">
-    <a class="nav-link link-warning bg-primary" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
-  </li>
+    <li class="nav-item ">
+      <a class="nav-link link-warning bg-primary" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+    </li>
   {% endfor %}
 </ul>
 <!-- End of Nav Tabs -->
@@ -28,9 +28,9 @@
     <div class="col-9">
 
       {% for kelepir in kelepirler %}
-          <div class="herkelepir">
+        <div class="card my-2 mx-1" style="" >
             {%  include 'madde/partials/madde.html' %}
-          </div> 
+        </div>
       {% endfor %}
 
     </div> <!-- Sol kolon sonu  -->
@@ -79,44 +79,6 @@
 </div> <!-- End of row for both columns -->
 
 
-      <script type="text/javascript">
-      // JQUERY - AJAX SCRIPT FOR voting
-      $(document).ready(function(){
-        $('.vote_action').click(function(e) {
-          //get closest div
-          var selector = $(this).closest('div.herkelepir');
-          var button = $(this).attr("value");
-          var counter = selector.find('.kel_puanlar').attr('id').split('_');
-          // get span data
-          var maddeid = selector.find("span[id=kelepir_"+counter[1]+"]").attr('data-value');
-
-          console.log("maddeID-->"+maddeid+"Button-->"+button+"counter[1]-->"+counter[1])
-          e.preventDefault();
-          $.ajax({
-            type: 'POST',
-            url: '{% url "vote" %}',
-
-            data: {
-              maddeid: maddeid,
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              action: 'postvote',
-              button: button,
-            },
-            success: function(json){
-              if (json.length < 1 || json == undefined) {
-                //empty
-              }
-              //selector.find('.kel_puanlar').text(json['result']);
-              $("#puanlar_"+counter[1]).text(json['result']);
-              $("#uvb_"+counter[1]).removeClass( "btn btn-success" ).addClass("btn btn-secondary disabled");
-              $("#dvb_"+counter[1]).removeClass( "btn btn-danger" ).addClass("btn btn-secondary disabled");
-            },
-            error: function(xhr, errmsg, err) {}
-          })
-        })
-
-      })
-      </script>
 {% endblock %}
 
 {% block scripts %}

@@ -21,7 +21,9 @@ urlpatterns = [
 
     path('profil/<int:pk>', views.profil_detay, name='profil_detay'),
 
-    path('vote/', views.product_vote, name='vote' ),
+    path('upvote/<int:id>', views.product_upvote, name='upvote' ),
+    path('downvote/<int:id>', views.product_downvote, name='downvote' ),
+    path('bookmarkLV/<int:id>', views.bookmarkInListView, name='bookmarklv'),
     path('kvote/', views.coupon_vote, name='kvote' ),
     path('paylas/', views.submitdeal, name='paylas'),
     path('kpaylas/', views.submitkupon, name='kpaylas'),
