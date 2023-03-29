@@ -36,7 +36,7 @@
                         <h6 class="card-title pt-2"><a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a></h6>
                         <p> <span class="text-primary">{{kelepir.fiyat}}₺</span> 
                             {{orjinalFiyat}} {% if pdiff %}, %{{pdiff}} fark!{% endif %}
-                            {% if kelepir.kargo == "Evet" %}<i class="bi bi-truck"></i> Kargo Bedava </p>{% endif %}
+                            {% if kelepir.kargo == True %}<i class="bi bi-truck"></i> Kargo Bedava </p>{% endif %}
                             {% if kelepir.kupon %}
                                 <div class="row d-grid d-md-flex col-12">
                                     <a href="{{kelepir.url}}" class="btn btn-primary rounded-pill col-6">Fırsatı Kap  <i class="bi bi-box-arrow-up-right"></i> </a>
@@ -47,10 +47,10 @@
                         <p class="card-text">{{kelepir.ayrintilar|truncatewords:30|safe}}...
                             <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a>
                         </p>
-                        <div class="row d-flex justify-content-between">
-                            <div class="col-3"><i class="bi bi-person-circle"></i> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
+                        <div class="row">
+                            <div class="col-3 d-flex justify-content-start"><i class="bi bi-person-circle"></i> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
                         
-                            <div class="col-6">
+                            <div class="col-9 d-flex justify-content-end">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.id in kelepir.bookmarked %}
                                     <button class="btn btn-primary rounded-pill"><i class="bi bi-bookmark"></i></button>
@@ -96,13 +96,14 @@
                 </div>
               <h6 class="card-title pt-2"><a href="{% url 'madde_detay' kelepir.id %}" style="color:Grey">{{kelepir.baslik}}</a></h6>
               <p style="color:Grey"> <span class="text-muted" >{{kelepir.fiyat}}₺</span> {{orjinalFiyat}} {% if pdiff %}, %{{pdiff}} fark!{% endif %}
-                {% if kelepir.kargo == 0 %}<i class="bi bi-truck"></i> Kargo Bedava </p>{% endif %}
+                {% if kelepir.kargo == True %}<i class="bi bi-truck"></i> Kargo Bedava </p>{% endif %}
                 {% if kelepir.kupon %}
                 <div class="row d-grid d-md-flex col-12">
                   <a href="{{kelepir.url}}" class="btn btn-secondary rounded-pill col-6">Fırsatı Kap  <i class="bi bi-box-arrow-up-right"></i> </a>
                   <button class="btn btn-outline-secondary rounded-pill col-6">{{ kelepir.kupon }}</button>
-                {% endif %}
                 </div>
+                {% endif %}
+                
               <p class="card-muted" style="color:Grey">{{kelepir.ayrintilar|truncatewords:30|safe}}...
                 <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a>
               </p>
