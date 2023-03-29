@@ -30,7 +30,7 @@
                             </div>
                             <div class="col-6 d-flex justify-content-end"> 
                                 <small class="text-muted mx-2">{% if kelepir.son_tarih|date:"SHORT_DATE_FORMAT" %}<i class="bi bi-hourglass-bottom"></i> Tükenme tarihi: <br>{{ kelepir.son_tarih|date:"SHORT_DATE_FORMAT" }}{% endif %}</small> 
-                                <small class="text-muted mx-2"></small><i class="bi bi-clock"></i> {{kelepir.duyurmaTarihi|timesince}} duyuruldu</small>
+                                <small class="text-muted mx-2"><i class="bi bi-clock"></i> {{kelepir.duyurmaTarihi|timesince}} evel duyuruldu</small>
                             </div>
                         </div>
                         <h6 class="card-title pt-2"><a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a></h6>
@@ -91,7 +91,7 @@
                     </div>
                     <div class="col-6 d-flex justify-content-end"> 
                         <small class="text-muted mx-2">{% if kelepir.son_tarih|date:"SHORT_DATE_FORMAT" %}<i class="bi bi-hourglass-bottom"></i> Tükenme tarihi: <br>{{ kelepir.son_tarih|date:"SHORT_DATE_FORMAT" }}{% endif %}</small> 
-                        <small class="text-muted mx-2"></small><i class="bi bi-clock"></i> {{kelepir.duyurmaTarihi|timesince}} duyuruldu</small>
+                        <small class="text-muted mx-2"><i class="bi bi-clock"></i> {{kelepir.duyurmaTarihi|timesince}} evel duyuruldu</small>
                     </div>
                 </div>
               <h6 class="card-title pt-2"><a href="{% url 'madde_detay' kelepir.id %}" style="color:Grey">{{kelepir.baslik}}</a></h6>

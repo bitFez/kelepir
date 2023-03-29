@@ -52,7 +52,7 @@
                 <div class="col-md-7">
                   <div class="card-body">
                   <span class="text-danger"> {{kelepir.derece}}% </span> 
-                    <a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a>{{kelepir.fiyat}}₺
+                    <a href="{% url 'madde_detay' kelepir.id %}"><small>{{kelepir.baslik|truncatewords:5|safe}}</a>{{kelepir.fiyat}}₺</small>
                   </div>
                 </div>
                 </div>
@@ -66,7 +66,7 @@
                   <div class="col-md-7">
                     <div class="card-body">
                     <span class="text-danger"> {{kelepir.derece}}% </span> 
-                      <a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</a>{{kelepir.fiyat}}₺
+                      <a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"> <small> {{kelepir.baslik|truncatewords:30|safe}}</a>{{kelepir.fiyat}}₺ </small>
                     </div>
                   </div>
                   </div>
