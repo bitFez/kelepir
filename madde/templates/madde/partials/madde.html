@@ -59,7 +59,7 @@
                             <div class="col-9 d-flex justify-content-end">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user in kelepir.bookmarked.all %}
-                                    <button class="btn btn-warning rounded-pill" hx-post="{% url 'bookmarklv' kelepir.id %}" 
+                                    <button class="btn btn-primary rounded-pill" hx-post="{% url 'bookmarklv' kelepir.id %}" 
                                     hx-target="#kelepir{{kelepir.id}}" ><i class="bi bi-bookmark"></i></button>
                                     {% else %}
                                     <button class="btn btn-outline-primary rounded-pill" hx-post="{% url 'bookmarklv' kelepir.id %}" 
@@ -120,7 +120,7 @@
                   
                   <div class="col-9 d-flex justify-content-end">
                     {% if request.user.is_authenticated %}
-                        {% if request.user in kelepir.bookmarked %}
+                        {% if request.user in kelepir.bookmarked.all %}
                             <button class="btn btn-primary rounded-pill"><i class="bi bi-bookmark"></i>222</button>
                         {% else %}
                             <button class="btn btn-outline-primary rounded-pill"><i class="bi bi-bookmark"></i></button>
