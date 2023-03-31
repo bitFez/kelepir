@@ -8,299 +8,107 @@
 {% block content %}
 
 <div class="card col-9 align-self-center my-2 mx-auto" >
-{% if madde.aktif == True %}
-  <div class="row no-gutters">
-    <div class="col-md-5">
-      <img src="{{madde.goruntu.url}}" style="width: 100%;" class="card-img image-fluid">
-    </div>
-    <div class="col-md-7">
-      <div class="card-body">
-        <div class="container-fluid">
-        	<div class="row">
-        		<div class="col-md-12">
-        			<div class="row d-flex justify-content-between">
-                <div class="col-3 d-flex justify-content-start">
-                  <!-- Voting Buttons -->
-                  <div class="btn-group" role="group" aria-label="Basic outlined example">
-                  {% if request.user.is_authenticated %}
-                      {% if request.user in madde.oyveren.all %}
-                          <button type="button" class="btn btn-danger rounded-start-pill" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz"><i class="bi bi-dash-lg"></i></button>
-                          <button class="list-group-item list-group-item-action list-group-item-light disabled px-2"> {{madde.derece}}% </button>
-                          <button type="button" class="btn btn-success rounded-end-pill" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz"><i class="bi bi-plus"></i></button>
-                      {% else %}
-                          <span id="madde_{{forloop.counter}}" data-value="{{madde.id}}"></span>
-                          <button type="button" hx-post="{% url 'downvote' madde.id %}" 
-                          hx-target="#madde{{madde.id}}"
-                          class="kel_puanlar btn btn-danger rounded-start-pill vote_action"><i class="bi bi-dash-lg"></i></button>
-                          <button class="list-group-item list-group-item-action list-group-item-light disabled px-2"> {{madde.derece}}% </button>
-                          <button type="button" hx-post="{% url 'upvote' madde.id %}" 
-                          hx-target="#madde{{madde.id}}"
-                          class="btn btn-success rounded-end-pill vote_action"  ><i class="bi bi-plus"></i></button>
-                      {% endif %}
-                  {% else %}
-                      <a href="{% url 'login' %}" class="btn btn-danger rounded-start-pill" ><i class="bi bi-dash-lg"></i></a>
-                      <button class="list-group-item list-group-item-action list-group-item-light disabled px-2"> {{madde.derece}}% </button>
-                      <a href="{% url 'login' %}" class="btn btn-success rounded-end-pill" ><i class="bi bi-plus"></i></a>
-                  {% endif %}
-                  </div>
-                </div>
-                <div class="col-3 d-flex justify-content-end">
-                  <button class="btn btn-outline-primary rounded-pill"><i class="bi bi-chat-right-quote"></i>  </button>
-                </div>
-        			</div>
-            </div>
-            
-            <div class="row text-secondary">
-              <div class="col-12">
-                <i class="fas fa-calendar-day"></i> Paylaşım Tarihi: <br>{{madde.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
-              </div>
-              
-            </div>
-
-                <!-- To the right of the buttons -->
-        				<div class="card col-md-11">
-                  <div class="card-body">
-                    <div class="col-md-8 float-left">
-                      <div class="row">
-
-                          <div class="col md-3 float-left">
-                            <small>
-                            {% if madde.son_tarih %} <i class="far fa-calendar-times"></i> Tükenme tarihi:<br>{{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }}{% endif %}
-                          </small>
-                          </div>
-                          <div class="col md-2 float-middle">
-                            <small>
-                              {% if madde.bas_tarih %} <i class="far fa-calendar-alt"></i> Başlangıç tarihi:<br>{{madde.bas_tarih|date:"SHORT_DATE_FORMAT"}}{% endif %}
-                            </small>
-                          </div>
-                          <div class="col md-2 float-right">
-                            <small>
-                              
-                            </small>
-                          </div>
-
-                      </div>
-
-                    </div>
-                    <div class="col-md-2 float-right">
-                      <small class="text-muted"><i class="fas fa-bullhorn"></i><br>{{madde.duyurmaTarihi|timesince}}<br>duyuruldu</small>
-                    </div>
-                  </div>
-
-        				</div>
-        			</div>
-        		</div>
-        	</div>
-        </div>
-        <br>
-        <p><span style="color:Tomato;"><b>{{madde.fiyat}}₺</b></span>
-          {% if madde.orjinalFiyat %}<span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span> % {{pdiff}} fark!{% endif %}</p>
-
-        <div class="d-flex bd-highlight">
-
-        		<div class="flex-grow-1 bd-highlight">
-              <br> <p class="card-text"><strong><a href="{% url 'profil_detay' madde.paylasan.id %}">{{madde.paylasan}}</a></strong>
-                {% if madde.paylasan == request.user and request.user.is_authenticated or request.user.is_staff %}
-                  -  <a href="{% url 'madde_guncelle' madde.id %}" class="btn btn-primary btn-sm">Paylaşımı Güncelle</a>
-                {% endif %} </p>
-        		</div>
-            <div class="p-2 bd-highlight">
-              {% if request.user.is_authenticated %}
-                {% if bookmarked %}
-                  <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
-                {% else %}
-                  <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                {% endif %}
-              {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-              {% endif %}
-            </div>
-        		<div class="p-2 bd-highlight">
-              <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{comments.count}}</a>
-        		</div>
-        		<div class="p-2 bd-highlight">
-              <a href="{{madde.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
-        		</div>
-
-            </div>
-            <p class="card-text">{{madde.ayrintilar|safe}}</p>
-        
-            <p>
-            {% if madde.w3w %}
-            <div class="card border-danger">
-              <div class="card-body">
-
-                <div class="row align-items-center">
-                  <div class="col-4">
-                    <img src="/images/w3w_Red.svg" height="48px"><a href="https://what3words.com/{{madde.w3w}}">{{madde.w3w}}</a>
-                  </div>
-                  <div class="col-8">
-
-                    <br><p>What 3 words (yani <i>"hangi 3 kelime"</i> dünyayı 3 metre karelere bölmüş. Aradığınız mekanı bulmak artık çok kolay!)</p>
-
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            {% endif %}
-            </p>
-      
-            <hr>
-
-            <div class="row">
-              <div class="col-4">
-                <h5>Paylaş</h5>
-                <div class="row">
-                  {% post_to_facebook object_or_url "Post to Facebook!" %}
-                  {% post_to_twitter "Yeni bi kelepir!: {{madde.baslik}}. Check it out!" object_or_url "Twitter'e paylaş" %}
-                  {% post_to_reddit "Yeni bi kelepir!: {{madde.baslik}}" object_or_url %}
-                  {% post_to_telegram "Yeni bi kelepir!: {{madde.baslik}}" object_or_url %}
-                  {% post_to_whatsapp object_or_url "Share via WhatsApp" %}
-
-                </div>
-              </div>
-
-              <div class="col-8">
-                <div class="row">
-                  <div class="text-left col-md">
-                    <a href="#commentsarea" class="btn btn-outline btn-lg"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
-                  </div>
-                  <div class="text-left col-md">
-                    {% if request.user.is_authenticated %}
-                      <form class="" action="{% url 'expire' madde.id %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger"><i class='fas fa-hourglass-end'></i> Tükendimi?</button>
-                      </form>
-
-                      <!-- <a href="{% url 'expire' madde.id %}" class="btn btn-outline btn-lg"><i class="fas fa-hourglass-end"></i> Tükendimi? </a> -->
-                    {% else %}
-                      <a href="{% url 'login' %}" class="btn btn-outline btn-lg"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
-                    {% endif %}
-                  </div>
-                  <div class="text-left col-md">
-                    <a href="#" class="btn btn-outline btn-lg"><i class="fas fa-flag"></i> İhbar et</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
+  {% if madde.aktif == True %}
+    {% if madde.son_tarih %}
+      <div class="col-11 mx-auto my-2 alert alert-warning " role="alert">
+        <p class="text-center"> <i class="far fa-calendar-times"></i> Şu kelepir {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }} tarihde tükenir!</p>
       </div>
-    
-    {% else %}
-    
-      <div class="row no-gutters">
-        <div class="col-md-3">
-          <img src="{{madde.goruntu.url}}" style="width: 100%; height: 15vw; opacity: 0.5" class="card-img image-fluid">
-        </div>
-        <div class="col-md-9">
-          <div class="card-body text-secondary">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="row">
-                    <div class="col-md-5">
-                      <button type="button" class="btn btn-outline-secondary btn" disabled>{{ madde.derece }}° <i class="fas fa-hourglass-end"></i> kelepir tükendi</button>
-                    </div>
-                    <div class="col-md-7">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <br>
-            <p><span style="color:Grey;"><b>{{madde.fiyat}}₺</b></span>
-              <span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span>{% if madde.orjinalFiyat %} % {{pdiff}} fark!{% endif %}</p>
-            </p>
-            <div class="card">
-              <div class="card-body">
-                <p class="text-muted">kelepir tükendi</p>
-                {% if madde.son_tarih %} <i class="far fa-calendar-times"></i> {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }}'de kelepir tükenir {% endif %}
-                {% if madde.bas_tarih %} <i class="far fa-calendar-alt"></i> {{madde.bas_tarih|date:"SHORT_DATE_FORMAT"}} |{% endif %} <i class="fas fa-calendar-day"></i>  Paylaşım Tarihi {{maddeler.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}}
-              </div>
-            </div>
-
-            <div class="d-flex bd-highlight">
-
-                <div class="flex-grow-1 bd-highlight">
-                  <br> <p class="card-text"><strong>{{madde.paylasan}}</strong></p>
-                </div>
-                <div class="p-2 bd-highlight">
-                  {% if request.user.is_authenticated %}
-                      {% if bookmarked %}
-                        <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
-                      {% else %}
-                        <a href="{% url 'bookmark' madde.id %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                      {% endif %}
-                  {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                  {% endif %}
-                </div>
-                <div class="p-2 bd-highlight">
-                  <a href="#commentsarea" type="button" class="btn btn-outline-dark" ><i class="fas fa-comments"></i> {{comments.count}}</a>
-                </div>
-                <div class="p-2 bd-highlight">
-                  <a href="{{madde.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
-                </div>
-
-                </div>
-                <p class="card-text">{{madde.ayrintilar|safe}}</p>
-                <hr>
-                {% include 'shareto.html' %}
-                <hr>
-
-                <div class="row">
-                  <div class="text-left col-md-3">
-                    <a href="#commentsarea"><i class="fas fa-comment-medical"></i> Yorum ekle</a>
-                  </div>
-                  <div class="text-left col-md-3">
-                    <a href="#"><i class="fas fa-hourglass-end"></i> Tükendimi? </a>
-                  </div>
-                  <div class="text-left col-md-3">
-                    <a href="#"><i class="fas fa-flag"></i> İhbar et</a>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-    
     {% endif %}
-        </div>
-    <div class="card mb-12" style="max-width: 1000px;">
-      <div class="row no-gutters">
-      <div class="card-body">
-
-
-        <!-- comments -->
-        <a id="commentsarea"></a>
-
-        {% if top_comments.likes > 0 %}
-        <div class="card">
-          <div class="card-header"><strong>En Fazla Beyenilen Yorum </strong> <i class="fas fa-thumbs-up"></i> {{top_comments.likes}}</div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-1"><i class="fas fa-user"></i></div>
-              <div class="col-11"><p>{{top_comments.user}}</p></div>
+    <div class="row">
+      <div class="col-5">
+        <img src="{{madde.goruntu.url}}" style="width: 100%;" class="card-img image-fluid">
+      </div>
+      <div class="col-7">
+        <!-- Score row -->
+        <div class="row pe-2 my-2 d-flex justify-content-between">
+          <!-- Voting Buttons -->
+          <div class="col-3 d-flex justify-content-start">
+            <div class="btn-group" role="group" aria-label="Basic outlined example">
+            {% if request.user.is_authenticated %}
+                {% if request.user in madde.oyveren.all %}
+                    <button type="button" class="btn btn-danger rounded-start-pill" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz"><i class="bi bi-dash-lg"></i></button>
+                    <button class="list-group-item list-group-item-action list-group-item-light disabled px-2"> {{madde.derece}}% </button>
+                    <button type="button" class="btn btn-success rounded-end-pill" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz"><i class="bi bi-plus"></i></button>
+                {% else %}
+                    <span id="madde_{{forloop.counter}}" data-value="{{madde.id}}"></span>
+                    <button type="button" hx-post="{% url 'downvote' madde.id %}" 
+                    hx-target="#madde{{madde.id}}"
+                    class="kel_puanlar btn btn-danger rounded-start-pill vote_action"><i class="bi bi-dash-lg"></i></button>
+                    <button class="list-group-item list-group-item-action list-group-item-light disabled px-2"> {{madde.derece}}% </button>
+                    <button type="button" hx-post="{% url 'upvote' madde.id %}" 
+                    hx-target="#madde{{madde.id}}"
+                    class="btn btn-success rounded-end-pill vote_action"  ><i class="bi bi-plus"></i></button>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-danger rounded-start-pill" ><i class="bi bi-dash-lg"></i></a>
+                <button class="list-group-item list-group-item-action list-group-item-light disabled px-2"> {{madde.derece}}% </button>
+                <a href="{% url 'login' %}" class="btn btn-success rounded-end-pill" ><i class="bi bi-plus"></i></a>
+            {% endif %}
             </div>
-
-            <div class="row">
-              <div class="col-1"><i class="fas fa-comment"></i></div>
-              <div class="col-11"><div class="card p-2">{{top_comments.content}}</div></div>
-            </div>
-
           </div>
 
+          <!-- No of comments -->
+          <div class="col-3 d-flex justify-content-end">
+            <button class="btn btn-outline-primary rounded-pill"><i class="bi bi-chat-right-quote"></i>  </button>
+          </div>
+        </div> <!-- end of score row -->
+        
+        <!-- Date posted row -->
+        <div class="row text-secondary">
+          <div class="col-11">
+            {{madde.duyurmaTarihi|date:"SHORT_DATE_FORMAT"}} <i class="fas fa-calendar-day"></i> {{madde.duyurmaTarihi|timesince}} evel paylaşıldı
+          </div>
         </div>
-        {% endif %}
+        <!-- End of date posted row -->
+        <!-- Title Row -->
+        <div class="row">
+          <div class="col-11">
+            <h4>{{madde.baslik}}</h4>
+          </div>
+        </div>
+        <!-- End of title row -->
+        <!-- Price row -->
+          <h1><span style="color:Tomato;"><b>{{madde.fiyat}}₺</b></span></h1>
+          <p>
+            {% if madde.orjinalFiyat %}<span style="text-decoration: line-through;"> {{madde.orjinalFiyat}}</span> % {{pdiff}} fark!{% endif %}
+            {% if madde.kargo == True %}<i class="bi bi-truck"></i> Kargo Bedava </p>{% endif %}
+          </p>
+        <!-- end of price row -->
+        <!-- Button Row -->
+        <div class="row d-grid d-md-flex col-12">
+          
+            <a href="{{kelepir.url}}" class="btn btn-primary btn-lg rounded-pill col-6">Fırsatı Kap  <i class="bi bi-box-arrow-up-right"></i> </a>
+          
+            {% if madde.kupon %}
+              <button class="btn btn-outline-primary btn-lg rounded-pill col-6">{{ madde.kupon }}</button>
+            {% endif %}
+        </div>
+        <!-- end of button row -->
 
-        <div class="">
-          {% include_static %} {# Include comment CSS and JS files #}
-          {% render_comments madde request %}
-        </div>
+        <!-- User icon row -->
+          <div class="row">
+            <div class="col-1"><i class="bi bi-person-circle"></i></div>
+            <div class="col-5">
+              <a href="{% url 'profil_detay' madde.paylasan.id %}">{{madde.paylasan}}
+                tarafından paylaşılmıştır.
+              </a>
+            </div>
+          </div>
+        <!-- End of user icon row -->
+      </div>
+    </div>
+  {% else %}
+    {% if madde.son_tarih %}
+      <div class="col-11 mx-auto my-2 alert alert-warning" role="alert">
+        <p> <i class="far fa-calendar-times"></i> Şu kelepir {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }} tarihde tükenir!</p>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+    
+    
+    
+
 
 {% endblock %}
 
