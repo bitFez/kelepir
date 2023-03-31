@@ -54,7 +54,7 @@
                             <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a>
                         </p>
                         <div class="row">
-                            <div class="col-3 d-flex justify-content-start"><i class="bi bi-person-circle"></i> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
+                            <div class="col-3 d-flex justify-content-start"><img src="{{kelepir.paylasan.resim.url}}" class="border border-3 rounded-circle me-2" height="32" width="32"> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
                         
                             <div class="col-9 d-flex justify-content-end">
                                 {% if request.user.is_authenticated %}
@@ -116,7 +116,7 @@
                 <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a>
               </p>
               <div class="row">
-                  <div class="col-3 d-flex justify-content-start"><i class="bi bi-person-circle"></i> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
+                  <div class="col-3 d-flex justify-content-start"><img src="{{kelepir.paylasan.resim.url}}" class="border border-3 rounded-circle me-2" height="32" width="32"> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a> </div>
                   
                   <div class="col-9 d-flex justify-content-end">
                     {% if request.user.is_authenticated %}

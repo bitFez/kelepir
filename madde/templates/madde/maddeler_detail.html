@@ -7,10 +7,10 @@
 
 {% block content %}
 
-<div class="card col-9 align-self-center my-2 mx-auto" >
+<div class="card col-9 align-self-center my-2 px-2 py-2 mx-auto" >
   {% if madde.aktif == True %}
     {% if madde.son_tarih %}
-      <div class="col-11 mx-auto my-2 alert alert-warning " role="alert">
+      <div class="col-12 mx-auto my-2 alert alert-warning " role="alert">
         <p class="text-center"> <i class="far fa-calendar-times"></i> Şu kelepir {{ madde.son_tarih|date:"SHORT_DATE_FORMAT" }} tarihde tükenir!</p>
       </div>
     {% endif %}
@@ -86,17 +86,23 @@
         <!-- end of button row -->
 
         <!-- User icon row -->
-          <div class="row">
-            <div class="col-1"><i class="bi bi-person-circle"></i></div>
-            <div class="col-5">
-              <a href="{% url 'profil_detay' madde.paylasan.id %}">{{madde.paylasan}}
+          <div class="row my-4">
+            <div class="col-1 mx-2"><img src="{{madde.paylasan.resim.url}}" class="border border-3 rounded-circle" height="50" width="50"></div>
+            <div class="col-10">
+              <p><a href="{% url 'profil_detay' madde.paylasan.id %}">{{madde.paylasan}}</a>
                 tarafından paylaşılmıştır.
-              </a>
+                <br>
+                <i class="bi bi-calendar3 text-primary"></i> Abone Tarihi: {{madde.paylasan.start_date}}
+                <i class="bi bi-tag text-primary"></i> 0
+                <i class="bi bi-hand-thumbs-up text-primary"></i> 0
+              </p>
             </div>
           </div>
         <!-- End of user icon row -->
       </div>
     </div>
+
+    
   {% else %}
     {% if madde.son_tarih %}
       <div class="col-11 mx-auto my-2 alert alert-warning" role="alert">
@@ -105,8 +111,53 @@
     {% endif %}
   {% endif %}
 </div>
+<!-- end of first card -->
+
+<!-- start of details card -->
+<div class="card col-9 align-self-center my-2 px-2 py-2 mx-auto" >
+  <h5 class="card-title my-2 mx-1">Şu kelepir hakında</h5>
+  <p class="card-text mx-1">{{madde.ayrintilar|safe}}</p>
+  {% if madde.w3w %}
+  <hr>
+  <div class="card border-danger">
+    <div class="card-body">
+
+      <div class="row align-items-center">
+        <div class="col-4">
+          <img src="/images/w3w_Red.svg" height="48px"><a href="https://what3words.com/{{madde.w3w}}">{{madde.w3w}}</a>
+        </div>
+        <div class="col-8">
+
+          <br><p>What 3 words (yani <i>"hangi 3 kelime"</i> dünyayı 3 metre karelere bölmüş. Aradığınız mekanı bulmak artık çok kolay!)</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+    <!-- social icons -->
+  <div class="row pe-2 my-2 d-flex align-items-start">
+    <div class="col"><a href="" class="btn btn-outline-secondary btn-lg rounded-pill"><i class="bi bi-facebook"></i> Post</a></div>
+    <div class="col"><a href="" class="btn btn-outline-secondary btn-lg rounded-pill"><i class="bi bi-twitter"></i> Tweet</a></div>
+    <div class="col"><a href="" class="btn btn-outline-secondary btn-lg rounded-pill"><i class="bi bi-reddit"></i> Post</a></div>
+    <div class="col"><a href="" class="btn btn-outline-secondary btn-lg rounded-pill"><i class="bi bi-telegram"></i> Share</a></div>
+    <div class="col"><a href="" class="btn btn-outline-secondary btn-lg rounded-pill"><i class="bi bi-whatsapp"></i> Share</a></div>
+    <!-- {% post_to_facebook object_or_url "Post to Facebook!" %}
+    {% post_to_twitter "Yeni bi kelepir!: {{madde.baslik}}. Check it out!" object_or_url "Twitter'e paylaş" %}
+    {% post_to_reddit "Yeni bi kelepir!: {{madde.baslik}}" object_or_url %}
+    {% post_to_telegram "Yeni bi kelepir!: {{madde.baslik}}" object_or_url %}
+    {% post_to_whatsapp object_or_url "Share via WhatsApp" %} -->
+
+  </div>
+</div>
     
-    
+
+<div class="card col-9 align-self-center my-2 px-2 py-2 mx-auto" >
+  <h5 class="card-title my-2 mx-1">Yorumlar</h5>
+  
+  
+</div>
     
 
 
