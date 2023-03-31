@@ -1,6 +1,6 @@
 from django.db import models
 #from hesaplar.models import Kullanici
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from ckeditor.fields import RichTextField
@@ -11,6 +11,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from comment.models import Comment
 ###
 
+from hesaplar.models import Kullanici
 
 KATEGORI_SECIMLERI=(
     ('Elektronik','Elektronik'), ('Moda ve aksesuarlar', 'Moda ve aksesuarlar'), ('Bahçe ve DIY','Bahçe ve DIY'),('Kültür ve boş zaman','Kültür ve boş zaman'), ('bakkal alışveriş','bakkal alışveriş'), ('Oyun','Oyun'),
@@ -27,7 +28,7 @@ class Katagoriler(models.Model):
 
 # Create your models here.
 class Maddeler(models.Model):
-    paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
+    paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi paylaşın</small>')
     satici = models.CharField(max_length=200, blank=True)
     fiyat = models.DecimalField(max_digits=8, decimal_places=2, help_text='İndirimli fıyat')
@@ -43,14 +44,15 @@ class Maddeler(models.Model):
     online = models.BooleanField(help_text='Yerel fırsat (mağazada / çevrimdışı)')
     diyar = models.CharField(max_length=100, null=True, blank=True)
     derece = models.IntegerField(default='0', null=True, blank=True)
-    duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
+    duyurmaTarihi = models.DateTimeField(auto_now_add=True) # auto_now=False, auto_now_add=True, blank=True
+    guncelenmisTarihi = models.DateTimeField(auto_now=True) # auto_now=False, blank=True
     kaynamavakti = models.DateTimeField(null=True, blank=True, auto_now=False, auto_now_add=False)
-    bookmarked = models.ManyToManyField(User, related_name='bookmarked', default=None, blank=True)
-    tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call', default=None, blank=True)
+    bookmarked = models.ManyToManyField(Kullanici, related_name='bookmarked', default=None, blank=True)
+    tukenmiscagiri = models.ManyToManyField(Kullanici, related_name='expired_call', default=None, blank=True)
     tukenmisSayi = models.IntegerField(default=0, null=True, blank=True)
     aktif = models.BooleanField(default=True)
     oylar = models.IntegerField(default=0, null=True, blank=True)
-    oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes")
+    oyveren = models.ManyToManyField(Kullanici, blank=True, related_name="collected_votes")
     w3w = models.CharField(max_length=100, null=True, blank=True,verbose_name='What3Words', help_text='<a href="https://what3words.com/susma.hurma.e%C5%9Fyal%C4%B1"><small>Yardım ve örnek için şurayı tıklayın</small></a>')
     #allow_comments = models.BooleanField('allow comments', default=True)
     comments = GenericRelation(Comment)
@@ -72,7 +74,7 @@ class Maddeler(models.Model):
 KUPON_CESIT = (('YE','% İndirim'),('Tİ','<span class="fas fa-lira-sign"></span> İndirimi'),('BK','Bedava Kargo'))
 
 class Kuponlar(models.Model):
-    paylasan = models.ForeignKey(User, on_delete=models.CASCADE)
+    paylasan = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
     url = models.URLField(max_length=200, blank=True, null=True, help_text='<small>Kelepir internetten bulunduysa şurda websiteyi palşın</small>',)
     satici = models.CharField(max_length=200, blank=True)
     kupon = models.CharField(max_length=100, blank=True, help_text='Bildirmek istediğiniz kupon varsa, buraya yazın')
@@ -85,11 +87,11 @@ class Kuponlar(models.Model):
     duyurmaTarihi = models.DateTimeField(default=timezone.now) # auto_now=False, auto_now_add=True, blank=True
     derece = models.IntegerField(default='0', null=True, blank=True)
     aktif = models.BooleanField(default=True)
-    bookmarked = models.ManyToManyField(User, related_name='bookmarked_coupons', default=None, blank=True)
-    tukenmiscagiri = models.ManyToManyField(User, related_name='expired_call_coupons', default=None, blank=True)
+    bookmarked = models.ManyToManyField(Kullanici, related_name='bookmarked_coupons', default=None, blank=True)
+    tukenmiscagiri = models.ManyToManyField(Kullanici, related_name='expired_call_coupons', default=None, blank=True)
     tukenmisSayi = models.IntegerField(default=0, null=True, blank=True)
     oylar = models.IntegerField(default=0, null=True, blank=True)
-    oyveren = models.ManyToManyField(User, blank=True, related_name="collected_votes_coupons")
+    oyveren = models.ManyToManyField(Kullanici, blank=True, related_name="collected_votes_coupons")
     #allow_comments = models.BooleanField('allow comments', default=True)
     comments = GenericRelation(Comment)
 
@@ -101,7 +103,7 @@ class Kuponlar(models.Model):
         return reverse('kupon_detay', args=[str(self.id)])
 
 class Votes(models.Model):
-    kullanici = models.ForeignKey(User, on_delete=models.CASCADE)
+    kullanici = models.ForeignKey(Kullanici, on_delete=models.CASCADE)
     madde = models.ForeignKey(Maddeler, on_delete=models.CASCADE)
     date= models.DateTimeField(auto_now= True)
     oy = models.BooleanField(default=True)

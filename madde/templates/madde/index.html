@@ -8,266 +8,77 @@
 
 <br>
 
-<div class="row">
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs mt-1 ">
+  <li class="nav-item ">
+    <a class="nav-link link-warning bg-primary" href="/"><i class="fa-regular fa-rectangle-list"></i> Tümü</a>
+  </li>
   {% for kat in katagoriler.all %}
-    <a type="button" class="btn-outline-dark btn-lg" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+    <li class="nav-item ">
+      <a class="nav-link link-warning bg-primary" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+    </li>
   {% endfor %}
-</div>
-<br>
-<h1>{{h1}}</h1>
-<br>
+</ul>
+<!-- End of Nav Tabs -->
 
 
-<div class="row">
-  <div class="col-sm-9">
+<div class="container">
+  <div class="row justify-content-start g-2">
+    <!-- Left Column	-->
+    <div class="col-9">
 
       {% for kelepir in kelepirler %}
-        <div class="herkelepir">
-        {% if kelepir.aktif == True %}
-          <div class="card mb-12" style="max-width: 1000px;">
-            <div class="row no-gutters">
-              <div class="col-md-3">
-                <img src="{{kelepir.goruntu.url}}" style="width: 100%; height: 15vw;" class="card-img image-fluid">
-              </div>
-              <div class="col-md-9">
-                <div class="card-body">
-                  <div class="container-fluid">
-                  	<div class="row">
-                  		<div class="col-md-12">
-                  			<div class="row">
-                          <!-- Voting buttons -->
-                  				 <div class="col-md-1">
+        <div class="card my-2 mx-1" style="" >
+            {%  include 'madde/partials/madde.html' %}
+        </div>
+      {% endfor %}
 
-                              {% if request.user.is_authenticated %}
-                                {% if request.user in kelepir.oyveren.all %}
-                                <div class="row">
-                                  <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelipirde oy vermişsiniz" role="button">
-                                    <i class="fas fa-plus"></i></button>
-                                </div>
-                                <div class="row">
-                                  <button class="kel_puanlar btn btn-outline p-1" id="puanlar_{{kelepir.id}}">{{kelepir.derece}}</span>
-                                </div>
-                                <div class="row">
-                                  <button class="btn btn-secondary" disabled data-toggle="tooltip" title="Şu kelepirde oy vermişsiniz" role="button">
-                                    <i class="fas fa-minus"></i></button>
-                                </div>
+    </div> <!-- Sol kolon sonu  -->
+    <!-- End Left Columns	 -->	
+    <!-- Right column	 -->
+    
+    <div class="col-3">
+      <div class="card my-2 g-0">
+        <div class="card-body">
+          <p class="text-primary"> Haftanın En İyi Kelepirleri </p>
 
-                                {% else %}
-                                  <div class="row">
-                                    <span id="kelepir_{{forloop.counter}}" data-value="{{kelepir.id}}"></span>
-                                    <button class="btn btn-success vote_action" id="uvb_{{forloop.counter}}" value="upvote_button"><i class="fas fa-plus"></i></button>
-                                  </div>
-                                  <div class="row">
-                                    <span id="puanlar_{{forloop.counter}}" class="kel_puanlar btn btn-outline p-1" >{{kelepir.derece}}</span>
-                                  </div>
-                                  <div class="row">
-                                    <button class="btn btn-danger vote_action" id="dvb_{{forloop.counter}}" value="downvote_button"><i class="fas fa-minus"></i></button>
-                                  </div>
-                                {% endif %}
-                              {% else %}
-                              <div class="row">
-                                <a href="{% url 'login' %}" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                                <span class="btn btn-outline p-1">%{{kelepir.derece}}</span>
-                                <a href="{% url 'login' %}" class="btn btn-danger"><i class="fas fa-minus"></i></a>
-                              </div>
-
-                              {% endif %}
-
-                  				</div>
-
-                          <!-- To the right of the buttons -->
-                          <div class="card col-11">
-                            <div class="card-body">
-
-                      				<div class="col-md-8 float-left">
-                                <small class="text-muted">{% if kelepir.son_tarih|date:"SHORT_DATE_FORMAT" %}<i class="far fa-calendar-alt"></i> Tükenme tarihi: <br>{{ kelepir.son_tarih|date:"SHORT_DATE_FORMAT" }}{% endif %}</small>
-                      				</div>
-                      				<div class="col-md-3 float-right">
-                                <small class="text-muted"><i class="fas fa-bullhorn"></i><br>{{kelepir.duyurmaTarihi|timesince}}<br>duyuruldu</small>
-                      				</div>
-
-                            </div>
-                          </div>
-
-
-                  			</div>
-                  		</div>
-                  	</div>
+          {% for kelepir in haftanin.all %}
+            {% if kelepir.aktif %}
+              <div class="card my-2 mx-1 border-0" style="">
+                <div class="row g-0">
+                <div class="col-md-5" style="">
+                  <img src="{{kelepir.goruntu.url}}" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-7">
+                  <div class="card-body">
+                  <span class="text-danger"> {{kelepir.derece}}% </span> 
+                    <a href="{% url 'madde_detay' kelepir.id %}"><small>{{kelepir.baslik|truncatewords:5|safe}}</a>{{kelepir.fiyat}}₺</small>
                   </div>
-                  <br>
-                  <h5 class="card-title"> <a href="{% url 'madde_detay' kelepir.id %}">{{kelepir.baslik}}</h5></a>
-                  <p><span style="color:Tomato;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}
-                    {% if pdiff %}, %{{pdiff}} fark!{% endif %}
-                  </p>
-                  <div class="row min-vh-50">
-                    <p class="card-text">{{kelepir.ayrintilar|truncatewords:30|safe}}...
-                  </div>
-                  <a href="{% url 'madde_detay' kelepir.id %}"><strong>devamını oku</strong></a></p>
-                  <div class="d-flex bd-highlight">
-
-                  		<div class="flex-grow-1 bd-highlight">
-                        <p class="card-text"><strong> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a></strong></p>
-                  		</div>
-
-                      <div class="p-2 bd-highlight">
-                        {% if request.user.is_authenticated %}
-                            {% if request.user in kelepir.bookmarked.all %}
-                              <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
-                            {% else %}
-                              <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                            {% endif %}
-                        {% else %}
-                          <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                        {% endif %}
-                  		</div>
-                  		<div class="p-2 bd-highlight">
-
-                        <a href="{% url 'madde_detay' kelepir.id %}#commentsarea" type="button" class="btn btn-outline-dark"><i class="fas fa-comments"></i> {% get_comments_count kelepir user %}</a>
-                  		</div>
-                  		<div class="p-2 bd-highlight">
-                        <a href="{{kelepir.url}}" type="button" class="btn btn-danger">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
-                  		</div>
-
-                  </div>
-
+                </div>
                 </div>
               </div>
-            </div>
-          </div>
-        {% else %}
-        <div class="card mb-2 bg-light border-light" style="max-width: 1000px;">
-            <div class="row no-gutters">
-              <div class="col-md-3">
-                <img src="{{kelepir.goruntu.url}}" style="width: 100%; height: 15vw; opacity: 0.5" class="card-img image-fluid">
-              </div>
-              <div class="col-md-9">
-                <div class="card-body text-secondary">
-                  <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="row">
-                          <div class="col-md-5">
-                            <button type="button" class="btn btn-outline-secondary btn" disabled>{{ kelepir.derece }}° <i class="fas fa-hourglass-end"></i> kelepir tükendi</button>
-                          </div>
-                          <div class="col-md-5">
-                          </div>
-                          <div class="col-md-0">
-                            <p class=text-muted></p>
-                            <p>{% if kelepir.son_tarih %}{{ kelepir.son_tarih }}'de kelepir tükenir{% endif %}</p>
-                          </div>
-                          <div class="col-md-2">
-                            <small class="text-muted"><i class="fas fa-bullhorn"></i><br>{{kelepir.duyurmaTarihi|timesince}}</small>
-                          </div>
-                        </div>
-                      </div>
+              {% else %}
+              <div class="card my-2 mx-1 border-0" style="color:Grey">
+                  <div class="row g-0">
+                  <div class="col-md-5" style="">
+                    <img src="{{kelepir.goruntu.url}}" class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-7">
+                    <div class="card-body">
+                    <span class="text-danger"> {{kelepir.derece}}% </span> 
+                      <a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"> <small> {{kelepir.baslik|truncatewords:30|safe}}</a>{{kelepir.fiyat}}₺ </small>
                     </div>
                   </div>
-                  <br>
-                  <h5 class="card-title text-muted"><a class="card-title" href="{% url 'madde_detay' kelepir.id %}" style="color:Grey">{{kelepir.baslik}}</h5></a>
-                  <p><span style="color:Grey;"><b>{{kelepir.fiyat}}₺</b></span>  {{orjinalFiyat}}</p>
-                  <p class="card-text text-muted">{{kelepir.ayrintilar|truncatewords:30|safe}}...
-                    <a href="{% url 'madde_detay' kelepir.id %}" style="color:Grey"><strong>devamını oku</strong></p></a>
-
-                  <div class="d-flex bd-highlight text-muted">
-
-                      <div class="flex-grow-1 bd-highlight text-muted">
-                        <p class="card-text"><strong> <a href="{% url 'profil_detay' kelepir.paylasan.id %}">{{kelepir.paylasan}}</a></strong></p>
-                      </div>
-
-                      <div class="p-2 bd-highlight">
-                        {% if request.user.is_authenticated %}
-                            {% if request.user.id in kelepir.bookmarked %}
-                              <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="fas fa-bookmark"></i></a>
-                            {% else %}
-                              <a href="{% url 'bookmark' kelepir.id %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                            {% endif %}
-                        {% else %}
-                          <a href="{% url 'login' %}" type="button" class="btn btn-outline-dark btn-lg"><i class="far fa-bookmark"></i></a>
-                        {% endif %}
-                  		</div>
-                      <div class="p-2 bd-highlight">
-                        <a href="" type="button" class="btn btn-outline-dark btn"><i class="fas fa-comments"></i> {% get_comments_count kelepir user %}</a>
-                      </div>
-                      <div class="p-2 bd-highlight">
-                        <a href="{{kelepir.url}}" type="button" class="btn btn-secondary">Fırsatı Kap <i class="fas fa-external-link-alt"></i></a>
-                      </div>
-
                   </div>
-
                 </div>
-              </div>
-            </div>
-          </div>
-
-        {% endif %}
-
-        {% empty %}
-          <div class="card mb-2" style="max-width: 1000px;">
-            <h5>Maalesef, {{ request.GET.q }} arayışınızda birşey bulunmadı!</h5>
-          </div>
-
-          </div>
-        {% endfor %}
-
-  </div> <!-- Sol kolon sonu  -->
-
-  <!-- Main page sidebar -->
-  <div class="col-sm-3">
-    <h5>Haftanın En İyi Kelepirleri</h5>
-    <ul class="list-group">
-      {% for kelepir in haftanin.all %}
-        {% if kelepir.aktif %}
-          <li class="list-group-item"><a href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
-          {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
-        {% else %}
-          <li class="list-group-item" style="color:Grey"><a style="color:Grey" href="{% url 'madde_detay' kelepir.id %}"><img src="{{kelepir.goruntu.url}}" height=50px alt="">
-            {{kelepir.baslik}}</a> - {{kelepir.derece}} puan - {{kelepir.fiyat}}₺</li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-
+              {% endif %}
+          {% endfor %}
+        </div>
+      </div>
   </div> <!-- Sag kolon sonu -->
 </div> <!-- End of row for both columns -->
 
 
-      <script type="text/javascript">
-      // JQUERY - AJAX SCRIPT FOR voting
-      $(document).ready(function(){
-        $('.vote_action').click(function(e) {
-          //get closest div
-          var selector = $(this).closest('div.herkelepir');
-          var button = $(this).attr("value");
-          var counter = selector.find('.kel_puanlar').attr('id').split('_');
-          // get span data
-          var maddeid = selector.find("span[id=kelepir_"+counter[1]+"]").attr('data-value');
-
-          console.log("maddeID-->"+maddeid+"Button-->"+button+"counter[1]-->"+counter[1])
-          e.preventDefault();
-          $.ajax({
-            type: 'POST',
-            url: '{% url "vote" %}',
-
-            data: {
-              maddeid: maddeid,
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              action: 'postvote',
-              button: button,
-            },
-            success: function(json){
-              if (json.length < 1 || json == undefined) {
-                //empty
-              }
-              //selector.find('.kel_puanlar').text(json['result']);
-              $("#puanlar_"+counter[1]).text(json['result']);
-              $("#uvb_"+counter[1]).removeClass( "btn btn-success" ).addClass("btn btn-secondary disabled");
-              $("#dvb_"+counter[1]).removeClass( "btn btn-danger" ).addClass("btn btn-secondary disabled");
-            },
-            error: function(xhr, errmsg, err) {}
-          })
-        })
-
-      })
-      </script>
 {% endblock %}
 
 {% block scripts %}

@@ -1,6 +1,6 @@
 from urllib.parse import quote_plus
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from .models import Maddeler, Votes, Kuponlar, Katagoriler
 from hesaplar.models import Kullanici
 # list view adds a queryset for us and looks up all records in the DB.
@@ -24,6 +24,7 @@ from social_django.models import UserSocialAuth
 from datetime import datetime, timedelta
 #from django_comments_xtd.models import XtdComment
 from comment.models import Comment
+from hesaplar.models import Kullanici as User
 
 def index(request):
     kelepirler = Maddeler.objects.all
@@ -147,34 +148,33 @@ def yenikuponlar(request):
     return render(request, 'madde/kuponlarindeksi.html', context)
 
 @login_required
-def product_vote(request):
-    if request.POST.get('action') == 'postvote':
-        # get information from request about what item id it is
-        id = int(request.POST.get('maddeid'))
-        # And also which button was pressed
-        button = request.POST.get('button')
-        madde = Maddeler.objects.get(id=id)
-        #madde = get_object_or_404(Maddeler, id=id)
+def product_upvote(request, id):
+    
+    # get information from request about what item id it is
+    madde = Maddeler.objects.get(id=id)
 
-        if button == 'downvote_button':
-            if not madde.oyveren.filter(id=request.user.id).exists():
-                madde.oyveren.add(request.user)
-                madde.oylar +=1
-                madde.derece -=2
-                madde.save()
+    if not madde.oyveren.filter(id=request.user.id).exists():
+        madde.oyveren.add(request.user)
+        madde.oylar +=1
+        madde.derece +=2
+        madde.save()
 
-        elif button == 'upvote_button':
-            if not madde.oyveren.filter(id=request.user.id).exists():
-                madde.oyveren.add(request.user)
-                madde.oylar +=1
-                madde.derece +=2
-                madde.save()
+    return render(request, 'madde/partials/madde.html', {'kelepir': madde})
 
-        # return result
-        madde.refresh_from_db()
-        result = madde.derece
-        return JsonResponse({'result':result})
-    pass
+
+@login_required
+def product_downvote(request, id):
+    # get information from request about what item id it is
+    madde = Maddeler.objects.get(id=id)
+
+    if not madde.oyveren.filter(id=request.user.id).exists():
+        madde.oyveren.add(request.user)
+        madde.oylar +=1
+        madde.derece -=2
+        madde.save()
+
+    return render(request, 'madde/partials/madde.html', {'kelepir': madde})
+
 
 @login_required
 def coupon_vote(request):
@@ -430,6 +430,14 @@ def password(request):
         form = PasswordForm(request.user)
     return render(request, 'registration/password.html', {'form': form})
 
+@login_required
+def bookmarkInListView(request,id):
+    madde = get_object_or_404(Maddeler, id=id)
+    if madde.bookmarked.filter(id=request.user.id).exists():
+        madde.bookmarked.remove(request.user)
+    else:
+        madde.bookmarked.add(request.user)
+    return render(request, 'madde/partials/madde.html', {'kelepir': madde})
 
 @login_required
 def bookmark(request,id):
