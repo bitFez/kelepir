@@ -225,6 +225,7 @@ def profil_detay(request, pk):
 def madde_detay(request, pk):
     madde = get_object_or_404(Maddeler, pk=pk)
     comments = Comment.objects.filter(content_type_id=9, object_id=madde.id)
+    kullanicidan_kelepirler = Maddeler.objects.filter(paylasan=madde.paylasan.id).count()
     #top_comments = Comment.objects.filter_comments_by_object(madde).order_by('-reaction__likes')
     top_comments = Comment.objects.all_comments_by_object(madde).order_by('-reaction__likes').first()
     pdiff = 0
@@ -241,7 +242,8 @@ def madde_detay(request, pk):
     else:
         bookmarked = False
 
-    context = {'madde':madde,'bookmarked':bookmarked, 'pdiff':pdiff, 'comments':comments, 'top_comments':top_comments}
+    context = {'madde':madde,'bookmarked':bookmarked, 'pdiff':pdiff, 'comments':comments, 'top_comments':top_comments,
+    'kelepirler':kullanicidan_kelepirler}
     return render(request, 'madde/maddeler_detail.html', context)
 
 def kupon_detay(request, pk):
