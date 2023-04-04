@@ -4,51 +4,72 @@
     <div class="container">
       <div class="topnav">
 
-      <nav class="navbar navbar-expand-sm navbar-light flex-nowrap justify-content-between">
-        <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>-->
-        <a class="navbar-brand" href="/"><img src="/images/kelepirBorsa_logo2.png" height="40"></a><a href="/"><span class="navText navbar-brand"> Kelepir Borsa</span></a>
-
-        <button class="navbar-toggler h-100" type="button" data-toggle="collapse" data-target="#navbar-list" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-list">
-          <ul class="navbar-nav h-100">
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-tag"></i> kelepirler!
-              </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="/"><i class="fas fa-tag"></i> Tümü</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'ensicakkel' %}"><span style="color:#28a745;"><i class="fas fa-tag"></i> En Yüksek puanlı</a></span>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'newdeals' %}"><span style="color:Blue;"><i class="fas fa-tag"></i> En Yeni</a></span>
-                </div>
-            </li>
-
-
-          <ul class="navbar-nav h-100">
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-barcode"></i> Kuponlar!
-              </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="{% url 'kuponlarindeksi' %}"><i class="fas fa-barcode"></i> Tümü</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'ateslikuponlar' %}"><span style="color:#28a745;"><i class="fas fa-barcode"></i> En Yüksek puanlı</a></span>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'yenikuponlar' %}"><span style="color:Blue;"><i class="fas fa-barcode"></i> En Yeni</a></span>
-                </div>
-            </li>
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start py-2">
+        
+          <a class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none" href="/">
+            <img src="/images/kelepirBorsa_logo2.png" height="40"></a>
+            <a href="/"><span class="navText navbar-brand ms-2"> Kelepir Borsa</span>
+          </a>
+          <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="#" class="nav-link px-2 text-secondary"><i class="fas fa-tag"></i> kelepirler!</a></li>
+            <li><a href="#" class="nav-link px-2 text-secondary"><i class="fas fa-barcode"></i> Kuponlar!</a></li>
           </ul>
 
+          <div class="text-end">
+            {% if user.is_authenticated %}
+            <ul class="dropdown-menu">
+              
+            </ul>
+            {% else %}
+            {% endif %}
+            <button type="button" class="btn btn-outline-light me-2">Login</button>
+            <button type="button" class="btn btn-warning">Sign-up</button>
+          </div>
 
-        <!-- Right side -->
-        <div class="login-container">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+          <!-- <button class="navbar-toggler h-100" type="button" data-toggle="collapse" data-target="#navbar-list" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbar-list">
+            <ul class="navbar-nav h-100">
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-tag"></i> kelepirler!
+                </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/"><i class="fas fa-tag"></i> Tümü</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'ensicakkel' %}"><span style="color:#28a745;"><i class="fas fa-tag"></i> En Yüksek puanlı</a></span>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'newdeals' %}"><span style="color:Blue;"><i class="fas fa-tag"></i> En Yeni</a></span>
+                  </div>
+              </li>
+
+
+            <ul class="navbar-nav h-100">
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-barcode"></i> Kuponlar!
+                </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'kuponlarindeksi' %}"><i class="fas fa-barcode"></i> Tümü</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'ateslikuponlar' %}"><span style="color:#28a745;"><i class="fas fa-barcode"></i> En Yüksek puanlı</a></span>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'yenikuponlar' %}"><span style="color:Blue;"><i class="fas fa-barcode"></i> En Yeni</a></span>
+                  </div>
+              </li>
+            </ul> -->
+
+
+          <!-- Right side -->
+        <!-- <div class="login-container">
 
 
           <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
@@ -66,9 +87,9 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% if request.user.kullanici.resim %}
-                  <img src="{{ request.user.kullanici.resim.url }}" class="navbar-img rounded-circle">
+                  <img src="{{ request.user.kullanici.resim.url }}" class="navbar-img border border-3 rounded-circle" height="50" width="50"">
                 {% else %}
-                  <img src="/static/images/profiler/profile.png" class="navbar-img rounded-circle">
+                  <img src="/static/images/profiler/profile.png" class="navbar-img border border-3 rounded-circle" height="50" width="50"">
                 {% endif %}
                 <div class="">
                   Selam, {{request.user|capfirst}}
@@ -98,4 +119,4 @@
   </div>
   </div>
 
-</div>
+</div> -->

@@ -4,31 +4,28 @@
 {% load i18n %}
 {% load comment_tags %}
 
-
-
 <br>
 
-<!-- Nav Tabs -->
-<ul class="nav nav-tabs mt-1 ">
-  <li class="nav-item ">
-    <a class="nav-link link-warning bg-primary" href="/"><i class="fa-regular fa-rectangle-list"></i> Tümü</a>
-  </li>
-  {% for kat in katagoriler.all %}
-    <li class="nav-item ">
-      <a class="nav-link link-warning bg-primary" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
-    </li>
-  {% endfor %}
-</ul>
-<!-- End of Nav Tabs -->
-
-
 <div class="container">
+  <!-- Nav Tabs -->
+  <ul class="nav nav-tabs mt-1 ">
+    <li class="nav-item ">
+      <a class="nav-link link-warning bg-primary" href="/"><i class="fa-regular fa-rectangle-list"></i> Tümü</a>
+    </li>
+    {% for kat in katagoriler.all %}
+      <li class="nav-item ">
+        <a class="nav-link link-warning bg-primary" href="{% url 'dealcategory' kat.id %}"><i class="{{kat.ikon}}"></i> {{kat.kategori}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <!-- End of Nav Tabs -->
+
   <div class="row justify-content-start g-2">
     <!-- Left Column	-->
     <div class="col-9">
 
       {% for kelepir in kelepirler %}
-        <div class="card my-2 mx-1" style="" >
+        <div class="card my-2 mx-1" >
             {%  include 'madde/partials/madde.html' %}
         </div>
       {% endfor %}
@@ -44,9 +41,9 @@
 
           {% for kelepir in haftanin.all %}
             {% if kelepir.aktif %}
-              <div class="card my-2 mx-1 border-0" style="">
+              <div class="card my-2 mx-1 border-0">
                 <div class="row g-0">
-                <div class="col-md-5" style="">
+                <div class="col-md-5">
                   <img src="{{kelepir.goruntu.url}}" class="img-fluid rounded-start" alt="...">
                 </div>
                 <div class="col-md-7">
