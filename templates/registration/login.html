@@ -1,40 +1,30 @@
 {% extends 'temel.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<br>
-<div class="row" style="justify-content: center;">
-  <img src="/images/kelepirBorsa_logo2.png" height="250">
 
-</div>
-<div class="row" style="justify-content: center;">
-  <h1>Oturum Aç</h1>
-</div>
-
-<br>
 {% for message in messages %}
   <p id="messages">{{message}}</p>
 {% endfor %}
 <br>
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  {{ form | crispy }}
-
-  {{form.errors}}
-  <button type="submit" name="button" class="btn btn-primary">Oturum aç</button>
-  <div class="row" style="justify-content: center;">
-    <p> Or login with social apps </p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card border-0 shadow rounded-3 my-5">
+        <div class="card-body p-4 p-sm-5">
+          <img class="d-block mx-auto mb-4" src="/images/kelepirBorsa_logo2.png" alt="" width="80" height="80">
+          <h5 class="card-title text-center mb-5 fw-light fs-5">Oturum aç</h5>
+          <form method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              {{ form | crispy }}
+              <br>
+            <div class="d-grid">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Oturum aç</button>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="row" style="justify-content: center;">
-
-    <a href="{% url 'social:begin' 'github' %}">
-      <button type="button" name="button" class='btn btn-primary'>Github</button>
-    </a>
-    <a href="{% url 'social:begin' 'google-oauth2' %}">
-      <button type="button" name="button" class='btn btn-danger'>Google</button>
-    </a>
-  </div>
-</form>
-<br>
-<hr>
-
+</div>
 {% endblock %}

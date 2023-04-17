@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'hesaplar.apps.HesaplarConfig',
 
     'crispy_forms',
+    "crispy_bootstrap5",
     'ckeditor',
     'social_django',
     'django_social_share',
@@ -144,7 +145,9 @@ COMMENT_FLAGS_ALLOWED = 2
 SITE_ID=4
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
